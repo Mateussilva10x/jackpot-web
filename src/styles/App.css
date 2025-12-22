@@ -40,3 +40,19 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Login input styles */
+.login-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #2b6cb0; /* blue border */
+  background-color: #e6f0ff; /* soft blue background */
+  color: #0f172a; /* dark text */
+  border-radius: 6px;
+  outline: none;
+  transition: box-shadow 120ms, border-color 120ms;
+}
+.login-input:focus {
+  border-color: #2c5282;
+  box-shadow: 0 0 0 4px rgba(66, 153, 225, 0.15);
+}
