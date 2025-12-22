@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard'
 import Admin from './pages/Admin'
 import AppBets from './pages/app/Bets'
 import AppRanking from './pages/app/Ranking'
+import { DesignSystemPage } from './pages/DesignSystemPage'
 import './styles/App.css'
 
 function App() {
@@ -23,6 +24,8 @@ function App() {
           <Route path="/app/ranking" element={<PrivateLayout><AppRanking /></PrivateLayout>} />
           <Route path="/admin" element={<PrivateLayout><Admin /></PrivateLayout>} />
 
+          <Route path="/design-system" element={<PublicLayout><DesignSystemPage /></PublicLayout>} />
+
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </AuthProvider>
@@ -31,3 +34,4 @@ function App() {
 }
 
 export default App
+;
