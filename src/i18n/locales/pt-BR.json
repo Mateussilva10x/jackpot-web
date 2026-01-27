@@ -1,0 +1,59 @@
+{
+    "common": {
+        "appName": "Bolão Copa do Mundo",
+        "login": "Entrar",
+        "register": "Cadastrar",
+        "logout": "Sair",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "loading": "Carregando...",
+        "submit": "Enviar",
+        "back": "Voltar",
+        "next": "Próximo",
+        "close": "Fechar"
+    },
+    "auth": {
+        "loginTitle": "Entre para fazer suas apostas",
+        "registerTitle": "Junte-se ao melhor bolão de apostas",
+        "createAccount": "Criar Conta",
+        "email": "Email",
+        "password": "Senha",
+        "confirmPassword": "Confirmar senha",
+        "name": "Nome completo",
+        "fullName": "Nome completo",
+        "forgotPassword": "Esqueceu a senha?",
+        "noAccount": "Não tem uma conta?",
+        "hasAccount": "Já tem uma conta?",
+        "signUp": "Cadastre-se",
+        "signIn": "Entrar",
+        "loggingIn": "Entrando...",
+        "creatingAccount": "Criando conta...",
+        "invalidCredentials": "Usuário ou senha inválidos",
+        "registerError": "Erro ao criar conta. Tente novamente.",
+        "registerSuccess": "Conta criada com sucesso!",
+        "termsAndPrivacy": "Ao {{action}}, você concorda com nossos Termos de Serviço e Política de Privacidade",
+        "termsActionLogin": "entrar",
+        "termsActionRegister": "criar uma conta"
+    },
+    "validation": {
+        "emailRequired": "Email é obrigatório",
+        "emailInvalid": "Email inválido",
+        "passwordRequired": "Senha é obrigatória",
+        "passwordMinLength": "Senha deve ter pelo menos {{min}} caracteres",
+        "nameRequired": "Nome é obrigatório",
+        "nameMinLength": "Nome deve ter pelo menos {{min}} caracteres",
+        "passwordsNotMatch": "As senhas não coincidem",
+        "confirmPasswordRequired": "Confirme sua senha"
+    },
+    "toast": {
+        "success": "Sucesso!",
+        "error": "Erro!",
+        "warning": "Atenção!",
+        "info": "Informação"
+    },
+    "language": {
+        "portuguese": "Português",
+        "english": "English",
+        "selectLanguage": "Selecionar idioma"
+    }
+}

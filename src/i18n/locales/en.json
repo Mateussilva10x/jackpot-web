@@ -1,0 +1,59 @@
+{
+    "common": {
+        "appName": "World Cup Pool",
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout",
+        "cancel": "Cancel",
+        "save": "Save",
+        "loading": "Loading...",
+        "submit": "Submit",
+        "back": "Back",
+        "next": "Next",
+        "close": "Close"
+    },
+    "auth": {
+        "loginTitle": "Login to place your bets",
+        "registerTitle": "Join the best betting pool",
+        "createAccount": "Create Account",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "name": "Full name",
+        "fullName": "Full name",
+        "forgotPassword": "Forgot password?",
+        "noAccount": "Don't have an account?",
+        "hasAccount": "Already have an account?",
+        "signUp": "Sign up",
+        "signIn": "Sign in",
+        "loggingIn": "Logging in...",
+        "creatingAccount": "Creating account...",
+        "invalidCredentials": "Invalid username or password",
+        "registerError": "Error creating account. Please try again.",
+        "registerSuccess": "Account created successfully!",
+        "termsAndPrivacy": "By {{action}}, you agree to our Terms of Service and Privacy Policy",
+        "termsActionLogin": "logging in",
+        "termsActionRegister": "creating an account"
+    },
+    "validation": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email",
+        "passwordRequired": "Password is required",
+        "passwordMinLength": "Password must be at least {{min}} characters",
+        "nameRequired": "Name is required",
+        "nameMinLength": "Name must be at least {{min}} characters",
+        "passwordsNotMatch": "Passwords do not match",
+        "confirmPasswordRequired": "Please confirm your password"
+    },
+    "toast": {
+        "success": "Success!",
+        "error": "Error!",
+        "warning": "Warning!",
+        "info": "Information"
+    },
+    "language": {
+        "portuguese": "Português",
+        "english": "English",
+        "selectLanguage": "Select language"
+    }
+}
