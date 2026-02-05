@@ -10,35 +10,106 @@ import { ChevronDown, Trophy } from "lucide-react";
 // Mock Data Generator
 const generateGroups = (): GroupData[] => {
   const groups = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
-  return groups.map((groupLetter) => ({
-    id: groupLetter,
-    name: groupLetter,
-    teams: ["Team 1", "Team 2", "Team 3", "Team 4"], // Placeholders
-    games: [
-      {
-        id: `${groupLetter}1`,
-        teamA: "USA",
-        teamB: "Mexico",
-        flagA: "🇺🇸",
-        flagB: "🇲🇽",
-        date: "11/06",
-        time: "16:00",
-        scoreA: "",
-        scoreB: "",
-      },
-      {
-        id: `${groupLetter}2`,
-        teamA: "Canada",
-        teamB: "Brazil",
-        flagA: "🇨🇦",
-        flagB: "🇧🇷",
-        date: "11/06",
-        time: "19:00",
-        scoreA: "",
-        scoreB: "",
-      },
-    ],
-  }));
+
+  return groups.map((groupLetter) => {
+    let teams = ["Team 1", "Team 2", "Team 3", "Team 4"];
+    let gamesList: Game[] = [];
+
+    // Specific Mock for Group A (just to look nice)
+    if (groupLetter === "A") {
+      teams = ["Mexico", "Portugal", "Egypt", "South Korea"];
+      gamesList = [
+        {
+          id: "A1",
+          teamA: "Mexico",
+          teamB: "Portugal",
+          flagA: "🇲🇽",
+          flagB: "🇵🇹",
+          date: "11/06",
+          time: "13:00",
+          scoreA: "",
+          scoreB: "",
+        },
+        {
+          id: "A2",
+          teamA: "Egypt",
+          teamB: "South Korea",
+          flagA: "🇪🇬",
+          flagB: "🇰🇷",
+          date: "11/06",
+          time: "16:00",
+          scoreA: "",
+          scoreB: "",
+        },
+        {
+          id: "A3",
+          teamA: "Portugal",
+          teamB: "Egypt",
+          flagA: "🇵🇹",
+          flagB: "🇪🇬",
+          date: "15/06",
+          time: "14:00",
+          scoreA: "",
+          scoreB: "",
+        },
+        {
+          id: "A4",
+          teamA: "South Korea",
+          teamB: "Mexico",
+          flagA: "🇰🇷",
+          flagB: "🇲🇽",
+          date: "15/06",
+          time: "20:00",
+          scoreA: "",
+          scoreB: "",
+        },
+        {
+          id: "A5",
+          teamA: "Mexico",
+          teamB: "Egypt",
+          flagA: "🇲🇽",
+          flagB: "🇪🇬",
+          date: "19/06",
+          time: "18:00",
+          scoreA: "",
+          scoreB: "",
+        },
+        {
+          id: "A6",
+          teamA: "Portugal",
+          teamB: "South Korea",
+          flagA: "🇵🇹",
+          flagB: "🇰🇷",
+          date: "19/06",
+          time: "18:00",
+          scoreA: "",
+          scoreB: "",
+        },
+      ];
+    } else {
+      // Generic generation for others (6 games)
+      gamesList = Array(6)
+        .fill(null)
+        .map((_, i) => ({
+          id: `${groupLetter}${i + 1}`,
+          teamA: `Team ${(i % 4) + 1}`,
+          teamB: `Team ${((i + 1) % 4) + 1}`,
+          flagA: "🏳️",
+          flagB: "🏴",
+          date: "12/06",
+          time: "15:00",
+          scoreA: "",
+          scoreB: "",
+        }));
+    }
+
+    return {
+      id: groupLetter,
+      name: groupLetter,
+      teams,
+      games: gamesList,
+    };
+  });
 };
 
 export default function Dashboard() {

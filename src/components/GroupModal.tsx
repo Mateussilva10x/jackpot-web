@@ -141,68 +141,75 @@ export const GroupModal: React.FC<GroupModalProps> = ({
           <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">
             Matches
           </h3>
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {games.map((game) => (
               <div
                 key={game.id}
-                className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors"
+                className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors flex flex-col"
               >
                 {/* Header */}
-                <div className="bg-secondary/30 px-4 py-2 flex items-center justify-between border-b border-border/50">
+                <div className="bg-secondary/30 px-3 py-2 flex items-center justify-between border-b border-border/50">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-500" />
-                    <span className="text-xs font-semibold text-foreground">
-                      World Cup 2026
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-[10px] font-bold text-foreground uppercase tracking-wider">
+                      Copa 2026
                     </span>
                   </div>
-                  <div className="text-xs font-mono text-muted-foreground">
+                  <div className="text-[10px] font-mono text-muted-foreground">
                     {game.date} • {game.time}
                   </div>
                 </div>
 
                 {/* Match Content */}
-                <div className="p-6 grid grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-8">
-                  {/* Team A */}
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-2xl shadow-sm">
-                      {game.flagA}
+                <div className="p-4 flex flex-col gap-4">
+                  {/* Teams Row */}
+                  <div className="flex items-center justify-between">
+                    {/* Team A */}
+                    <div className="flex flex-col items-center gap-1 flex-1">
+                      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm ring-1 ring-border">
+                        {game.flagA}
+                      </div>
+                      <span
+                        className="font-bold text-xs text-center truncate w-full px-1"
+                        title={game.teamA}
+                      >
+                        {game.teamA}
+                      </span>
                     </div>
-                    <span className="font-bold text-sm md:text-base text-center hidden md:block">
-                      {game.teamA}
+
+                    <span className="text-muted-foreground font-bold text-xs px-2">
+                      VS
                     </span>
-                    <span className="font-bold text-sm text-center md:hidden">
-                      {game.teamA.substring(0, 3).toUpperCase()}
-                    </span>
+
+                    {/* Team B */}
+                    <div className="flex flex-col items-center gap-1 flex-1">
+                      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm ring-1 ring-border">
+                        {game.flagB}
+                      </div>
+                      <span
+                        className="font-bold text-xs text-center truncate w-full px-1"
+                        title={game.teamB}
+                      >
+                        {game.teamB}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Score Inputs */}
-                  <div className="flex items-center gap-3 md:gap-4">
+                  {/* Score Inputs Row */}
+                  <div className="flex items-center justify-center gap-2 bg-secondary/20 p-2 rounded-lg border border-border/30">
                     <JackpotScoreInput
                       value={game.scoreA}
                       onChange={(val) => handleScoreChange(game.id, "A", val)}
-                      className="w-12 h-12 md:w-14 md:h-14 text-xl md:text-2xl"
+                      className="w-10 h-10 text-lg shadow-inner bg-background"
                     />
-                    <span className="text-muted-foreground font-bold text-lg">
-                      X
+                    <span className="text-muted-foreground font-medium text-xs">
+                      x
                     </span>
                     <JackpotScoreInput
                       value={game.scoreB}
                       onChange={(val) => handleScoreChange(game.id, "B", val)}
-                      className="w-12 h-12 md:w-14 md:h-14 text-xl md:text-2xl"
+                      className="w-10 h-10 text-lg shadow-inner bg-background"
                     />
-                  </div>
-
-                  {/* Team B */}
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-2xl shadow-sm">
-                      {game.flagB}
-                    </div>
-                    <span className="font-bold text-sm md:text-base text-center hidden md:block">
-                      {game.teamB}
-                    </span>
-                    <span className="font-bold text-sm text-center md:hidden">
-                      {game.teamB.substring(0, 3).toUpperCase()}
-                    </span>
                   </div>
                 </div>
               </div>
