@@ -1,72 +1,72 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
-import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { useAuth } from '../contexts/AuthContext'
-import { useToast } from '../hooks/useToast'
-import { JackpotInput } from '../components/ui/JackpotInput'
-import { JackpotButton } from '../components/ui/JackpotButton'
-import { JackpotCard } from '../components/ui/JackpotCard'
-import { Trophy } from 'lucide-react'
-import { LanguageSwitcher } from '../components/LanguageSwitcher'
+import { useState } from "react";
+import type { FormEvent } from "react";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/AuthContext";
+import { useToast } from "../hooks/useToast";
+import { JackpotInput } from "../components/ui/JackpotInput";
+import { JackpotButton } from "../components/ui/JackpotButton";
+import { JackpotCard } from "../components/ui/JackpotCard";
+import { Trophy } from "lucide-react";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 
 export default function Register() {
-  const { t } = useTranslation()
-  const { register, isLoading } = useAuth()
-  const { showToast } = useToast()
+  const { t } = useTranslation();
+  const { register, isLoading } = useAuth();
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  })
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [errors, setErrors] = useState<{
-    name?: string
-    email?: string
-    password?: string
-    confirmPassword?: string
-  }>({})
+    name?: string;
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+  }>({});
 
   function validateForm(): boolean {
-    const newErrors: typeof errors = {}
+    const newErrors: typeof errors = {};
 
     // Name validation
     if (!formData.name.trim()) {
-      newErrors.name = t('validation.nameRequired')
+      newErrors.name = t("validation.nameRequired");
     } else if (formData.name.trim().length < 3) {
-      newErrors.name = t('validation.nameMinLength', { min: 3 })
+      newErrors.name = t("validation.nameMinLength", { min: 3 });
     }
 
     // Email validation
     if (!formData.email.trim()) {
-      newErrors.email = t('validation.emailRequired')
+      newErrors.email = t("validation.emailRequired");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = t('validation.emailInvalid')
+      newErrors.email = t("validation.emailInvalid");
     }
 
     // Password validation
     if (!formData.password) {
-      newErrors.password = t('validation.passwordRequired')
+      newErrors.password = t("validation.passwordRequired");
     } else if (formData.password.length < 6) {
-      newErrors.password = t('validation.passwordMinLength', { min: 6 })
+      newErrors.password = t("validation.passwordMinLength", { min: 6 });
     }
 
     // Confirm password validation
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = t('validation.confirmPasswordRequired')
+      newErrors.confirmPassword = t("validation.confirmPasswordRequired");
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = t('validation.passwordsNotMatch')
+      newErrors.confirmPassword = t("validation.passwordsNotMatch");
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   }
 
   async function handleSubmit(e: FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!validateForm()) {
-      return
+      return;
     }
 
     try {
@@ -74,18 +74,18 @@ export default function Register() {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-      })
-      showToast(t('auth.registerSuccess'), 'success')
+      });
+      showToast(t("auth.registerSuccess"), "success");
       // Navigation handled by AuthContext
     } catch (error: any) {
-      showToast(error.message || t('auth.registerError'), 'error')
+      showToast(error.message || t("auth.registerError"), "error");
     }
   }
 
   function handleChange(field: keyof typeof formData, value: string) {
-    setFormData({ ...formData, [field]: value })
+    setFormData({ ...formData, [field]: value });
     if (errors[field]) {
-      setErrors({ ...errors, [field]: undefined })
+      setErrors({ ...errors, [field]: undefined });
     }
   }
 
@@ -103,11 +103,9 @@ export default function Register() {
             <Trophy className="w-8 h-8 text-primary" />
           </div>
           <h1 className="text-3xl font-bold text-gradient-primary mb-2">
-            {t('auth.createAccount')}
+            {t("auth.createAccount")}
           </h1>
-          <p className="text-muted-foreground">
-            {t('auth.registerTitle')}
-          </p>
+          <p className="text-muted-foreground">{t("auth.registerTitle")}</p>
         </div>
 
         {/* Register Card */}
@@ -115,48 +113,50 @@ export default function Register() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <JackpotInput
-                label={t('auth.fullName')}
+                label={t("auth.fullName")}
                 type="text"
                 name="name"
                 placeholder="João Silva"
                 value={formData.name}
-                onChange={(e) => handleChange('name', e.target.value)}
+                onChange={(e) => handleChange("name", e.target.value)}
                 errorMessage={errors.name}
                 disabled={isLoading}
                 autoComplete="name"
               />
 
               <JackpotInput
-                label={t('auth.email')}
+                label={t("auth.email")}
                 type="email"
                 name="email"
                 placeholder="seu@email.com"
                 value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
+                onChange={(e) => handleChange("email", e.target.value)}
                 errorMessage={errors.email}
                 disabled={isLoading}
                 autoComplete="email"
               />
 
               <JackpotInput
-                label={t('auth.password')}
+                label={t("auth.password")}
                 type="password"
                 name="password"
                 placeholder="••••••••"
                 value={formData.password}
-                onChange={(e) => handleChange('password', e.target.value)}
+                onChange={(e) => handleChange("password", e.target.value)}
                 errorMessage={errors.password}
                 disabled={isLoading}
                 autoComplete="new-password"
               />
 
               <JackpotInput
-                label={t('auth.confirmPassword')}
+                label={t("auth.confirmPassword")}
                 type="password"
                 name="confirmPassword"
                 placeholder="••••••••"
                 value={formData.confirmPassword}
-                onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                onChange={(e) =>
+                  handleChange("confirmPassword", e.target.value)
+                }
                 errorMessage={errors.confirmPassword}
                 disabled={isLoading}
                 autoComplete="new-password"
@@ -170,16 +170,16 @@ export default function Register() {
               isLoading={isLoading}
               disabled={isLoading}
             >
-              {isLoading ? t('auth.creatingAccount') : t('auth.createAccount')}
+              {isLoading ? t("auth.creatingAccount") : t("auth.createAccount")}
             </JackpotButton>
 
             <div className="text-center text-sm text-muted-foreground">
-              {t('auth.hasAccount')}{' '}
+              {t("auth.hasAccount")}{" "}
               <Link
                 to="/login"
                 className="text-primary hover:text-primary/80 font-medium transition-colors"
               >
-                {t('auth.signIn')}
+                {t("auth.signIn")}
               </Link>
             </div>
           </form>
@@ -187,9 +187,9 @@ export default function Register() {
 
         {/* Footer */}
         <p className="text-center text-xs text-muted-foreground mt-8">
-          {t('auth.termsAndPrivacy', { action: t('auth.termsActionRegister') })}
+          {t("auth.termsAndPrivacy", { action: t("auth.termsActionRegister") })}
         </p>
       </div>
     </div>
-  )
+  );
 }

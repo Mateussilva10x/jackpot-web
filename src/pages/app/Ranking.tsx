@@ -5,5 +5,5 @@ export default function AppRanking() {
       <p>Localização: /app/ranking</p>
       <p>Placeholder para ranking dentro do app (privado).</p>
     </div>
-  )
+  );
 }

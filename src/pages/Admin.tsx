@@ -4,5 +4,5 @@ export default function Admin() {
       <h1>Admin</h1>
       <p>Localização: Admin</p>
     </div>
-  )
-} 
+  );
+}

@@ -1,39 +1,42 @@
-import axios from 'axios'
+import axios from "axios";
 
-const TOKEN_KEY = 'auth_token'
+const TOKEN_KEY = "auth_token";
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? import.meta.env.VITE_API_URL ?? 'http://localhost:8080',
-})
+  baseURL:
+    import.meta.env.VITE_API_BASE_URL ??
+    import.meta.env.VITE_API_URL ??
+    "http://localhost:8080",
+});
 
 // Token management helpers
 export const setAuthToken = (token: string) => {
-  localStorage.setItem(TOKEN_KEY, token)
-  api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-}
+  localStorage.setItem(TOKEN_KEY, token);
+  api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+};
 
 export const getAuthToken = (): string | null => {
-  return localStorage.getItem(TOKEN_KEY)
-}
+  return localStorage.getItem(TOKEN_KEY);
+};
 
 export const removeAuthToken = () => {
-  localStorage.removeItem(TOKEN_KEY)
-  delete api.defaults.headers.common['Authorization']
-}
+  localStorage.removeItem(TOKEN_KEY);
+  delete api.defaults.headers.common["Authorization"];
+};
 
 // Request interceptor - inject token automatically
 api.interceptors.request.use(
   (config) => {
-    const token = getAuthToken()
+    const token = getAuthToken();
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    return config
+    return config;
   },
   (error) => {
-    return Promise.reject(error)
-  }
-)
+    return Promise.reject(error);
+  },
+);
 
 // Response interceptor - handle 401 errors
 api.interceptors.response.use(
@@ -41,19 +44,18 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
-      removeAuthToken()
+      removeAuthToken();
       // Redirect to login will be handled by AuthContext
-      window.dispatchEvent(new CustomEvent('auth:unauthorized'))
+      window.dispatchEvent(new CustomEvent("auth:unauthorized"));
     }
-    return Promise.reject(error)
-  }
-)
+    return Promise.reject(error);
+  },
+);
 
 // Initialize token from localStorage on app load
-const token = getAuthToken()
+const token = getAuthToken();
 if (token) {
-  api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+  api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }
 
-export default api
-
+export default api;

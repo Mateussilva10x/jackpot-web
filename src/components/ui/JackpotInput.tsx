@@ -1,7 +1,6 @@
 import React from "react";
 
-interface JackpotInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface JackpotInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   errorMessage?: string;
 }

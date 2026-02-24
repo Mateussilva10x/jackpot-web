@@ -25,12 +25,12 @@ export const DesignSystemPage: React.FC = () => {
     } catch (error: any) {
       if (error.response) {
         setApiResponse(
-          `Conectado! O servidor respondeu: ${error.response.status} (Isso é normal se não houver rota home)`
+          `Conectado! O servidor respondeu: ${error.response.status} (Isso é normal se não houver rota home)`,
         );
         setIsError(false);
       } else if (error.request) {
         setApiResponse(
-          "Erro de Conexão: O Backend não respondeu. Verifique a URL."
+          "Erro de Conexão: O Backend não respondeu. Verifique a URL.",
         );
         setIsError(true);
       } else {

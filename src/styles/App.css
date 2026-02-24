@@ -51,7 +51,9 @@
   color: #0f172a;
   border-radius: 6px;
   outline: none;
-  transition: box-shadow 120ms, border-color 120ms;
+  transition:
+    box-shadow 120ms,
+    border-color 120ms;
 }
 
 .login-input:focus {

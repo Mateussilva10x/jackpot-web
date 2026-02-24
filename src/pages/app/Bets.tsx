@@ -5,5 +5,5 @@ export default function Bets() {
       <p>Localização: /app/bets</p>
       <p>Placeholder para apostas (privado).</p>
     </div>
-  )
+  );
 }

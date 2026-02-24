@@ -1,54 +1,56 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
-import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
-import { useAuth } from '../contexts/AuthContext'
-import { useToast } from '../hooks/useToast'
-import { JackpotInput } from '../components/ui/JackpotInput'
-import { JackpotButton } from '../components/ui/JackpotButton'
-import { JackpotCard } from '../components/ui/JackpotCard'
-import { Trophy } from 'lucide-react'
-import { LanguageSwitcher } from '../components/LanguageSwitcher'
+import { useState } from "react";
+import type { FormEvent } from "react";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/AuthContext";
+import { useToast } from "../hooks/useToast";
+import { JackpotInput } from "../components/ui/JackpotInput";
+import { JackpotButton } from "../components/ui/JackpotButton";
+import { JackpotCard } from "../components/ui/JackpotCard";
+import { Trophy } from "lucide-react";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 
 export default function Login() {
-  const { t } = useTranslation()
-  const { login, isLoading } = useAuth()
-  const { showToast } = useToast()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
+  const { t } = useTranslation();
+  const { login, isLoading } = useAuth();
+  const { showToast } = useToast();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {},
+  );
 
   function validateForm(): boolean {
-    const newErrors: { email?: string; password?: string } = {}
+    const newErrors: { email?: string; password?: string } = {};
 
     // Email validation
     if (!email.trim()) {
-      newErrors.email = t('validation.emailRequired')
+      newErrors.email = t("validation.emailRequired");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = t('validation.emailInvalid')
+      newErrors.email = t("validation.emailInvalid");
     }
 
     // Password validation
     if (!password) {
-      newErrors.password = t('validation.passwordRequired')
+      newErrors.password = t("validation.passwordRequired");
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   }
 
   async function handleSubmit(e: FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!validateForm()) {
-      return
+      return;
     }
 
     try {
-      await login({ email, password })
+      await login({ email, password });
       // Navigation handled by AuthContext
     } catch (error: any) {
-      showToast(error.message || t('auth.invalidCredentials'), 'error')
+      showToast(error.message || t("auth.invalidCredentials"), "error");
     }
   }
 
@@ -66,11 +68,9 @@ export default function Login() {
             <Trophy className="w-8 h-8 text-primary" />
           </div>
           <h1 className="text-3xl font-bold text-gradient-primary mb-2">
-            {t('common.appName')}
+            {t("common.appName")}
           </h1>
-          <p className="text-muted-foreground">
-            {t('auth.loginTitle')}
-          </p>
+          <p className="text-muted-foreground">{t("auth.loginTitle")}</p>
         </div>
 
         {/* Login Card */}
@@ -78,14 +78,14 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <JackpotInput
-                label={t('auth.email')}
+                label={t("auth.email")}
                 type="email"
                 name="email"
                 placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => {
-                  setEmail(e.target.value)
-                  if (errors.email) setErrors({ ...errors, email: undefined })
+                  setEmail(e.target.value);
+                  if (errors.email) setErrors({ ...errors, email: undefined });
                 }}
                 errorMessage={errors.email}
                 disabled={isLoading}
@@ -93,14 +93,15 @@ export default function Login() {
               />
 
               <JackpotInput
-                label={t('auth.password')}
+                label={t("auth.password")}
                 type="password"
                 name="password"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => {
-                  setPassword(e.target.value)
-                  if (errors.password) setErrors({ ...errors, password: undefined })
+                  setPassword(e.target.value);
+                  if (errors.password)
+                    setErrors({ ...errors, password: undefined });
                 }}
                 errorMessage={errors.password}
                 disabled={isLoading}
@@ -113,7 +114,7 @@ export default function Login() {
                 to="/forgot-password"
                 className="text-sm text-primary hover:text-primary/80 transition-colors"
               >
-                {t('auth.forgotPassword')}
+                {t("auth.forgotPassword")}
               </Link>
             </div>
 
@@ -124,16 +125,16 @@ export default function Login() {
               isLoading={isLoading}
               disabled={isLoading}
             >
-              {isLoading ? t('auth.loggingIn') : t('auth.signIn')}
+              {isLoading ? t("auth.loggingIn") : t("auth.signIn")}
             </JackpotButton>
 
             <div className="text-center text-sm text-muted-foreground">
-              {t('auth.noAccount')}{' '}
+              {t("auth.noAccount")}{" "}
               <Link
                 to="/register"
                 className="text-primary hover:text-primary/80 font-medium transition-colors"
               >
-                {t('auth.signUp')}
+                {t("auth.signUp")}
               </Link>
             </div>
           </form>
@@ -141,9 +142,9 @@ export default function Login() {
 
         {/* Footer */}
         <p className="text-center text-xs text-muted-foreground mt-8">
-          {t('auth.termsAndPrivacy', { action: t('auth.termsActionLogin') })}
+          {t("auth.termsAndPrivacy", { action: t("auth.termsActionLogin") })}
         </p>
       </div>
     </div>
-  )
+  );
 }

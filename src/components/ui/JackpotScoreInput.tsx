@@ -1,7 +1,9 @@
 import React from "react";
 
-interface JackpotScoreInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
+interface JackpotScoreInputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "onChange"
+> {
   value: string | number;
   onChange: (value: string) => void;
   teamLabel?: string;
