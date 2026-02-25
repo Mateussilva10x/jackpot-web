@@ -81,7 +81,13 @@
     "days": "Dias",
     "hours": "Horas",
     "minutes": "Minutos",
-    "seconds": "Segundos"
+    "seconds": "Segundos",
+    "ROUND_32": "Dezesseis-avos de Final",
+    "ROUND_16": "Oitavas de Final",
+    "QUARTES": "Quartas de Final",
+    "SEMI": "Semifinais",
+    "FINAL": "Final",
+    "THIRD_PLACE": "Terceiro Lugar"
   },
   "groupModal": {
     "predictions": "Previsões",

@@ -67,97 +67,100 @@ export const GroupModal: React.FC<GroupModalProps> = ({
     new Set(group.matches.flatMap((m) => [m.homeTeam, m.awayTeam])),
   );
 
+  const isKnockout = !/^[A-L]$/.test(group.group);
+  const titleText = isKnockout
+    ? `${t(`dashboard.${group.group}`)} - ${t("groupModal.predictions")}`
+    : `${t("dashboard.groupStage").split(" ")[0] || "Group"} ${group.group} - ${t("groupModal.predictions")}`;
+
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={`${t("dashboard.groupStage").split(" ")[0] || "Group"} ${group.group} - ${t("groupModal.predictions")}`}
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title={titleText}>
       <div className="space-y-8">
-        <div className="bg-secondary/20 rounded-xl p-4 border border-border">
-          <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">
-            {t("groupModal.standings")}
-          </h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border/50 text-muted-foreground">
-                  <th className="px-4 py-2 text-left font-medium">
-                    {t("groupModal.team")}
-                  </th>
-                  <th className="px-4 py-2 text-center font-medium">
-                    {t("groupModal.played")}
-                  </th>
-                  <th className="px-4 py-2 text-center font-medium">
-                    {t("groupModal.won")}
-                  </th>
-                  <th className="px-4 py-2 text-center font-medium">
-                    {t("groupModal.drawn")}
-                  </th>
-                  <th className="px-4 py-2 text-center font-medium">
-                    {t("groupModal.lost")}
-                  </th>
-                  <th className="px-4 py-2 text-center font-medium">
-                    {t("groupModal.goalDifference")}
-                  </th>
-                  <th className="px-4 py-2 text-center font-medium">
-                    {t("groupModal.points")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {uniqueTeams.map((team, i) => (
-                  <tr
-                    key={team}
-                    className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
-                  >
-                    <td className="px-4 py-3 font-medium flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground w-4">
-                        {i + 1}
-                      </span>
-                      <div className="w-4 h-4 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
-                        <img
-                          src={
-                            group.matches.find((m) => m.homeTeam === team)
-                              ?.homeTeamFlag ||
-                            group.matches.find((m) => m.awayTeam === team)
-                              ?.awayTeamFlag ||
-                            ""
-                          }
-                          alt="Team flag"
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                              "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
-                          }}
-                        />
-                      </div>
-                      {team}
-                    </td>
-                    <td className="px-4 py-3 text-center text-muted-foreground">
-                      0
-                    </td>
-                    <td className="px-4 py-3 text-center text-muted-foreground">
-                      0
-                    </td>
-                    <td className="px-4 py-3 text-center text-muted-foreground">
-                      0
-                    </td>
-                    <td className="px-4 py-3 text-center text-muted-foreground">
-                      0
-                    </td>
-                    <td className="px-4 py-3 text-center text-muted-foreground">
-                      0
-                    </td>
-                    <td className="px-4 py-3 text-center font-bold text-primary">
-                      0
-                    </td>
+        {!isKnockout && (
+          <div className="bg-secondary/20 rounded-xl p-4 border border-border">
+            <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">
+              {t("groupModal.standings")}
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border/50 text-muted-foreground">
+                    <th className="px-4 py-2 text-left font-medium">
+                      {t("groupModal.team")}
+                    </th>
+                    <th className="px-4 py-2 text-center font-medium">
+                      {t("groupModal.played")}
+                    </th>
+                    <th className="px-4 py-2 text-center font-medium">
+                      {t("groupModal.won")}
+                    </th>
+                    <th className="px-4 py-2 text-center font-medium">
+                      {t("groupModal.drawn")}
+                    </th>
+                    <th className="px-4 py-2 text-center font-medium">
+                      {t("groupModal.lost")}
+                    </th>
+                    <th className="px-4 py-2 text-center font-medium">
+                      {t("groupModal.goalDifference")}
+                    </th>
+                    <th className="px-4 py-2 text-center font-medium">
+                      {t("groupModal.points")}
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {uniqueTeams.map((team, i) => (
+                    <tr
+                      key={team}
+                      className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
+                    >
+                      <td className="px-4 py-3 font-medium flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground w-4">
+                          {i + 1}
+                        </span>
+                        <div className="w-4 h-4 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
+                          <img
+                            src={
+                              group.matches.find((m) => m.homeTeam === team)
+                                ?.homeTeamFlag ||
+                              group.matches.find((m) => m.awayTeam === team)
+                                ?.awayTeamFlag ||
+                              ""
+                            }
+                            alt="Team flag"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src =
+                                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
+                            }}
+                          />
+                        </div>
+                        {team}
+                      </td>
+                      <td className="px-4 py-3 text-center text-muted-foreground">
+                        0
+                      </td>
+                      <td className="px-4 py-3 text-center text-muted-foreground">
+                        0
+                      </td>
+                      <td className="px-4 py-3 text-center text-muted-foreground">
+                        0
+                      </td>
+                      <td className="px-4 py-3 text-center text-muted-foreground">
+                        0
+                      </td>
+                      <td className="px-4 py-3 text-center text-muted-foreground">
+                        0
+                      </td>
+                      <td className="px-4 py-3 text-center font-bold text-primary">
+                        0
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
 
         <div>
           <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">
