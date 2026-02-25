@@ -77,8 +77,9 @@ export default function Register() {
       });
       showToast(t("auth.registerSuccess"), "success");
       // Navigation handled by AuthContext
-    } catch (error: any) {
-      showToast(error.message || t("auth.registerError"), "error");
+    } catch (error) {
+      const e = error as Error;
+      showToast(e.message || t("auth.registerError"), "error");
     }
   }
 

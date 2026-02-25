@@ -2,33 +2,15 @@ import React, { useState } from "react";
 import { Modal } from "./ui/Modal";
 import { JackpotScoreInput } from "./ui/JackpotScoreInput";
 import { JackpotButton } from "./ui/JackpotButton";
-import { Flag } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-// Mock types
-export interface Game {
-  id: string;
-  teamA: string;
-  teamB: string;
-  flagA: string;
-  flagB: string;
-  date: string;
-  time: string;
-  scoreA: string;
-  scoreB: string;
-}
-
-export interface GroupData {
-  id: string;
-  name: string;
-  teams: string[];
-  games: Game[];
-}
+import type { MatchGroupResponse, MatchBetResponse } from "../types/api";
 
 interface GroupModalProps {
   isOpen: boolean;
   onClose: () => void;
-  group: GroupData | null;
-  onSave: (groupId: string, games: Game[]) => void;
+  group: MatchGroupResponse | null;
+  onSave: (groupId: string, games: MatchBetResponse[]) => void;
 }
 
 export const GroupModal: React.FC<GroupModalProps> = ({
@@ -37,26 +19,34 @@ export const GroupModal: React.FC<GroupModalProps> = ({
   group,
   onSave,
 }) => {
-  const [games, setGames] = useState<Game[]>([]);
+  const { t } = useTranslation();
+  const [games, setGames] = useState<MatchBetResponse[]>([]);
 
   // Reset/Sync state when group changes
   React.useEffect(() => {
     if (group) {
-      setGames(JSON.parse(JSON.stringify(group.games)));
+      setGames(JSON.parse(JSON.stringify(group.matches)));
     }
   }, [group]);
 
   const handleScoreChange = (
-    gameId: string,
-    team: "A" | "B",
+    gameId: number,
+    team: "home" | "away",
     value: string,
   ) => {
+    const numValue = value === "" ? undefined : parseInt(value, 10);
     setGames((prev) =>
       prev.map((game) => {
         if (game.id === gameId) {
+          const currentBet =
+            game.userBet ||
+            ({ matchId: gameId } as import("../types/api").BetResponse);
           return {
             ...game,
-            [team === "A" ? "scoreA" : "scoreB"]: value,
+            userBet: {
+              ...currentBet,
+              [team === "home" ? "homeScore" : "awayScore"]: numValue,
+            },
           };
         }
         return game;
@@ -66,40 +56,57 @@ export const GroupModal: React.FC<GroupModalProps> = ({
 
   const handleSave = () => {
     if (group) {
-      onSave(group.id, games);
+      onSave(group.group, games);
       onClose();
     }
   };
 
   if (!group) return null;
 
+  const uniqueTeams = Array.from(
+    new Set(group.matches.flatMap((m) => [m.homeTeam, m.awayTeam])),
+  );
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={`Group ${group.name} - Predictions`}
+      title={`${t("dashboard.groupStage").split(" ")[0] || "Group"} ${group.group} - ${t("groupModal.predictions")}`}
     >
       <div className="space-y-8">
-        {/* Classification Table Mock */}
         <div className="bg-secondary/20 rounded-xl p-4 border border-border">
           <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">
-            Standings
+            {t("groupModal.standings")}
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border/50 text-muted-foreground">
-                  <th className="px-4 py-2 text-left font-medium">Team</th>
-                  <th className="px-4 py-2 text-center font-medium">P</th>
-                  <th className="px-4 py-2 text-center font-medium">W</th>
-                  <th className="px-4 py-2 text-center font-medium">D</th>
-                  <th className="px-4 py-2 text-center font-medium">L</th>
-                  <th className="px-4 py-2 text-center font-medium">GD</th>
-                  <th className="px-4 py-2 text-center font-medium">Pts</th>
+                  <th className="px-4 py-2 text-left font-medium">
+                    {t("groupModal.team")}
+                  </th>
+                  <th className="px-4 py-2 text-center font-medium">
+                    {t("groupModal.played")}
+                  </th>
+                  <th className="px-4 py-2 text-center font-medium">
+                    {t("groupModal.won")}
+                  </th>
+                  <th className="px-4 py-2 text-center font-medium">
+                    {t("groupModal.drawn")}
+                  </th>
+                  <th className="px-4 py-2 text-center font-medium">
+                    {t("groupModal.lost")}
+                  </th>
+                  <th className="px-4 py-2 text-center font-medium">
+                    {t("groupModal.goalDifference")}
+                  </th>
+                  <th className="px-4 py-2 text-center font-medium">
+                    {t("groupModal.points")}
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {group.teams.map((team, i) => (
+                {uniqueTeams.map((team, i) => (
                   <tr
                     key={team}
                     className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
@@ -108,7 +115,23 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                       <span className="text-xs text-muted-foreground w-4">
                         {i + 1}
                       </span>
-                      <Flag className="w-4 h-4" /> {/* Placeholder for flag */}
+                      <div className="w-4 h-4 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
+                        <img
+                          src={
+                            group.matches.find((m) => m.homeTeam === team)
+                              ?.homeTeamFlag ||
+                            group.matches.find((m) => m.awayTeam === team)
+                              ?.awayTeamFlag ||
+                            ""
+                          }
+                          alt="Team flag"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
+                          }}
+                        />
+                      </div>
                       {team}
                     </td>
                     <td className="px-4 py-3 text-center text-muted-foreground">
@@ -136,10 +159,9 @@ export const GroupModal: React.FC<GroupModalProps> = ({
           </div>
         </div>
 
-        {/* Games List */}
         <div>
           <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">
-            Matches
+            {t("groupModal.matches")}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {games.map((game) => (
@@ -147,7 +169,6 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                 key={game.id}
                 className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors flex flex-col"
               >
-                {/* Header */}
                 <div className="bg-secondary/30 px-3 py-2 flex items-center justify-between border-b border-border/50">
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
@@ -156,24 +177,33 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                     </span>
                   </div>
                   <div className="text-[10px] font-mono text-muted-foreground">
-                    {game.date} • {game.time}
+                    {new Date(game.dateTime).toLocaleDateString()} •{" "}
+                    {new Date(game.dateTime).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </div>
                 </div>
 
-                {/* Match Content */}
                 <div className="p-4 flex flex-col gap-4">
-                  {/* Teams Row */}
                   <div className="flex items-center justify-between">
-                    {/* Team A */}
                     <div className="flex flex-col items-center gap-1 flex-1">
-                      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm ring-1 ring-border">
-                        {game.flagA}
+                      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm ring-1 ring-border overflow-hidden">
+                        <img
+                          src={game.homeTeamFlag}
+                          alt={`${game.homeTeam} flag`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
+                          }}
+                        />
                       </div>
                       <span
                         className="font-bold text-xs text-center truncate w-full px-1"
-                        title={game.teamA}
+                        title={game.homeTeam}
                       >
-                        {game.teamA}
+                        {game.homeTeam}
                       </span>
                     </div>
 
@@ -181,33 +211,43 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                       VS
                     </span>
 
-                    {/* Team B */}
                     <div className="flex flex-col items-center gap-1 flex-1">
-                      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm ring-1 ring-border">
-                        {game.flagB}
+                      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm ring-1 ring-border overflow-hidden">
+                        <img
+                          src={game.awayTeamFlag}
+                          alt={`${game.awayTeam} flag`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
+                          }}
+                        />
                       </div>
                       <span
                         className="font-bold text-xs text-center truncate w-full px-1"
-                        title={game.teamB}
+                        title={game.awayTeam}
                       >
-                        {game.teamB}
+                        {game.awayTeam}
                       </span>
                     </div>
                   </div>
 
-                  {/* Score Inputs Row */}
                   <div className="flex items-center justify-center gap-2 bg-secondary/20 p-2 rounded-lg border border-border/30">
                     <JackpotScoreInput
-                      value={game.scoreA}
-                      onChange={(val) => handleScoreChange(game.id, "A", val)}
+                      value={game.userBet?.homeScore?.toString() ?? ""}
+                      onChange={(val) =>
+                        handleScoreChange(game.id, "home", val)
+                      }
                       className="w-10 h-10 text-lg shadow-inner bg-background"
                     />
                     <span className="text-muted-foreground font-medium text-xs">
                       x
                     </span>
                     <JackpotScoreInput
-                      value={game.scoreB}
-                      onChange={(val) => handleScoreChange(game.id, "B", val)}
+                      value={game.userBet?.awayScore?.toString() ?? ""}
+                      onChange={(val) =>
+                        handleScoreChange(game.id, "away", val)
+                      }
                       className="w-10 h-10 text-lg shadow-inner bg-background"
                     />
                   </div>
@@ -217,13 +257,12 @@ export const GroupModal: React.FC<GroupModalProps> = ({
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
           <JackpotButton variant="ghost" onClick={onClose} type="button">
-            Cancel
+            {t("groupModal.cancel")}
           </JackpotButton>
           <JackpotButton variant="primary" onClick={handleSave} type="button">
-            Save Predictions
+            {t("groupModal.savePredictions")}
           </JackpotButton>
         </div>
       </div>

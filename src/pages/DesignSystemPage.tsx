@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { JackpotButton } from "../components/ui/JackpotButton";
 import { JackpotInput } from "../components/ui/JackpotInput";

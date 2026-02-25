@@ -8,30 +8,21 @@ import {
   removeAuthToken,
   getAuthToken,
 } from "../services/api";
+import type { LoginRequest, RegisterRequest } from "../types/api";
 
 interface User {
-  id: string;
-  name: string;
+  id: string; // The app assumes string, API returns number. We will cast it.
+  name: string; // The swagger AuthResponse does not return `name`, but the old `user` state did. We'll fallback if needed.
   email: string;
-}
-
-interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-interface RegisterData {
-  name: string;
-  email: string;
-  password: string;
+  role?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   error: string | null;
-  login: (credentials: LoginCredentials) => Promise<void>;
-  register: (data: RegisterData) => Promise<void>;
+  login: (credentials: LoginRequest) => Promise<void>;
+  register: (data: RegisterRequest) => Promise<void>;
   logout: () => void;
   clearError: () => void;
 }
@@ -51,10 +42,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const token = getAuthToken();
       if (token) {
         try {
-          // Verify token is still valid by fetching user data
+          // Verify token is still valid by fetching user data.
+          // Note: Assuming /auth/me exists and returns User or AuthResponse shape.
           const response = await api.get("/auth/me");
-          setUser(response.data.user || response.data);
-        } catch (err) {
+          const userData = response.data.user || response.data;
+          setUser({
+            id: String(userData.id),
+            name: userData.name || userData.email, // fallback if name not provided by backend
+            email: userData.email,
+            role: userData.role,
+          });
+        } catch {
           // Token invalid, clear it
           removeAuthToken();
         }
@@ -75,19 +73,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("auth:unauthorized", handleUnauthorized);
   }, [navigate]);
 
-  async function login(credentials: LoginCredentials) {
+  async function login(credentials: LoginRequest) {
     setIsLoading(true);
     setError(null);
     try {
       const response = await api.post("/auth/login", credentials);
-      const { token, user: userData } = response.data;
+      // Swagger `AuthResponse` returns { token, id, role, email }
+      const { token, id, role, email } = response.data;
 
       setAuthToken(token);
-      setUser(userData);
+      setUser({
+        id: String(id),
+        name: email, // Since auth/login doesn't return name per swagger AuthResponse
+        email,
+        role,
+      });
       navigate("/dashboard");
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
       const errorMessage =
-        err.response?.data?.message || i18n.t("auth.invalidCredentials");
+        error.response?.data?.message || i18n.t("auth.invalidCredentials");
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -95,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function register(data: RegisterData) {
+  async function register(data: RegisterRequest) {
     setIsLoading(true);
     setError(null);
     try {
@@ -103,17 +108,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Check if API returns token (auto-login) or requires manual login
       if (response.data.token) {
-        const { token, user: userData } = response.data;
+        const { token, id, role, email } = response.data;
         setAuthToken(token);
-        setUser(userData);
+        setUser({
+          id: String(id),
+          name: data.name, // We passed it in data, we can persist it locally
+          email,
+          role,
+        });
         navigate("/dashboard");
       } else {
         // Redirect to login page
         navigate("/login");
       }
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
       const errorMessage =
-        err.response?.data?.message || i18n.t("auth.registerError");
+        error.response?.data?.message || i18n.t("auth.registerError");
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -145,6 +156,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");

@@ -49,8 +49,9 @@ export default function Login() {
     try {
       await login({ email, password });
       // Navigation handled by AuthContext
-    } catch (error: any) {
-      showToast(error.message || t("auth.invalidCredentials"), "error");
+    } catch (error) {
+      const e = error as Error;
+      showToast(e.message || t("auth.invalidCredentials"), "error");
     }
   }
 
