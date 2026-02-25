@@ -40,9 +40,9 @@ function App() {
             <Route
               path="/dashboard"
               element={
-                <PublicLayout>
+                <PrivateLayout>
                   <Dashboard />
-                </PublicLayout>
+                </PrivateLayout>
               }
             />
             <Route

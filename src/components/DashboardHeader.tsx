@@ -1,14 +1,9 @@
 import { useState, useEffect } from "react";
 import { Trophy, Medal, Target } from "lucide-react";
 import { betsService } from "../services/betsService";
-import type { BonusBetRequest } from "../types/api";
+import { teamsService } from "../services/teamsService";
+import type { BonusBetRequest, TeamDto } from "../types/api";
 import { useTranslation } from "react-i18next";
-
-const TEAMS = [
-  { id: 1, name: "Brazil" },
-  { id: 2, name: "France" },
-  { id: 3, name: "Argentina" },
-];
 
 interface TimeLeft {
   days: number;
@@ -94,28 +89,40 @@ export function BonusPredictions() {
     runnerUpTeamId: 0,
     topScorer: "",
   });
+  const [teams, setTeams] = useState<TeamDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    loadBonusBet();
+    loadData();
   }, []);
 
-  const loadBonusBet = async () => {
+  const loadData = async () => {
     try {
       setIsLoading(true);
-      const data = await betsService.getBonusBet();
-      if (data) {
+      const [betData, teamsData] = await Promise.all([
+        betsService.getBonusBet().catch((e) => {
+          if (e.response?.status !== 404) {
+            console.error("Failed to load bonus bet", e);
+          }
+          return null;
+        }),
+        teamsService.getTeams().catch((e) => {
+          console.error("Failed to load teams", e);
+          return [];
+        }),
+      ]);
+
+      if (betData) {
         setBonusBet({
-          championTeamId: data.championTeamId || 0,
-          runnerUpTeamId: data.runnerUpTeamId || 0,
-          topScorer: data.topScorer || "",
+          championTeamId: betData.championTeamId || 0,
+          runnerUpTeamId: betData.runnerUpTeamId || 0,
+          topScorer: betData.topScorer || "",
         });
       }
-    } catch (e) {
-      const error = e as { response?: { status?: number } };
-      if (error.response?.status !== 404) {
-        console.error("Failed to load bonus bet", e);
+
+      if (teamsData) {
+        setTeams(teamsData);
       }
     } finally {
       setIsLoading(false);
@@ -175,7 +182,7 @@ export function BonusPredictions() {
                 championTeamId: parseInt(e.target.value, 10),
               }))
             }
-            options={TEAMS}
+            options={teams}
           />
           <BonusCard
             icon={<Medal className="w-6 h-6 text-gray-400" />}
@@ -189,7 +196,7 @@ export function BonusPredictions() {
                 runnerUpTeamId: parseInt(e.target.value, 10),
               }))
             }
-            options={TEAMS}
+            options={teams}
           />
           <BonusCard
             icon={<Target className="w-6 h-6 text-blue-500" />}

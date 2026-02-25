@@ -5,6 +5,12 @@ export interface UserRankingDto {
   rankingPosition: number;
 }
 
+export interface TeamDto {
+  id: number;
+  name: string;
+  flagUrl?: string;
+}
+
 export interface GroupStandingDto {
   teamName: string;
   isoCode: string;
