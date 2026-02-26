@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { X, Check } from "lucide-react";
+import { AVATAR_OPTIONS } from "../../utils/avatar";
 
 interface AvatarSelectionModalProps {
   isOpen: boolean;
@@ -8,22 +9,6 @@ interface AvatarSelectionModalProps {
   onClose: () => void;
   onSave: (avatar: string) => Promise<void>;
 }
-
-// Soccer-themed avatars represented by emojis
-const AVATAR_OPTIONS = [
-  "⚽",
-  "🏆",
-  "🥅",
-  "🏟️",
-  "👟",
-  "🧤",
-  "🏁",
-  "🏅",
-  "🦓",
-  "📣",
-  "🎫",
-  "🥇",
-];
 
 // Tailwind classes for nice colorful backgrounds correlating to the index
 const BG_COLORS = [
@@ -48,17 +33,40 @@ export function AvatarSelectionModal({
   onSave,
 }: AvatarSelectionModalProps) {
   const { t } = useTranslation();
-  const [selected, setSelected] = useState<string>(
-    currentAvatar || AVATAR_OPTIONS[0],
-  );
+  // Store the integer string ID of the avatar
+  const [selectedId, setSelectedId] = useState<string>(() => {
+    if (!currentAvatar) return "1";
+    // Check if the currentAvatar is a string emoji (for legacy compatibility)
+    if (isNaN(Number(currentAvatar))) {
+      const idx = AVATAR_OPTIONS.indexOf(currentAvatar);
+      return idx >= 0 ? String(idx + 1) : "1";
+    }
+    return currentAvatar;
+  });
+
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (currentAvatar) {
+        if (isNaN(Number(currentAvatar))) {
+          const idx = AVATAR_OPTIONS.indexOf(currentAvatar);
+          setSelectedId(idx >= 0 ? String(idx + 1) : "1");
+        } else {
+          setSelectedId(currentAvatar);
+        }
+      } else {
+        setSelectedId("1");
+      }
+    }
+  }, [isOpen, currentAvatar]);
 
   if (!isOpen) return null;
 
   const handleSave = async () => {
     try {
       setIsSaving(true);
-      await onSave(selected);
+      await onSave(selectedId);
       onClose();
     } catch (error) {
       console.error("Failed to save avatar", error);
@@ -89,13 +97,14 @@ export function AvatarSelectionModal({
         <div className="p-6">
           <div className="grid grid-cols-4 sm:grid-cols-4 gap-4">
             {AVATAR_OPTIONS.map((avatar, index) => {
-              const isSelected = selected === avatar;
+              const avatarId = String(index + 1);
+              const isSelected = selectedId === avatarId;
               const bgColor = BG_COLORS[index % BG_COLORS.length];
 
               return (
                 <button
-                  key={index}
-                  onClick={() => setSelected(avatar)}
+                  key={avatarId}
+                  onClick={() => setSelectedId(avatarId)}
                   className={`
                     relative group aspect-square rounded-2xl flex items-center justify-center text-4xl transition-all duration-200
                     ${bgColor} 

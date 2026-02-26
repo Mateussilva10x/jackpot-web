@@ -63,6 +63,14 @@ function App() {
               }
             />
             <Route
+              path="/app/profile"
+              element={
+                <PrivateLayout>
+                  <UserProfile />
+                </PrivateLayout>
+              }
+            />
+            <Route
               path="/profile/:id"
               element={
                 <PrivateLayout>

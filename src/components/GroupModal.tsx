@@ -41,13 +41,66 @@ export const GroupModal: React.FC<GroupModalProps> = ({
           const currentBet =
             game.userBet ||
             ({ matchId: gameId } as import("../types/api").BetResponse);
+
+          const updatedHomeScore =
+            team === "home" ? numValue : currentBet.homeScore;
+          const updatedAwayScore =
+            team === "away" ? numValue : currentBet.awayScore;
+
+          let selectedWinnerId = currentBet.selectedWinnerId;
+
+          if (
+            isKnockout &&
+            updatedHomeScore !== undefined &&
+            updatedAwayScore !== undefined
+          ) {
+            if (updatedHomeScore > updatedAwayScore) {
+              selectedWinnerId = 1; // 1 represents home team
+            } else if (updatedAwayScore > updatedHomeScore) {
+              selectedWinnerId = 2; // 2 represents away team
+            } else {
+              // It's a tie, clear it so user is forced to select again if score changes to tie
+              if (currentBet.homeScore !== currentBet.awayScore) {
+                selectedWinnerId = undefined;
+              }
+            }
+          }
+
           return {
             ...game,
             userBet: {
               ...currentBet,
               [team === "home" ? "homeScore" : "awayScore"]: numValue,
+              selectedWinnerId,
             },
           };
+        }
+        return game;
+      }),
+    );
+  };
+
+  const handleFlagClick = (gameId: number, teamId: 1 | 2) => {
+    if (!isKnockout) return;
+
+    setGames((prev) =>
+      prev.map((game) => {
+        if (game.id === gameId) {
+          const currentBet = game.userBet;
+          if (
+            currentBet &&
+            currentBet.homeScore !== undefined &&
+            currentBet.awayScore !== undefined &&
+            currentBet.homeScore === currentBet.awayScore
+          ) {
+            return {
+              ...game,
+              userBet: {
+                ...currentBet,
+                selectedWinnerId: teamId,
+              },
+            };
+          }
         }
         return game;
       }),
@@ -191,7 +244,21 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                 <div className="p-4 flex flex-col gap-4">
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col items-center gap-1 flex-1">
-                      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm ring-1 ring-border overflow-hidden">
+                      <div
+                        className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
+                          isKnockout &&
+                          game.userBet?.homeScore !== undefined &&
+                          game.userBet?.awayScore !== undefined &&
+                          game.userBet.homeScore === game.userBet.awayScore
+                            ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
+                            : ""
+                        } ${
+                          isKnockout && game.userBet?.selectedWinnerId === 1
+                            ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
+                            : "ring-1 ring-border"
+                        }`}
+                        onClick={() => handleFlagClick(game.id, 1)}
+                      >
                         <img
                           src={game.homeTeamFlag}
                           alt={`${game.homeTeam} flag`}
@@ -203,7 +270,11 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                         />
                       </div>
                       <span
-                        className="font-bold text-xs text-center truncate w-full px-1"
+                        className={`font-bold text-xs text-center truncate w-full px-1 ${
+                          isKnockout && game.userBet?.selectedWinnerId === 1
+                            ? "text-primary"
+                            : ""
+                        }`}
                         title={game.homeTeam}
                       >
                         {game.homeTeam}
@@ -215,7 +286,21 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                     </span>
 
                     <div className="flex flex-col items-center gap-1 flex-1">
-                      <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm ring-1 ring-border overflow-hidden">
+                      <div
+                        className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
+                          isKnockout &&
+                          game.userBet?.homeScore !== undefined &&
+                          game.userBet?.awayScore !== undefined &&
+                          game.userBet.homeScore === game.userBet.awayScore
+                            ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
+                            : ""
+                        } ${
+                          isKnockout && game.userBet?.selectedWinnerId === 2
+                            ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
+                            : "ring-1 ring-border"
+                        }`}
+                        onClick={() => handleFlagClick(game.id, 2)}
+                      >
                         <img
                           src={game.awayTeamFlag}
                           alt={`${game.awayTeam} flag`}
@@ -227,7 +312,11 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                         />
                       </div>
                       <span
-                        className="font-bold text-xs text-center truncate w-full px-1"
+                        className={`font-bold text-xs text-center truncate w-full px-1 ${
+                          isKnockout && game.userBet?.selectedWinnerId === 2
+                            ? "text-primary"
+                            : ""
+                        }`}
                         title={game.awayTeam}
                       >
                         {game.awayTeam}

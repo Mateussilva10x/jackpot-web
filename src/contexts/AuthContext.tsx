@@ -15,6 +15,7 @@ interface User {
   name: string; // The swagger AuthResponse does not return `name`, but the old `user` state did. We'll fallback if needed.
   email: string;
   role?: string;
+  avatar?: string;
 }
 
 interface AuthContextType {
@@ -51,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             name: userData.name || userData.email, // fallback if name not provided by backend
             email: userData.email,
             role: userData.role,
+            avatar: userData.avatar,
           });
         } catch {
           // Token invalid, clear it
@@ -78,8 +80,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
     try {
       const response = await api.post("/auth/login", credentials);
-      // Swagger `AuthResponse` returns { token, id, role, email }
-      const { token, id, role, email } = response.data;
+      // Swagger `AuthResponse` returns { token, id, role, email, avatar }
+      const { token, id, role, email, avatar } = response.data;
 
       setAuthToken(token);
       setUser({
@@ -87,6 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         name: email, // Since auth/login doesn't return name per swagger AuthResponse
         email,
         role,
+        avatar,
       });
       if (role === "ADMIN") {
         navigate("/admin");
@@ -112,13 +115,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Check if API returns token (auto-login) or requires manual login
       if (response.data.token) {
-        const { token, id, role, email } = response.data;
+        const { token, id, role, email, avatar } = response.data;
         setAuthToken(token);
         setUser({
           id: String(id),
           name: data.name, // We passed it in data, we can persist it locally
           email,
           role,
+          avatar,
         });
         if (role === "ADMIN") {
           navigate("/admin");

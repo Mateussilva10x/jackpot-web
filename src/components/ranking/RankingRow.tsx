@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Trophy, Medal } from "lucide-react";
 import type { UserRankingDto } from "../../types/api";
+import { getAvatarById } from "../../utils/avatar";
 
 export interface RankingRowProps {
   user: UserRankingDto;
@@ -69,7 +70,7 @@ export function RankingRow({ user, isCurrentUser }: RankingRowProps) {
             <span
               className={`font-black ${user.avatar ? "text-2xl" : "text-sm text-foreground"}`}
             >
-              {user.avatar || initials}
+              {getAvatarById(user.avatar) || initials}
             </span>
           </div>
 

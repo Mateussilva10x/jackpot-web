@@ -1,12 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useTranslation } from "react-i18next";
-import { Home, Trophy, LogOut, User } from "lucide-react";
+import { Home, Trophy, LogOut, User, Globe } from "lucide-react";
+import { getAvatarById } from "../utils/avatar";
 
 export default function Header() {
   const { user, logout } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
+
+  const handleLanguageToggle = () => {
+    const newLang = i18n.language === "en" ? "pt-BR" : "en";
+    i18n.changeLanguage(newLang);
+  };
 
   const isMyBetsActive = location.pathname === "/dashboard";
   const isRankingActive = location.pathname === "/app/ranking";
@@ -66,18 +72,39 @@ export default function Header() {
           )}
         </nav>
 
-        {/* Right Section: User Profile */}
+        {/* Right Section: User Profile & Language */}
         <div className="flex items-center gap-4">
+          <button
+            onClick={handleLanguageToggle}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2 rounded-full hover:bg-secondary/80 text-sm font-medium"
+            title={t("header.toggleLanguage", "Trocar Idioma")}
+          >
+            <Globe className="w-4 h-4" />
+            <span className="hidden sm:inline-block uppercase">
+              {i18n.language === "en" ? "EN" : "PT"}
+            </span>
+          </button>
+
           {user ? (
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
+              <Link
+                to="/app/profile"
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                title={t("header.profile", "Meu Perfil")}
+              >
                 <div className="w-8 h-8 rounded-full bg-secondary border border-border flex items-center justify-center overflow-hidden">
-                  <User className="w-4 h-4 text-muted-foreground" />
+                  {user.avatar ? (
+                    <span className="text-xl">
+                      {getAvatarById(user.avatar) || "⚽"}
+                    </span>
+                  ) : (
+                    <User className="w-4 h-4 text-muted-foreground" />
+                  )}
                 </div>
                 <span className="text-sm font-medium text-foreground hidden sm:inline-block">
                   {user.name}
                 </span>
-              </div>
+              </Link>
               <button
                 onClick={logout}
                 className="text-muted-foreground hover:text-destructive transition-colors p-2 rounded-full hover:bg-secondary/80"

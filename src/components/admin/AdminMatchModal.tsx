@@ -39,23 +39,54 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
     value: string,
   ) => {
     const numValue = value === "" ? undefined : parseInt(value, 10);
-    setScores((prev) => ({
-      ...prev,
-      [matchId]: {
-        ...prev[matchId],
-        [team === "home" ? "homeScore" : "awayScore"]: numValue,
-      },
-    }));
+    setScores((prev) => {
+      const current = prev[matchId] || {};
+      const updatedHomeScore = team === "home" ? numValue : current.homeScore;
+      const updatedAwayScore = team === "away" ? numValue : current.awayScore;
+
+      let penaltyWinnerId = current.penaltyWinnerId;
+      if (updatedHomeScore !== undefined && updatedAwayScore !== undefined) {
+        if (updatedHomeScore > updatedAwayScore) {
+          penaltyWinnerId = 1;
+        } else if (updatedAwayScore > updatedHomeScore) {
+          penaltyWinnerId = 2;
+        } else {
+          if (current.homeScore !== current.awayScore) {
+            penaltyWinnerId = undefined;
+          }
+        }
+      }
+
+      return {
+        ...prev,
+        [matchId]: {
+          ...current,
+          [team === "home" ? "homeScore" : "awayScore"]: numValue,
+          penaltyWinnerId,
+        },
+      };
+    });
   };
 
-  const handlePenaltyChange = (matchId: number, penaltyWinnerId: number) => {
-    setScores((prev) => ({
-      ...prev,
-      [matchId]: {
-        ...prev[matchId],
-        penaltyWinnerId,
-      },
-    }));
+  const handleFlagClick = (matchId: number, teamId: 1 | 2) => {
+    setScores((prev) => {
+      const currentScore = prev[matchId];
+      if (
+        currentScore &&
+        currentScore.homeScore !== undefined &&
+        currentScore.awayScore !== undefined &&
+        currentScore.homeScore === currentScore.awayScore
+      ) {
+        return {
+          ...prev,
+          [matchId]: {
+            ...currentScore,
+            penaltyWinnerId: teamId,
+          },
+        };
+      }
+      return prev;
+    });
   };
 
   const handleFinalize = async (matchId: number) => {
@@ -95,7 +126,10 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
               const currentScore = scores[game.id] || {};
               const isReadyToSubmit =
                 currentScore.homeScore !== undefined &&
-                currentScore.awayScore !== undefined;
+                currentScore.awayScore !== undefined &&
+                (!isKnockout ||
+                  currentScore.homeScore !== currentScore.awayScore ||
+                  currentScore.penaltyWinnerId !== undefined);
 
               return (
                 <div
@@ -123,7 +157,23 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                   <div className="p-4 flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col items-center gap-1 flex-1">
-                        <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm ring-1 ring-border overflow-hidden">
+                        <div
+                          className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
+                            isKnockout &&
+                            currentScore.homeScore !== undefined &&
+                            currentScore.awayScore !== undefined &&
+                            currentScore.homeScore === currentScore.awayScore
+                              ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
+                              : ""
+                          } ${
+                            isKnockout && currentScore.penaltyWinnerId === 1
+                              ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
+                              : "ring-1 ring-border"
+                          }`}
+                          onClick={() => {
+                            if (isKnockout) handleFlagClick(game.id, 1);
+                          }}
+                        >
                           <img
                             src={game.homeTeamFlag}
                             alt={`${game.homeTeam} flag`}
@@ -131,7 +181,11 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                           />
                         </div>
                         <span
-                          className="font-bold text-xs text-center truncate w-full px-1"
+                          className={`font-bold text-xs text-center truncate w-full px-1 ${
+                            isKnockout && currentScore.penaltyWinnerId === 1
+                              ? "text-primary"
+                              : ""
+                          }`}
                           title={game.homeTeam}
                         >
                           {game.homeTeam}
@@ -143,7 +197,23 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                       </span>
 
                       <div className="flex flex-col items-center gap-1 flex-1">
-                        <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm ring-1 ring-border overflow-hidden">
+                        <div
+                          className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
+                            isKnockout &&
+                            currentScore.homeScore !== undefined &&
+                            currentScore.awayScore !== undefined &&
+                            currentScore.homeScore === currentScore.awayScore
+                              ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
+                              : ""
+                          } ${
+                            isKnockout && currentScore.penaltyWinnerId === 2
+                              ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
+                              : "ring-1 ring-border"
+                          }`}
+                          onClick={() => {
+                            if (isKnockout) handleFlagClick(game.id, 2);
+                          }}
+                        >
                           <img
                             src={game.awayTeamFlag}
                             alt={`${game.awayTeam} flag`}
@@ -151,7 +221,11 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                           />
                         </div>
                         <span
-                          className="font-bold text-xs text-center truncate w-full px-1"
+                          className={`font-bold text-xs text-center truncate w-full px-1 ${
+                            isKnockout && currentScore.penaltyWinnerId === 2
+                              ? "text-primary"
+                              : ""
+                          }`}
                           title={game.awayTeam}
                         >
                           {game.awayTeam}
@@ -178,32 +252,6 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                         className="w-10 h-10 text-lg shadow-inner bg-background"
                       />
                     </div>
-
-                    {isKnockout &&
-                      currentScore.homeScore !== undefined &&
-                      currentScore.homeScore === currentScore.awayScore && (
-                        <div className="mt-2 text-xs flex flex-col items-center">
-                          <span className="text-muted-foreground mb-1">
-                            Penalty Winner:
-                          </span>
-                          <select
-                            className="bg-card w-full p-2 rounded border border-border"
-                            onChange={(e) =>
-                              handlePenaltyChange(
-                                game.id,
-                                Number(e.target.value),
-                              )
-                            }
-                            value={currentScore.penaltyWinnerId || ""}
-                          >
-                            <option value="" disabled>
-                              Select winner
-                            </option>
-                            <option value="1">Home Team</option>
-                            <option value="2">Away Team</option>
-                          </select>
-                        </div>
-                      )}
 
                     <JackpotButton
                       variant={game.status === "FINISHED" ? "ghost" : "primary"}

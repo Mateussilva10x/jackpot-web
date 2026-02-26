@@ -70,6 +70,7 @@ export interface BetResponse {
   matchId: number;
   homeScore: number;
   awayScore: number;
+  selectedWinnerId?: number;
   updatedAt: string;
 }
 
@@ -95,6 +96,7 @@ export interface BetRequest {
   matchId: number;
   homeScore: number;
   awayScore: number;
+  selectedWinnerId?: number;
 }
 
 export interface BonusBetRequest {

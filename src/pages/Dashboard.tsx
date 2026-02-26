@@ -47,17 +47,29 @@ export default function Dashboard() {
     _groupId: string,
     updatedGames: MatchBetResponse[],
   ) => {
+    const isKnockout = !/^[A-L]$/.test(_groupId);
+
     // Only send bets that have been modified (i.e., user entered scores)
     const betsPayload: BetRequest[] = updatedGames
-      .filter(
-        (game) =>
-          game.userBet?.homeScore !== undefined &&
-          game.userBet?.awayScore !== undefined,
-      )
+      .filter((game) => {
+        if (
+          game.userBet?.homeScore === undefined ||
+          game.userBet?.awayScore === undefined
+        )
+          return false;
+        if (
+          isKnockout &&
+          game.userBet.homeScore === game.userBet.awayScore &&
+          game.userBet.selectedWinnerId === undefined
+        )
+          return false;
+        return true;
+      })
       .map((game) => ({
         matchId: game.id,
         homeScore: game.userBet!.homeScore,
         awayScore: game.userBet!.awayScore,
+        selectedWinnerId: game.userBet?.selectedWinnerId,
       }));
 
     if (betsPayload.length > 0) {
