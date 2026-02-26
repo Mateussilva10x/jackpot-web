@@ -48,7 +48,6 @@ export function RankingRow({ user, isCurrentUser }: RankingRowProps) {
     }
   };
 
-  // Generate initials for avatar
   const initials = user.name
     ? user.name
         .split(" ")
@@ -58,7 +57,6 @@ export function RankingRow({ user, isCurrentUser }: RankingRowProps) {
         .toUpperCase()
     : "??";
 
-  // Resolve avatar: backend may return avatarId or avatar field
   const resolvedAvatar = user.avatarId ?? user.avatar;
 
   return (

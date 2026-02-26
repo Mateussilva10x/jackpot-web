@@ -23,14 +23,12 @@ export default function Login() {
   function validateForm(): boolean {
     const newErrors: { email?: string; password?: string } = {};
 
-    // Email validation
     if (!email.trim()) {
       newErrors.email = t("validation.emailRequired");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       newErrors.email = t("validation.emailInvalid");
     }
 
-    // Password validation
     if (!password) {
       newErrors.password = t("validation.passwordRequired");
     }
@@ -48,7 +46,6 @@ export default function Login() {
 
     try {
       await login({ email, password });
-      // Navigation handled by AuthContext
     } catch (error) {
       const e = error as Error;
       showToast(e.message || t("auth.invalidCredentials"), "error");

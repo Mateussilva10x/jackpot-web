@@ -30,28 +30,24 @@ export default function Register() {
   function validateForm(): boolean {
     const newErrors: typeof errors = {};
 
-    // Name validation
     if (!formData.name.trim()) {
       newErrors.name = t("validation.nameRequired");
     } else if (formData.name.trim().length < 3) {
       newErrors.name = t("validation.nameMinLength", { min: 3 });
     }
 
-    // Email validation
     if (!formData.email.trim()) {
       newErrors.email = t("validation.emailRequired");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = t("validation.emailInvalid");
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = t("validation.passwordRequired");
     } else if (formData.password.length < 6) {
       newErrors.password = t("validation.passwordMinLength", { min: 6 });
     }
 
-    // Confirm password validation
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = t("validation.confirmPasswordRequired");
     } else if (formData.password !== formData.confirmPassword) {
@@ -76,7 +72,6 @@ export default function Register() {
         password: formData.password,
       });
       showToast(t("auth.registerSuccess"), "success");
-      // Navigation handled by AuthContext
     } catch (error) {
       const e = error as Error;
       showToast(e.message || t("auth.registerError"), "error");

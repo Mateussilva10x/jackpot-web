@@ -53,9 +53,8 @@ export default function Admin() {
   ) => {
     try {
       await adminService.finalizeMatch(matchId, data);
-      await loadMatches(); // Reload from backend to sync state
+      await loadMatches();
 
-      // Update selectedGroup dynamically so the modal gets the latest data
       setSelectedGroup((prev) => {
         if (!prev) return prev;
         const updatedMatches = prev.matches.map((m) => {
@@ -71,11 +70,10 @@ export default function Admin() {
       });
     } catch (error) {
       console.error("Failed to finalize match", error);
-      throw error; // Re-throw to handle loading state in modal if needed
+      throw error;
     }
   };
 
-  // Calculate progress of finalized matches
   const getProgress = (group: MatchGroupResponse) => {
     const finalized = group.matches.filter(
       (g) => g.status === "FINISHED",

@@ -70,7 +70,7 @@ export default function UserProfile() {
   const handleSaveAvatar = async (newAvatarId: number) => {
     try {
       await userService.updateAvatar(newAvatarId);
-      // Update local state to reflect immediately
+
       if (profile) {
         setProfile({ ...profile, avatarId: newAvatarId, avatar: newAvatarId });
       }
@@ -137,7 +137,6 @@ export default function UserProfile() {
     );
   }
 
-  // Generate initials for avatar
   const initials = profile.name
     ? profile.name
         .split(" ")
@@ -147,10 +146,8 @@ export default function UserProfile() {
         .toUpperCase()
     : "??";
 
-  // Resolve avatar: backend may return avatarId or avatar field
   const resolvedAvatar = profile.avatarId ?? profile.avatar;
 
-  // Calculate some stats from bets array
   const totalBets =
     profile.bets?.reduce((acc, group) => {
       return (

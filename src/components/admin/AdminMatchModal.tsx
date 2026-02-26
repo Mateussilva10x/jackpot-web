@@ -24,7 +24,6 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  // Local state for the scores being inputted by admin
   const [scores, setScores] = useState<
     Record<
       number,
@@ -33,7 +32,6 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
   >({});
   const [isSubmitting, setIsSubmitting] = useState<number | null>(null);
 
-  // Pre-fill official scores when the modal opens or when the group changes
   useEffect(() => {
     if (group) {
       const initialScores: Record<
@@ -124,7 +122,6 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
         awayScore: data.awayScore,
         penaltyWinnerId: data.penaltyWinnerId,
       });
-      // Optionally show a success toast here
     } finally {
       setIsSubmitting(null);
     }

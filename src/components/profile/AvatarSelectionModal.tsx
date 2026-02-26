@@ -10,7 +10,6 @@ interface AvatarSelectionModalProps {
   onSave: (avatarId: number) => Promise<void>;
 }
 
-// Tailwind classes for nice colorful backgrounds correlating to the index
 const BG_COLORS = [
   "bg-blue-500",
   "bg-yellow-500",
@@ -33,7 +32,7 @@ export function AvatarSelectionModal({
   onSave,
 }: AvatarSelectionModalProps) {
   const { t } = useTranslation();
-  // Store the numeric ID of the avatar (1-based index)
+
   const [selectedId, setSelectedId] = useState<number>(() => {
     if (!currentAvatar) return 1;
     return Number(currentAvatar) || 1;

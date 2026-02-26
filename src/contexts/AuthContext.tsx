@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,8 +12,8 @@ import {
 import type { LoginRequest, RegisterRequest } from "../types/api";
 
 interface User {
-  id: string; // The app assumes string, API returns number. We will cast it.
-  name: string; // The swagger AuthResponse does not return `name`, but the old `user` state did. We'll fallback if needed.
+  id: string;
+  name: string;
   email: string;
   role?: string;
   avatar?: number;
@@ -37,19 +38,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isInitialized, setIsInitialized] = useState(false);
   const navigate = useNavigate();
 
-  // Initialize user from localStorage on mount
   useEffect(() => {
     const initAuth = async () => {
       const token = getAuthToken();
       if (token) {
         try {
-          // Verify token is still valid by fetching user data.
-          // Note: Assuming /auth/me exists and returns User or AuthResponse shape.
           const response = await api.get("/auth/me");
           const userData = response.data.user || response.data;
           setUser({
             id: String(userData.id),
-            name: userData.name || userData.email, // fallback if name not provided by backend
+            name: userData.name || userData.email,
             email: userData.email,
             role: userData.role,
             avatar:
@@ -60,7 +58,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                   : undefined,
           });
         } catch {
-          // Token invalid, clear it
           removeAuthToken();
         }
       }
@@ -69,7 +66,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initAuth();
   }, []);
 
-  // Listen for unauthorized events from API interceptor
   useEffect(() => {
     const handleUnauthorized = () => {
       setUser(null);
@@ -85,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
     try {
       const response = await api.post("/auth/login", credentials);
-      // Swagger `AuthResponse` returns { token, id, role, email, avatar }
+
       const { token, id, role, email, avatar, avatarId } = response.data;
 
       setAuthToken(token);
@@ -123,7 +119,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await api.post("/auth/register", data);
 
-      // Check if API returns token (auto-login) or requires manual login
       if (response.data.token) {
         const { token, id, role, email, avatar, avatarId } = response.data;
         setAuthToken(token);
@@ -145,7 +140,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           navigate("/dashboard");
         }
       } else {
-        // Redirect to login page
         navigate("/login");
       }
     } catch (err) {
@@ -169,7 +163,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setError(null);
   }
 
-  // Don't render children until auth is initialized
   if (!isInitialized) {
     return null;
   }
@@ -183,7 +176,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");

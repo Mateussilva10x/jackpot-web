@@ -36,7 +36,7 @@ export default function Dashboard() {
       setIsLoading(true);
       const [matchesData, standingsData] = await Promise.all([
         matchesService.getMatches(),
-        standingsService.getGroupStandings().catch(() => ({})), // Fallback in case/standings fails
+        standingsService.getGroupStandings().catch(() => ({})),
       ]);
       setGroups(matchesData);
       setStandings(standingsData);
@@ -58,7 +58,6 @@ export default function Dashboard() {
   ) => {
     const isKnockout = !/^[A-L]$/.test(_groupId);
 
-    // Only send bets that have been modified (i.e., user entered scores)
     const betsPayload: BetRequest[] = updatedGames
       .filter((game) => {
         if (
@@ -84,14 +83,13 @@ export default function Dashboard() {
     if (betsPayload.length > 0) {
       try {
         await betsService.placeBets(betsPayload);
-        await loadMatches(); // Reload from backend to sync state
+        await loadMatches();
       } catch (error) {
         console.error("Failed to save bets", error);
       }
     }
   };
 
-  // Calculate progress
   const getProgress = (group: MatchGroupResponse) => {
     const predicted = group.matches.filter((g) => g.userBet != null).length;
     return `${predicted}/${group.matches.length}`;
@@ -212,7 +210,6 @@ export default function Dashboard() {
                             alt="Team flag"
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              // Fallback to a placeholder if image fails to load
                               (e.target as HTMLImageElement).src =
                                 "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
                             }}

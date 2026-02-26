@@ -9,7 +9,6 @@ export const api = axios.create({
     "https://jackpot-api-1.onrender.com",
 });
 
-// Token management helpers
 export const setAuthToken = (token: string) => {
   localStorage.setItem(TOKEN_KEY, token);
   api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -24,7 +23,6 @@ export const removeAuthToken = () => {
   delete api.defaults.headers.common["Authorization"];
 };
 
-// Request interceptor - inject token automatically
 api.interceptors.request.use(
   (config) => {
     const token = getAuthToken();
@@ -38,21 +36,18 @@ api.interceptors.request.use(
   },
 );
 
-// Response interceptor - handle 401 errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid
       removeAuthToken();
-      // Redirect to login will be handled by AuthContext
+
       window.dispatchEvent(new CustomEvent("auth:unauthorized"));
     }
     return Promise.reject(error);
   },
 );
 
-// Initialize token from localStorage on app load
 const token = getAuthToken();
 if (token) {
   api.defaults.headers.common["Authorization"] = `Bearer ${token}`;

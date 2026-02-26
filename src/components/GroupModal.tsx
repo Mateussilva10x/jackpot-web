@@ -29,7 +29,6 @@ export const GroupModal: React.FC<GroupModalProps> = ({
   const [games, setGames] = useState<MatchBetResponse[]>([]);
   const [now, setNow] = useState(() => Date.now());
 
-  // Reset/Sync state when group changes
   React.useEffect(() => {
     setNow(Date.now());
     if (group) {
@@ -63,11 +62,10 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             updatedAwayScore !== undefined
           ) {
             if (updatedHomeScore > updatedAwayScore) {
-              selectedWinnerId = 1; // 1 represents home team
+              selectedWinnerId = 1;
             } else if (updatedAwayScore > updatedHomeScore) {
-              selectedWinnerId = 2; // 2 represents away team
+              selectedWinnerId = 2;
             } else {
-              // It's a tie, clear it so user is forced to select again if score changes to tie
               if (currentBet.homeScore !== currentBet.awayScore) {
                 selectedWinnerId = undefined;
               }

@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { createContext, useContext, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 
@@ -27,7 +29,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
       setToasts((prev) => [...prev, newToast]);
 
-      // Auto-dismiss after 5 seconds
       setTimeout(() => {
         hideToast(id);
       }, 5000);
