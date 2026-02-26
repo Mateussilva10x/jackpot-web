@@ -9,7 +9,12 @@ import {
   removeAuthToken,
   getAuthToken,
 } from "../services/api";
-import type { LoginRequest, RegisterRequest } from "../types/api";
+import type {
+  LoginRequest,
+  RegisterRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+} from "../types/api";
 
 interface User {
   id: string;
@@ -25,6 +30,8 @@ interface AuthContextType {
   error: string | null;
   login: (credentials: LoginRequest) => Promise<void>;
   register: (data: RegisterRequest) => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
+  resetPassword: (data: ResetPasswordRequest) => Promise<void>;
   logout: () => void;
   clearError: () => void;
 }
@@ -153,6 +160,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function forgotPassword(email: string) {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await api.post("/auth/forgot-password", {
+        email,
+      } as ForgotPasswordRequest);
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
+      const errorMessage =
+        error.response?.data?.message ||
+        i18n.t("auth.forgotPasswordError", "Error processing request");
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function resetPassword(data: ResetPasswordRequest) {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await api.post("/auth/reset-password", data);
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
+      const errorMessage =
+        error.response?.data?.message ||
+        i18n.t("auth.resetPasswordError", "Error resetting password");
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   function logout() {
     removeAuthToken();
     setUser(null);
@@ -169,7 +212,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, error, login, register, logout, clearError }}
+      value={{
+        user,
+        isLoading,
+        error,
+        login,
+        register,
+        forgotPassword,
+        resetPassword,
+        logout,
+        clearError,
+      }}
     >
       {children}
     </AuthContext.Provider>

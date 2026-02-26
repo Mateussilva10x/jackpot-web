@@ -80,7 +80,7 @@ export function AvatarSelectionModal({
         </div>
 
         <div className="p-6">
-          <div className="grid grid-cols-4 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 sm:gap-4">
             {AVATAR_OPTIONS.map((avatar, index) => {
               const avatarId = index + 1;
               const isSelected = selectedId === avatarId;
@@ -112,7 +112,7 @@ export function AvatarSelectionModal({
         <div className="p-6 border-t border-border flex justify-end gap-3 bg-secondary/10">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg font-medium text-muted-foreground hover:bg-secondary transition-colors"
+            className="px-3 sm:px-4 py-2 rounded-lg font-medium text-sm sm:text-base text-muted-foreground hover:bg-secondary transition-colors"
             disabled={isSaving}
           >
             {t("common.cancel") || "Cancel"}
@@ -120,7 +120,7 @@ export function AvatarSelectionModal({
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="bg-primary text-primary-foreground px-6 py-2 rounded-lg font-bold hover:bg-primary/90 transition-colors flex items-center gap-2 disabled:opacity-50"
+            className="bg-primary text-primary-foreground px-4 sm:px-6 py-2 flex-1 sm:flex-none justify-center rounded-lg font-bold text-sm sm:text-base hover:bg-primary/90 transition-colors flex items-center gap-2 disabled:opacity-50"
           >
             {isSaving ? (
               <>

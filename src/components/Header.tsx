@@ -16,113 +16,174 @@ export default function Header() {
 
   const isMyBetsActive = location.pathname === "/dashboard";
   const isRankingActive = location.pathname === "/app/ranking";
-
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-7xl">
-        {/* Left Section: Logo */}
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-            <Trophy className="w-5 h-5 text-primary-foreground" />
-          </div>
-          <Link
-            to="/dashboard"
-            className="text-lg font-bold text-foreground hover:opacity-80 transition-opacity"
-          >
-            Bolão 2026
-          </Link>
-        </div>
-
-        {/* Middle Section: Navigation */}
-        <nav className="hidden md:flex items-center gap-2 bg-secondary/50 p-1 rounded-full border border-border">
-          <Link
-            to="/dashboard"
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              isMyBetsActive
-                ? "bg-secondary text-primary shadow-sm"
-                : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
-            }`}
-          >
-            <Home className="w-4 h-4" />
-            {t("header.myBets", "My Bets")}
-          </Link>
-          <Link
-            to="/app/ranking"
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              isRankingActive
-                ? "bg-secondary text-primary shadow-sm"
-                : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
-            }`}
-          >
-            <Trophy className="w-4 h-4" />
-            {t("header.ranking", "Ranking")}
-          </Link>
-          {user?.role === "ADMIN" && (
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-7xl">
+          {/* Left Section: Logo */}
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+              <Trophy className="w-5 h-5 text-primary-foreground" />
+            </div>
             <Link
-              to="/admin"
+              to="/dashboard"
+              className="text-lg font-bold text-foreground hover:opacity-80 transition-opacity"
+            >
+              Bolão 2026
+            </Link>
+          </div>
+
+          {/* Middle Section: Navigation */}
+          <nav className="hidden md:flex items-center gap-2 bg-secondary/50 p-1 rounded-full border border-border">
+            <Link
+              to="/dashboard"
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                location.pathname === "/admin"
+                isMyBetsActive
+                  ? "bg-secondary text-primary shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+              }`}
+            >
+              <Home className="w-4 h-4" />
+              {t("header.myBets", "My Bets")}
+            </Link>
+            <Link
+              to="/app/ranking"
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                isRankingActive
                   ? "bg-secondary text-primary shadow-sm"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
               }`}
             >
               <Trophy className="w-4 h-4" />
-              Admin
+              {t("header.ranking", "Ranking")}
             </Link>
-          )}
-        </nav>
-
-        {/* Right Section: User Profile & Language */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={handleLanguageToggle}
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2 rounded-full hover:bg-secondary/80 text-sm font-medium"
-            title={t("header.toggleLanguage", "Trocar Idioma")}
-          >
-            <Globe className="w-4 h-4" />
-            <span className="hidden sm:inline-block uppercase">
-              {i18n.language === "en" ? "EN" : "PT"}
-            </span>
-          </button>
-
-          {user ? (
-            <div className="flex items-center gap-4">
+            {user?.role === "ADMIN" && (
               <Link
-                to="/app/profile"
-                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-                title={t("header.profile", "Meu Perfil")}
+                to="/admin"
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  location.pathname === "/admin"
+                    ? "bg-secondary text-primary shadow-sm"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+                }`}
               >
-                <div className="w-8 h-8 rounded-full bg-secondary border border-border flex items-center justify-center overflow-hidden">
-                  {user.avatar ? (
-                    <span className="text-xl">
-                      {getAvatarById(user.avatar) || "⚽"}
-                    </span>
-                  ) : (
-                    <User className="w-4 h-4 text-muted-foreground" />
-                  )}
-                </div>
-                <span className="text-sm font-medium text-foreground hidden sm:inline-block">
-                  {user.name}
-                </span>
+                <Trophy className="w-4 h-4" />
+                Admin
               </Link>
-              <button
-                onClick={logout}
-                className="text-muted-foreground hover:text-destructive transition-colors p-2 rounded-full hover:bg-secondary/80"
-                title={t("header.logout", "Logout")}
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
-          ) : (
-            <Link
-              to="/login"
-              className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors"
+            )}
+          </nav>
+
+          {/* Right Section: User Profile & Language */}
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleLanguageToggle}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2 rounded-full hover:bg-secondary/80 text-sm font-medium"
+              title={t("header.toggleLanguage", "Trocar Idioma")}
             >
-              {t("header.login", "Entrar")}
+              <Globe className="w-4 h-4" />
+              <span className="hidden sm:inline-block uppercase">
+                {i18n.language === "en" ? "EN" : "PT"}
+              </span>
+            </button>
+
+            {user ? (
+              <div className="flex items-center gap-4">
+                <Link
+                  to="/app/profile"
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                  title={t("header.profile", "Meu Perfil")}
+                >
+                  <div className="w-8 h-8 rounded-full bg-secondary border border-border flex items-center justify-center overflow-hidden">
+                    {user.avatar ? (
+                      <span className="text-xl">
+                        {getAvatarById(user.avatar) || "⚽"}
+                      </span>
+                    ) : (
+                      <User className="w-4 h-4 text-muted-foreground" />
+                    )}
+                  </div>
+                  <span className="text-sm font-medium text-foreground hidden sm:inline-block">
+                    {user.name}
+                  </span>
+                </Link>
+                <button
+                  onClick={logout}
+                  className="text-muted-foreground hover:text-destructive transition-colors p-2 rounded-full hover:bg-secondary/80"
+                  title={t("header.logout", "Logout")}
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors"
+              >
+                {t("header.login", "Entrar")}
+              </Link>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Bottom Navigation */}
+      {user && (
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur border-t border-border flex items-center justify-around h-16 px-4 pb-safe supports-[backdrop-filter]:bg-background/60">
+          <Link
+            to="/dashboard"
+            className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${
+              isMyBetsActive
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Home className="w-5 h-5" />
+            <span className="text-[10px] font-medium leading-none">
+              {t("header.myBets", "My Bets")}
+            </span>
+          </Link>
+          <Link
+            to="/app/ranking"
+            className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${
+              isRankingActive
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Trophy className="w-5 h-5" />
+            <span className="text-[10px] font-medium leading-none">
+              {t("header.ranking", "Ranking")}
+            </span>
+          </Link>
+          {user?.role === "ADMIN" && (
+            <Link
+              to="/admin"
+              className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${
+                location.pathname === "/admin"
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Trophy className="w-5 h-5" />
+              <span className="text-[10px] font-medium leading-none">
+                Admin
+              </span>
             </Link>
           )}
-        </div>
-      </div>
-    </header>
+          <Link
+            to="/app/profile"
+            className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${
+              location.pathname === "/app/profile"
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <User className="w-5 h-5" />
+            <span className="text-[10px] font-medium leading-none">
+              {t("header.profile", "Perfil")}
+            </span>
+          </Link>
+        </nav>
+      )}
+    </>
   );
 }

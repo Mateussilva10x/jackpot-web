@@ -5,11 +5,13 @@ import { ToastContainer } from "./components/ui/Toast";
 import PublicLayout from "./layouts/PublicLayout";
 import PrivateLayout from "./layouts/PrivateLayout";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import Admin from "./pages/Admin";
 import AppBets from "./pages/app/Bets";
 import AppRanking from "./pages/app/Ranking";
 import UserProfile from "./pages/app/UserProfile";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import Register from "./pages/Register";
 import { DesignSystemPage } from "./pages/DesignSystemPage";
 import "./styles/App.css";
 import Dashboard from "./pages/Dashboard";
@@ -34,6 +36,22 @@ function App() {
               element={
                 <PublicLayout>
                   <Register />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <PublicLayout>
+                  <ForgotPassword />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/reset-password"
+              element={
+                <PublicLayout>
+                  <ResetPassword />
                 </PublicLayout>
               }
             />

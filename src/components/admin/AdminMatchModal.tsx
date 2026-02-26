@@ -141,7 +141,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
           <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">
             {t("groupModal.matches")}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {group.matches.map((game) => {
               const currentScore = scores[game.id] || {};
               const isFinished = game.status === "FINISHED";
@@ -175,7 +175,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                     </div>
                   </div>
 
-                  <div className="p-4 flex flex-col gap-4">
+                  <div className="p-3 sm:p-4 flex flex-col gap-3 sm:gap-4">
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col items-center gap-1 flex-1">
                         <div

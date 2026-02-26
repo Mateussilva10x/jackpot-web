@@ -140,29 +140,44 @@ export const GroupModal: React.FC<GroupModalProps> = ({
               {t("groupModal.standings")}
             </h3>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-xs sm:text-sm">
                 <thead>
-                  <tr className="border-b border-border/50 text-muted-foreground">
-                    <th className="px-4 py-2 text-left font-medium">
+                  <tr className="border-b border-border/50 text-muted-foreground whitespace-nowrap">
+                    <th className="px-2 sm:px-4 py-2 text-left font-medium">
                       {t("groupModal.team")}
                     </th>
-                    <th className="px-4 py-2 text-center font-medium">
-                      {t("groupModal.played")}
+                    <th
+                      className="px-1 sm:px-2 py-2 text-center font-medium"
+                      title={t("groupModal.played")}
+                    >
+                      J
                     </th>
-                    <th className="px-4 py-2 text-center font-medium">
-                      {t("groupModal.won")}
+                    <th
+                      className="px-1 sm:px-2 py-2 text-center font-medium"
+                      title={t("groupModal.won")}
+                    >
+                      V
                     </th>
-                    <th className="px-4 py-2 text-center font-medium">
-                      {t("groupModal.drawn")}
+                    <th
+                      className="px-1 sm:px-2 py-2 text-center font-medium hidden sm:table-cell"
+                      title={t("groupModal.drawn")}
+                    >
+                      E
                     </th>
-                    <th className="px-4 py-2 text-center font-medium">
-                      {t("groupModal.lost")}
+                    <th
+                      className="px-1 sm:px-2 py-2 text-center font-medium hidden sm:table-cell"
+                      title={t("groupModal.lost")}
+                    >
+                      D
                     </th>
-                    <th className="px-4 py-2 text-center font-medium">
-                      {t("groupModal.goalDifference")}
+                    <th
+                      className="px-1 sm:px-2 py-2 text-center font-medium"
+                      title={t("groupModal.goalDifference")}
+                    >
+                      SG
                     </th>
-                    <th className="px-4 py-2 text-center font-medium">
-                      {t("groupModal.points")}
+                    <th className="px-2 sm:px-4 py-2 text-center font-medium">
+                      Pts
                     </th>
                   </tr>
                 </thead>
@@ -174,10 +189,10 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                           className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
                         >
                           <td className="px-4 py-3 font-medium flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground w-4">
+                            <span className="text-[10px] sm:text-xs text-muted-foreground w-3 sm:w-4">
                               {i + 1}
                             </span>
-                            <div className="w-4 h-4 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
+                            <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
                               <img
                                 src={standing.flagUrl}
                                 alt={`${standing.teamName} flag`}
@@ -188,24 +203,26 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                                 }}
                               />
                             </div>
-                            {standing.teamName}
+                            <span className="truncate max-w-[80px] sm:max-w-none">
+                              {standing.teamName}
+                            </span>
                           </td>
-                          <td className="px-4 py-3 text-center text-muted-foreground">
+                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
                             {standing.matchesPlayed}
                           </td>
-                          <td className="px-4 py-3 text-center text-muted-foreground">
+                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
                             {standing.wins}
                           </td>
-                          <td className="px-4 py-3 text-center text-muted-foreground">
+                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
                             {standing.draws}
                           </td>
-                          <td className="px-4 py-3 text-center text-muted-foreground">
+                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
                             {standing.losses}
                           </td>
-                          <td className="px-4 py-3 text-center text-muted-foreground">
+                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
                             {standing.goalDifference}
                           </td>
-                          <td className="px-4 py-3 text-center font-bold text-primary">
+                          <td className="px-2 sm:px-4 py-3 text-center font-bold text-primary">
                             {standing.points}
                           </td>
                         </tr>
@@ -216,10 +233,10 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                           className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
                         >
                           <td className="px-4 py-3 font-medium flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground w-4">
+                            <span className="text-[10px] sm:text-xs text-muted-foreground w-3 sm:w-4">
                               {i + 1}
                             </span>
-                            <div className="w-4 h-4 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
+                            <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
                               <img
                                 src={
                                   group.matches.find((m) => m.homeTeam === team)
@@ -236,24 +253,26 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                                 }}
                               />
                             </div>
-                            {team}
+                            <span className="truncate max-w-[80px] sm:max-w-none">
+                              {team}
+                            </span>
                           </td>
-                          <td className="px-4 py-3 text-center text-muted-foreground">
+                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
                             0
                           </td>
-                          <td className="px-4 py-3 text-center text-muted-foreground">
+                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
                             0
                           </td>
-                          <td className="px-4 py-3 text-center text-muted-foreground">
+                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
                             0
                           </td>
-                          <td className="px-4 py-3 text-center text-muted-foreground">
+                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
                             0
                           </td>
-                          <td className="px-4 py-3 text-center text-muted-foreground">
+                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
                             0
                           </td>
-                          <td className="px-4 py-3 text-center font-bold text-primary">
+                          <td className="px-2 sm:px-4 py-3 text-center font-bold text-primary">
                             0
                           </td>
                         </tr>
@@ -305,7 +324,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                     </div>
                   </div>
 
-                  <div className="p-4 flex flex-col gap-4">
+                  <div className="p-3 sm:p-4 flex flex-col gap-3 sm:gap-4">
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col items-center gap-1 flex-1">
                         <div
@@ -424,11 +443,21 @@ export const GroupModal: React.FC<GroupModalProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
-          <JackpotButton variant="ghost" onClick={onClose} type="button">
+        <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 border-t border-border">
+          <JackpotButton
+            variant="ghost"
+            onClick={onClose}
+            type="button"
+            className="w-full sm:w-auto"
+          >
             {t("groupModal.cancel")}
           </JackpotButton>
-          <JackpotButton variant="primary" onClick={handleSave} type="button">
+          <JackpotButton
+            variant="primary"
+            onClick={handleSave}
+            type="button"
+            className="w-full sm:w-auto"
+          >
             {t("groupModal.savePredictions")}
           </JackpotButton>
         </div>

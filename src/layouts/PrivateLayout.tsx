@@ -9,7 +9,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   if (!user) return <Navigate to="/login" replace />;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col md:pb-0 pb-16">
       <Header />
       <main className="flex-1">{children}</main>
     </div>
