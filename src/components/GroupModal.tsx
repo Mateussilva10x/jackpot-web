@@ -27,9 +27,11 @@ export const GroupModal: React.FC<GroupModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [games, setGames] = useState<MatchBetResponse[]>([]);
+  const [now, setNow] = useState(() => Date.now());
 
   // Reset/Sync state when group changes
   React.useEffect(() => {
+    setNow(Date.now());
     if (group) {
       setGames(JSON.parse(JSON.stringify(group.matches)));
     }
@@ -269,132 +271,158 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             {t("groupModal.matches")}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {games.map((game) => (
-              <div
-                key={game.id}
-                className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors flex flex-col"
-              >
-                <div className="bg-secondary/30 px-3 py-2 flex items-center justify-between border-b border-border/50">
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] font-bold text-foreground uppercase tracking-wider">
-                      Copa 2026
-                    </span>
-                  </div>
-                  <div className="text-[10px] font-mono text-muted-foreground">
-                    {new Date(game.dateTime).toLocaleDateString()} •{" "}
-                    {new Date(game.dateTime).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </div>
-                </div>
+            {games.map((game) => {
+              const isMatchLocked =
+                game.status !== "SCHEDULED" ||
+                new Date(game.dateTime).getTime() <= now;
 
-                <div className="p-4 flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col items-center gap-1 flex-1">
-                      <div
-                        className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
-                          isKnockout &&
-                          game.userBet?.homeScore !== undefined &&
-                          game.userBet?.awayScore !== undefined &&
-                          game.userBet.homeScore === game.userBet.awayScore
-                            ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
-                            : ""
-                        } ${
-                          isKnockout && game.userBet?.selectedWinnerId === 1
-                            ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
-                            : "ring-1 ring-border"
-                        }`}
-                        onClick={() => handleFlagClick(game.id, 1)}
-                      >
-                        <img
-                          src={game.homeTeamFlag}
-                          alt={`${game.homeTeam} flag`}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                              "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
-                          }}
-                        />
-                      </div>
-                      <span
-                        className={`font-bold text-xs text-center truncate w-full px-1 ${
-                          isKnockout && game.userBet?.selectedWinnerId === 1
-                            ? "text-primary"
-                            : ""
-                        }`}
-                        title={game.homeTeam}
-                      >
-                        {game.homeTeam}
+              return (
+                <div
+                  key={game.id}
+                  className={`bg-card border rounded-xl overflow-hidden flex flex-col transition-colors ${
+                    isMatchLocked
+                      ? "border-border/40 opacity-75"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <div className="bg-secondary/30 px-3 py-2 flex items-center justify-between border-b border-border/50">
+                    <div className="flex items-center gap-2">
+                      {isMatchLocked ? (
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                      ) : (
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                      )}
+                      <span className="text-[10px] font-bold text-foreground uppercase tracking-wider">
+                        {isMatchLocked
+                          ? t("groupModal.locked", "Fechado")
+                          : "Copa 2026"}
                       </span>
                     </div>
-
-                    <span className="text-muted-foreground font-bold text-xs px-2">
-                      VS
-                    </span>
-
-                    <div className="flex flex-col items-center gap-1 flex-1">
-                      <div
-                        className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
-                          isKnockout &&
-                          game.userBet?.homeScore !== undefined &&
-                          game.userBet?.awayScore !== undefined &&
-                          game.userBet.homeScore === game.userBet.awayScore
-                            ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
-                            : ""
-                        } ${
-                          isKnockout && game.userBet?.selectedWinnerId === 2
-                            ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
-                            : "ring-1 ring-border"
-                        }`}
-                        onClick={() => handleFlagClick(game.id, 2)}
-                      >
-                        <img
-                          src={game.awayTeamFlag}
-                          alt={`${game.awayTeam} flag`}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                              "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
-                          }}
-                        />
-                      </div>
-                      <span
-                        className={`font-bold text-xs text-center truncate w-full px-1 ${
-                          isKnockout && game.userBet?.selectedWinnerId === 2
-                            ? "text-primary"
-                            : ""
-                        }`}
-                        title={game.awayTeam}
-                      >
-                        {game.awayTeam}
-                      </span>
+                    <div className="text-[10px] font-mono text-muted-foreground">
+                      {new Date(game.dateTime).toLocaleDateString()} •{" "}
+                      {new Date(game.dateTime).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center gap-2 bg-secondary/20 p-2 rounded-lg border border-border/30">
-                    <JackpotScoreInput
-                      value={game.userBet?.homeScore?.toString() ?? ""}
-                      onChange={(val) =>
-                        handleScoreChange(game.id, "home", val)
-                      }
-                      className="w-10 h-10 text-lg shadow-inner bg-background"
-                    />
-                    <span className="text-muted-foreground font-medium text-xs">
-                      x
-                    </span>
-                    <JackpotScoreInput
-                      value={game.userBet?.awayScore?.toString() ?? ""}
-                      onChange={(val) =>
-                        handleScoreChange(game.id, "away", val)
-                      }
-                      className="w-10 h-10 text-lg shadow-inner bg-background"
-                    />
+                  <div className="p-4 flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col items-center gap-1 flex-1">
+                        <div
+                          className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
+                            isKnockout &&
+                            game.userBet?.homeScore !== undefined &&
+                            game.userBet?.awayScore !== undefined &&
+                            game.userBet.homeScore === game.userBet.awayScore &&
+                            !isMatchLocked
+                              ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
+                              : ""
+                          } ${
+                            isKnockout && game.userBet?.selectedWinnerId === 1
+                              ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
+                              : "ring-1 ring-border"
+                          } ${isMatchLocked ? "opacity-75 grayscale-[50%]" : ""}`}
+                          onClick={() => {
+                            if (!isMatchLocked) handleFlagClick(game.id, 1);
+                          }}
+                        >
+                          <img
+                            src={game.homeTeamFlag}
+                            alt={`${game.homeTeam} flag`}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src =
+                                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
+                            }}
+                          />
+                        </div>
+                        <span
+                          className={`font-bold text-xs text-center truncate w-full px-1 ${
+                            isKnockout && game.userBet?.selectedWinnerId === 1
+                              ? "text-primary"
+                              : ""
+                          }`}
+                          title={game.homeTeam}
+                        >
+                          {game.homeTeam}
+                        </span>
+                      </div>
+
+                      <span className="text-muted-foreground font-bold text-xs px-2">
+                        VS
+                      </span>
+
+                      <div className="flex flex-col items-center gap-1 flex-1">
+                        <div
+                          className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
+                            isKnockout &&
+                            game.userBet?.homeScore !== undefined &&
+                            game.userBet?.awayScore !== undefined &&
+                            game.userBet.homeScore === game.userBet.awayScore &&
+                            !isMatchLocked
+                              ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
+                              : ""
+                          } ${
+                            isKnockout && game.userBet?.selectedWinnerId === 2
+                              ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
+                              : "ring-1 ring-border"
+                          } ${isMatchLocked ? "opacity-75 grayscale-[50%]" : ""}`}
+                          onClick={() => {
+                            if (!isMatchLocked) handleFlagClick(game.id, 2);
+                          }}
+                        >
+                          <img
+                            src={game.awayTeamFlag}
+                            alt={`${game.awayTeam} flag`}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src =
+                                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
+                            }}
+                          />
+                        </div>
+                        <span
+                          className={`font-bold text-xs text-center truncate w-full px-1 ${
+                            isKnockout && game.userBet?.selectedWinnerId === 2
+                              ? "text-primary"
+                              : ""
+                          }`}
+                          title={game.awayTeam}
+                        >
+                          {game.awayTeam}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-2 bg-secondary/20 p-2 rounded-lg border border-border/30">
+                      <JackpotScoreInput
+                        value={game.userBet?.homeScore?.toString() ?? ""}
+                        onChange={(val) => {
+                          if (!isMatchLocked)
+                            handleScoreChange(game.id, "home", val);
+                        }}
+                        disabled={isMatchLocked}
+                        className={`w-10 h-10 text-lg shadow-inner bg-background ${isMatchLocked ? "opacity-60 cursor-not-allowed" : ""}`}
+                      />
+                      <span className="text-muted-foreground font-medium text-xs">
+                        x
+                      </span>
+                      <JackpotScoreInput
+                        value={game.userBet?.awayScore?.toString() ?? ""}
+                        onChange={(val) => {
+                          if (!isMatchLocked)
+                            handleScoreChange(game.id, "away", val);
+                        }}
+                        disabled={isMatchLocked}
+                        className={`w-10 h-10 text-lg shadow-inner bg-background ${isMatchLocked ? "opacity-60 cursor-not-allowed" : ""}`}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

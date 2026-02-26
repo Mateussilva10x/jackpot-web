@@ -14,7 +14,7 @@ interface TimeLeft {
 
 export function Countdown() {
   const { t } = useTranslation();
-  const targetDate = new Date("2026-06-11T00:00:00").getTime();
+  const targetDate = new Date("2026-06-11T00:00:00Z").getTime();
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
