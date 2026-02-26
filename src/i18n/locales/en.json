@@ -84,6 +84,7 @@
     "seconds": "Seconds",
     "ROUND_32": "Round of 32",
     "ROUND_16": "Round of 16",
+    "QUARTER": "Quarter Finals",
     "QUARTES": "Quarter Finals",
     "SEMI": "Semi Finals",
     "FINAL": "Final",
@@ -102,5 +103,25 @@
     "matches": "Matches",
     "cancel": "Cancel",
     "savePredictions": "Save Predictions"
+  },
+  "ranking": {
+    "leaderboard": "Leaderboard",
+    "emptyTitle": "No rankings yet",
+    "emptyDescription": "The leaderboard will populate once scores are calculated.",
+    "pts": "pts"
+  },
+  "profile": {
+    "errorLoading": "Failed to load user profile",
+    "goToRanking": "Back to Ranking",
+    "you": "You",
+    "position": "Position",
+    "predictions": "Predictions",
+    "totalBets": "Total Bets",
+    "noBetsTitle": "No predictions found",
+    "noBetsMyProfile": "You haven't made any predictions yet. Head to the dashboard to start betting!",
+    "noBetsOtherProfile": "This user hasn't made any predictions yet.",
+    "predicted": "predicted",
+    "selectAvatar": "Choose Avatar",
+    "changeAvatar": "Change Avatar"
   }
 }

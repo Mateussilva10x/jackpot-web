@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Admin from "./pages/Admin";
 import AppBets from "./pages/app/Bets";
 import AppRanking from "./pages/app/Ranking";
+import UserProfile from "./pages/app/UserProfile";
 import { DesignSystemPage } from "./pages/DesignSystemPage";
 import "./styles/App.css";
 import Dashboard from "./pages/Dashboard";
@@ -58,6 +59,14 @@ function App() {
               element={
                 <PrivateLayout>
                   <AppRanking />
+                </PrivateLayout>
+              }
+            />
+            <Route
+              path="/profile/:id"
+              element={
+                <PrivateLayout>
+                  <UserProfile />
                 </PrivateLayout>
               }
             />

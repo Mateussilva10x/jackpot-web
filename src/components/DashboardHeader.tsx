@@ -122,7 +122,7 @@ export function BonusPredictions() {
       }
 
       if (teamsData) {
-        setTeams(teamsData);
+        setTeams(teamsData.sort((a, b) => a.name.localeCompare(b.name)));
       }
     } finally {
       setIsLoading(false);

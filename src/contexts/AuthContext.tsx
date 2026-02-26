@@ -88,7 +88,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email,
         role,
       });
-      navigate("/dashboard");
+      if (role === "ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       const error = err as { response?: { data?: { message?: string } } };
       const errorMessage =
@@ -116,7 +120,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           email,
           role,
         });
-        navigate("/dashboard");
+        if (role === "ADMIN") {
+          navigate("/admin");
+        } else {
+          navigate("/dashboard");
+        }
       } else {
         // Redirect to login page
         navigate("/login");

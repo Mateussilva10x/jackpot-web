@@ -1,8 +1,48 @@
+export interface PageResponse<T> {
+  content: T[];
+  empty: boolean;
+  first: boolean;
+  last: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: {
+    offset: number;
+    pageNumber: number;
+    pageSize: number;
+    paged: boolean;
+    sort: {
+      empty: boolean;
+      sorted: boolean;
+      unsorted: boolean;
+    };
+    unpaged: boolean;
+  };
+  size: number;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  totalElements: number;
+  totalPages: number;
+}
+
 export interface UserRankingDto {
   id: number;
   name: string;
   totalPoints: number;
   rankingPosition: number;
+  avatar?: string;
+}
+
+export interface UserProfileDto {
+  id: number;
+  name: string;
+  totalPoints: number;
+  rankingPosition: number;
+  email?: string;
+  avatar?: string;
+  bets: MatchGroupResponse[];
 }
 
 export interface TeamDto {
@@ -72,11 +112,24 @@ export interface BonusBetResponse {
   topScorer: string;
 }
 
+export interface MatchScoreUpdateDto {
+  homeScore: number;
+  awayScore: number;
+  penaltyWinnerId?: number;
+}
+
+export interface BonusBetResolutionRequest {
+  championTeamId: number;
+  runnerUpTeamId: number;
+  topScorer: string;
+}
+
 export interface AuthResponse {
   token: string;
   id: number;
   role: string;
   email: string;
+  avatar?: string;
 }
 
 export interface LoginRequest {

@@ -76,8 +76,21 @@ export default function Dashboard() {
     return `${predicted}/${group.matches.length}`;
   };
 
+  const KNOCKOUT_ORDER = [
+    "ROUND_32",
+    "ROUND_16",
+    "QUARTER",
+    "SEMI",
+    "THIRD_PLACE",
+    "FINAL",
+  ];
+
   const groupStageGroups = groups.filter((g) => /^[A-L]$/.test(g.group));
-  const knockoutGroups = groups.filter((g) => !/^[A-L]$/.test(g.group));
+  const knockoutGroups = groups
+    .filter((g) => !/^[A-L]$/.test(g.group))
+    .sort((a, b) => {
+      return KNOCKOUT_ORDER.indexOf(a.group) - KNOCKOUT_ORDER.indexOf(b.group);
+    });
   const displayedGroups =
     activeTab === "group" ? groupStageGroups : knockoutGroups;
 

@@ -51,6 +51,19 @@ export default function Header() {
             <Trophy className="w-4 h-4" />
             {t("header.ranking", "Ranking")}
           </Link>
+          {user?.role === "ADMIN" && (
+            <Link
+              to="/admin"
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                location.pathname === "/admin"
+                  ? "bg-secondary text-primary shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+              }`}
+            >
+              <Trophy className="w-4 h-4" />
+              Admin
+            </Link>
+          )}
         </nav>
 
         {/* Right Section: User Profile */}

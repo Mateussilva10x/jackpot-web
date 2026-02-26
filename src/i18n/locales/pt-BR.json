@@ -84,6 +84,7 @@
     "seconds": "Segundos",
     "ROUND_32": "Dezesseis-avos de Final",
     "ROUND_16": "Oitavas de Final",
+    "QUARTER": "Quartas de Final",
     "QUARTES": "Quartas de Final",
     "SEMI": "Semifinais",
     "FINAL": "Final",
@@ -102,5 +103,25 @@
     "matches": "Partidas",
     "cancel": "Cancelar",
     "savePredictions": "Salvar Previsões"
+  },
+  "ranking": {
+    "leaderboard": "Classificação",
+    "emptyTitle": "Nenhum ranking ainda",
+    "emptyDescription": "A classificação será preenchida assim que as previsões forem avaliadas.",
+    "pts": "pts"
+  },
+  "profile": {
+    "errorLoading": "Falha ao carregar o perfil do usuário",
+    "goToRanking": "Voltar para a Classificação",
+    "you": "Você",
+    "position": "Posição",
+    "predictions": "Previsões",
+    "totalBets": "Palpites Totais",
+    "noBetsTitle": "Nenhuma previsão encontrada",
+    "noBetsMyProfile": "Você ainda não fez nenhuma previsão. Vá para o dashboard para começar a apostar!",
+    "noBetsOtherProfile": "Este usuário ainda não fez nenhuma previsão.",
+    "predicted": "previstos",
+    "selectAvatar": "Escolher Avatar",
+    "changeAvatar": "Mudar Avatar"
   }
 }
