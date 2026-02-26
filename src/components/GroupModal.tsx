@@ -4,12 +4,17 @@ import { JackpotScoreInput } from "./ui/JackpotScoreInput";
 import { JackpotButton } from "./ui/JackpotButton";
 import { useTranslation } from "react-i18next";
 
-import type { MatchGroupResponse, MatchBetResponse } from "../types/api";
+import type {
+  MatchGroupResponse,
+  MatchBetResponse,
+  GroupStandingDto,
+} from "../types/api";
 
 interface GroupModalProps {
   isOpen: boolean;
   onClose: () => void;
   group: MatchGroupResponse | null;
+  groupStandings?: GroupStandingDto[];
   onSave: (groupId: string, games: MatchBetResponse[]) => void;
 }
 
@@ -17,6 +22,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
   isOpen,
   onClose,
   group,
+  groupStandings,
   onSave,
 }) => {
   const { t } = useTranslation();
@@ -161,54 +167,97 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {uniqueTeams.map((team, i) => (
-                    <tr
-                      key={team}
-                      className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
-                    >
-                      <td className="px-4 py-3 font-medium flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground w-4">
-                          {i + 1}
-                        </span>
-                        <div className="w-4 h-4 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
-                          <img
-                            src={
-                              group.matches.find((m) => m.homeTeam === team)
-                                ?.homeTeamFlag ||
-                              group.matches.find((m) => m.awayTeam === team)
-                                ?.awayTeamFlag ||
-                              ""
-                            }
-                            alt="Team flag"
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src =
-                                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
-                            }}
-                          />
-                        </div>
-                        {team}
-                      </td>
-                      <td className="px-4 py-3 text-center text-muted-foreground">
-                        0
-                      </td>
-                      <td className="px-4 py-3 text-center text-muted-foreground">
-                        0
-                      </td>
-                      <td className="px-4 py-3 text-center text-muted-foreground">
-                        0
-                      </td>
-                      <td className="px-4 py-3 text-center text-muted-foreground">
-                        0
-                      </td>
-                      <td className="px-4 py-3 text-center text-muted-foreground">
-                        0
-                      </td>
-                      <td className="px-4 py-3 text-center font-bold text-primary">
-                        0
-                      </td>
-                    </tr>
-                  ))}
+                  {groupStandings && groupStandings.length > 0
+                    ? groupStandings.map((standing, i) => (
+                        <tr
+                          key={standing.teamName}
+                          className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
+                        >
+                          <td className="px-4 py-3 font-medium flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground w-4">
+                              {i + 1}
+                            </span>
+                            <div className="w-4 h-4 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
+                              <img
+                                src={standing.flagUrl}
+                                alt={`${standing.teamName} flag`}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src =
+                                    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
+                                }}
+                              />
+                            </div>
+                            {standing.teamName}
+                          </td>
+                          <td className="px-4 py-3 text-center text-muted-foreground">
+                            {standing.matchesPlayed}
+                          </td>
+                          <td className="px-4 py-3 text-center text-muted-foreground">
+                            {standing.wins}
+                          </td>
+                          <td className="px-4 py-3 text-center text-muted-foreground">
+                            {standing.draws}
+                          </td>
+                          <td className="px-4 py-3 text-center text-muted-foreground">
+                            {standing.losses}
+                          </td>
+                          <td className="px-4 py-3 text-center text-muted-foreground">
+                            {standing.goalDifference}
+                          </td>
+                          <td className="px-4 py-3 text-center font-bold text-primary">
+                            {standing.points}
+                          </td>
+                        </tr>
+                      ))
+                    : uniqueTeams.map((team, i) => (
+                        <tr
+                          key={team}
+                          className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
+                        >
+                          <td className="px-4 py-3 font-medium flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground w-4">
+                              {i + 1}
+                            </span>
+                            <div className="w-4 h-4 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
+                              <img
+                                src={
+                                  group.matches.find((m) => m.homeTeam === team)
+                                    ?.homeTeamFlag ||
+                                  group.matches.find((m) => m.awayTeam === team)
+                                    ?.awayTeamFlag ||
+                                  ""
+                                }
+                                alt="Team flag"
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src =
+                                    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
+                                }}
+                              />
+                            </div>
+                            {team}
+                          </td>
+                          <td className="px-4 py-3 text-center text-muted-foreground">
+                            0
+                          </td>
+                          <td className="px-4 py-3 text-center text-muted-foreground">
+                            0
+                          </td>
+                          <td className="px-4 py-3 text-center text-muted-foreground">
+                            0
+                          </td>
+                          <td className="px-4 py-3 text-center text-muted-foreground">
+                            0
+                          </td>
+                          <td className="px-4 py-3 text-center text-muted-foreground">
+                            0
+                          </td>
+                          <td className="px-4 py-3 text-center font-bold text-primary">
+                            0
+                          </td>
+                        </tr>
+                      ))}
                 </tbody>
               </table>
             </div>

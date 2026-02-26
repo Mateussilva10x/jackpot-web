@@ -11,11 +11,16 @@ import { matchesService } from "../services/matchesService";
 import { betsService } from "../services/betsService";
 import { ChevronDown, Trophy } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { standingsService } from "../services/standingsService";
+import type { GroupStandingDto } from "../types/api";
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"group" | "knockout">("group");
   const [groups, setGroups] = useState<MatchGroupResponse[]>([]);
+  const [standings, setStandings] = useState<
+    Record<string, GroupStandingDto[]>
+  >({});
   const [selectedGroup, setSelectedGroup] = useState<MatchGroupResponse | null>(
     null,
   );
@@ -29,10 +34,14 @@ export default function Dashboard() {
   const loadMatches = async () => {
     try {
       setIsLoading(true);
-      const data = await matchesService.getMatches();
-      setGroups(data);
+      const [matchesData, standingsData] = await Promise.all([
+        matchesService.getMatches(),
+        standingsService.getGroupStandings().catch(() => ({})), // Fallback in case/standings fails
+      ]);
+      setGroups(matchesData);
+      setStandings(standingsData);
     } catch (error) {
-      console.error("Failed to load matches", error);
+      console.error("Failed to load matches or standings", error);
     } finally {
       setIsLoading(false);
     }
@@ -230,6 +239,9 @@ export default function Dashboard() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         group={selectedGroup}
+        groupStandings={
+          selectedGroup ? standings[selectedGroup.group] : undefined
+        }
         onSave={handleSavePredictions}
       />
     </div>
