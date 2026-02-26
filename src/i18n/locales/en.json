@@ -11,7 +11,9 @@
     "submit": "Submit",
     "back": "Back",
     "next": "Next",
-    "close": "Close"
+    "close": "Close",
+    "you": "You",
+    "error": "An error occurred"
   },
   "auth": {
     "loginTitle": "Login to place your bets",
@@ -89,7 +91,9 @@
     "QUARTES": "Quarter Finals",
     "SEMI": "Semi Finals",
     "FINAL": "Final",
-    "THIRD_PLACE": "Third Place"
+    "THIRD_PLACE": "Third Place",
+    "noGroupsFound": "No groups found.",
+    "finalized": "finalized"
   },
   "groupModal": {
     "predictions": "Predictions",
@@ -109,7 +113,8 @@
     "leaderboard": "Leaderboard",
     "emptyTitle": "No rankings yet",
     "emptyDescription": "The leaderboard will populate once scores are calculated.",
-    "pts": "pts"
+    "pts": "pts",
+    "loadingError": "Failed to load leaderboard"
   },
   "profile": {
     "errorLoading": "Failed to load user profile",
@@ -124,5 +129,27 @@
     "predicted": "predicted",
     "selectAvatar": "Choose Avatar",
     "changeAvatar": "Change Avatar"
+  },
+  "admin": {
+    "title": "Administrator Dashboard",
+    "subtitle": "Manage official match results and resolve tournament bonuses.",
+    "officialResults": "Official Match Results",
+    "bonusTitle": "Resolve Bonus Bets",
+    "bonusSubtitle": "Enter the final official results for the tournament. This will calculate points for all users who made bonus predictions.",
+    "champion": "Champion",
+    "runnerUp": "Runner-Up",
+    "topScorer": "Top Scorer",
+    "selectChampion": "Select Champion",
+    "selectRunnerUp": "Select Runner-up",
+    "playerNamePlaceholder": "Player Name",
+    "resolving": "Resolving...",
+    "resolveBonusBets": "Resolve Bonus Bets",
+    "resolvedSuccess": "Successfully resolved!",
+    "officialResult": "Official result",
+    "finalizeMatch": "Finalize Match",
+    "updateResult": "Update Result",
+    "submitting": "Submitting...",
+    "finalized": "finalized",
+    "matchFinalized": "Match Finalized"
   }
 }

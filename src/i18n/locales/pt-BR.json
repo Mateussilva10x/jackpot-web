@@ -11,7 +11,9 @@
     "submit": "Enviar",
     "back": "Voltar",
     "next": "Próximo",
-    "close": "Fechar"
+    "close": "Fechar",
+    "you": "Você",
+    "error": "Ocorreu um erro"
   },
   "auth": {
     "loginTitle": "Entre para fazer suas apostas",
@@ -89,7 +91,9 @@
     "QUARTES": "Quartas de Final",
     "SEMI": "Semifinais",
     "FINAL": "Final",
-    "THIRD_PLACE": "Terceiro Lugar"
+    "THIRD_PLACE": "Terceiro Lugar",
+    "noGroupsFound": "Nenhum grupo encontrado.",
+    "finalized": "finalizadas"
   },
   "groupModal": {
     "predictions": "Previsões",
@@ -109,7 +113,8 @@
     "leaderboard": "Classificação",
     "emptyTitle": "Nenhum ranking ainda",
     "emptyDescription": "A classificação será preenchida assim que as previsões forem avaliadas.",
-    "pts": "pts"
+    "pts": "pts",
+    "loadingError": "Falha ao carregar a classificação"
   },
   "profile": {
     "errorLoading": "Falha ao carregar o perfil do usuário",
@@ -124,5 +129,27 @@
     "predicted": "previstos",
     "selectAvatar": "Escolher Avatar",
     "changeAvatar": "Mudar Avatar"
+  },
+  "admin": {
+    "title": "Painel do Administrador",
+    "subtitle": "Gerencie os resultados oficiais e resolva os bônus do torneio.",
+    "officialResults": "Resultados Oficiais das Partidas",
+    "bonusTitle": "Resolver Apostas Bônus",
+    "bonusSubtitle": "Informe os resultados finais oficiais do torneio. Isso calculará os pontos para todos os usuários que fizeram previsões bônus.",
+    "champion": "Campeão",
+    "runnerUp": "Vice-Campeão",
+    "topScorer": "Artilheiro",
+    "selectChampion": "Selecione o campeão",
+    "selectRunnerUp": "Selecione o vice-campeão",
+    "playerNamePlaceholder": "Nome do jogador",
+    "resolving": "Resolvendo...",
+    "resolveBonusBets": "Resolver Apostas Bônus",
+    "resolvedSuccess": "Resolvido com sucesso!",
+    "officialResult": "Resultado oficial",
+    "finalizeMatch": "Finalizar Partida",
+    "updateResult": "Atualizar Resultado",
+    "submitting": "Enviando...",
+    "finalized": "finalizadas",
+    "matchFinalized": "Partida Finalizada"
   }
 }

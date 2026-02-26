@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Trophy, Medal } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { UserRankingDto } from "../../types/api";
 import { getAvatarById } from "../../utils/avatar";
 
@@ -9,6 +10,7 @@ export interface RankingRowProps {
 }
 
 export function RankingRow({ user, isCurrentUser }: RankingRowProps) {
+  const { t } = useTranslation();
   const getPositionIcon = (position: number) => {
     switch (position) {
       case 1:
@@ -56,6 +58,9 @@ export function RankingRow({ user, isCurrentUser }: RankingRowProps) {
         .toUpperCase()
     : "??";
 
+  // Resolve avatar: backend may return avatarId or avatar field
+  const resolvedAvatar = user.avatarId ?? user.avatar;
+
   return (
     <div className={getRowStyle(user.rankingPosition, isCurrentUser)}>
       <div className="flex items-center gap-4">
@@ -65,12 +70,12 @@ export function RankingRow({ user, isCurrentUser }: RankingRowProps) {
 
         <div className="flex items-center gap-3">
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border border-border overflow-hidden ${user.avatar ? "bg-background" : "bg-secondary"}`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border border-border overflow-hidden ${resolvedAvatar ? "bg-background" : "bg-secondary"}`}
           >
             <span
-              className={`font-black ${user.avatar ? "text-2xl" : "text-sm text-foreground"}`}
+              className={`font-black ${resolvedAvatar ? "text-2xl" : "text-sm text-foreground"}`}
             >
-              {getAvatarById(user.avatar) || initials}
+              {getAvatarById(resolvedAvatar) || initials}
             </span>
           </div>
 
@@ -84,7 +89,7 @@ export function RankingRow({ user, isCurrentUser }: RankingRowProps) {
               </Link>
               {isCurrentUser && (
                 <span className="bg-green-500/20 text-green-500 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                  You
+                  {t("common.you")}
                 </span>
               )}
             </div>

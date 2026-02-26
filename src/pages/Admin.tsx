@@ -105,17 +105,15 @@ export default function Admin() {
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="mb-6">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-          Administrator Dashboard
+          {t("admin.title")}
         </h1>
-        <p className="text-muted-foreground mt-2">
-          Manage official match results and resolve tournament bonuses.
-        </p>
+        <p className="text-muted-foreground mt-2">{t("admin.subtitle")}</p>
       </div>
 
       <AdminBonusResolution />
 
       {/* Stage Toggles */}
-      <h2 className="text-xl font-bold mb-4">Official Match Results</h2>
+      <h2 className="text-xl font-bold mb-4">{t("admin.officialResults")}</h2>
       <div className="flex bg-secondary/30 p-1 rounded-xl mb-8 border border-border">
         <button
           onClick={() => setActiveTab("group")}
@@ -159,7 +157,7 @@ export default function Admin() {
               <p className="text-muted-foreground">
                 {activeTab === "knockout"
                   ? t("dashboard.knockoutNotOpen")
-                  : "No groups found."}
+                  : t("dashboard.noGroupsFound")}
               </p>
             </div>
           </div>
@@ -217,7 +215,7 @@ export default function Admin() {
 
                 <div className="flex items-center gap-3">
                   <span className="text-xs font-mono text-muted-foreground bg-secondary/50 px-2 py-1 rounded border border-border">
-                    {getProgress(group)} finalized
+                    {getProgress(group)} {t("admin.finalized")}
                   </span>
 
                   <ChevronDown className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />

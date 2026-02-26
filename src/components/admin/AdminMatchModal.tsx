@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal } from "../ui/Modal";
 import { JackpotScoreInput } from "../ui/JackpotScoreInput";
 import { JackpotButton } from "../ui/JackpotButton";
@@ -32,6 +32,29 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
     >
   >({});
   const [isSubmitting, setIsSubmitting] = useState<number | null>(null);
+
+  // Pre-fill official scores when the modal opens or when the group changes
+  useEffect(() => {
+    if (group) {
+      const initialScores: Record<
+        number,
+        { homeScore?: number; awayScore?: number; penaltyWinnerId?: number }
+      > = {};
+      group.matches.forEach((m) => {
+        if (
+          m.status === "FINISHED" &&
+          m.officialHomeScore !== undefined &&
+          m.officialAwayScore !== undefined
+        ) {
+          initialScores[m.id] = {
+            homeScore: m.officialHomeScore,
+            awayScore: m.officialAwayScore,
+          };
+        }
+      });
+      setScores(initialScores);
+    }
+  }, [group, isOpen]);
 
   const handleScoreChange = (
     matchId: number,
@@ -124,6 +147,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {group.matches.map((game) => {
               const currentScore = scores[game.id] || {};
+              const isFinished = game.status === "FINISHED";
               const isReadyToSubmit =
                 currentScore.homeScore !== undefined &&
                 currentScore.awayScore !== undefined &&
@@ -139,7 +163,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                   <div className="bg-secondary/30 px-3 py-2 flex items-center justify-between border-b border-border/50">
                     <div className="flex items-center gap-2">
                       <span
-                        className={`w-1.5 h-1.5 rounded-full ${game.status === "FINISHED" ? "bg-red-500" : "bg-green-500 animate-pulse"}`}
+                        className={`w-1.5 h-1.5 rounded-full ${isFinished ? "bg-red-500" : "bg-green-500 animate-pulse"}`}
                       />
                       <span className="text-[10px] font-bold text-foreground uppercase tracking-wider">
                         {game.status}
@@ -233,6 +257,26 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                       </div>
                     </div>
 
+                    {/* Official result badge for FINISHED matches */}
+                    {isFinished &&
+                      game.officialHomeScore !== undefined &&
+                      game.officialAwayScore !== undefined && (
+                        <div className="flex items-center justify-center gap-1 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-1.5">
+                          <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider mr-1">
+                            Resultado oficial:
+                          </span>
+                          <span className="text-base font-black text-foreground">
+                            {game.officialHomeScore}
+                          </span>
+                          <span className="text-muted-foreground font-bold text-xs">
+                            x
+                          </span>
+                          <span className="text-base font-black text-foreground">
+                            {game.officialAwayScore}
+                          </span>
+                        </div>
+                      )}
+
                     <div className="flex items-center justify-center gap-2 bg-secondary/20 p-2 rounded-lg border border-border/30">
                       <JackpotScoreInput
                         value={currentScore.homeScore?.toString() ?? ""}
@@ -254,16 +298,16 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                     </div>
 
                     <JackpotButton
-                      variant={game.status === "FINISHED" ? "ghost" : "primary"}
+                      variant={isFinished ? "ghost" : "primary"}
                       onClick={() => handleFinalize(game.id)}
                       disabled={!isReadyToSubmit || isSubmitting === game.id}
                       className="mt-2 text-xs w-full"
                     >
                       {isSubmitting === game.id
                         ? "Submitting..."
-                        : game.status === "FINISHED"
-                          ? "Match Finalized"
-                          : "Finalize Match"}
+                        : isFinished
+                          ? "Atualizar Resultado"
+                          : "Finalizar Partida"}
                     </JackpotButton>
                   </div>
                 </div>

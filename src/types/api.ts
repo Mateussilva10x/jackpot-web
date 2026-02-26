@@ -32,7 +32,8 @@ export interface UserRankingDto {
   name: string;
   totalPoints: number;
   rankingPosition: number;
-  avatar?: string;
+  avatarId?: number | string;
+  avatar?: number | string;
 }
 
 export interface UserProfileDto {
@@ -41,7 +42,8 @@ export interface UserProfileDto {
   totalPoints: number;
   rankingPosition: number;
   email?: string;
-  avatar?: string;
+  avatarId?: number | string;
+  avatar?: number | string;
   bets: MatchGroupResponse[];
 }
 
@@ -83,6 +85,8 @@ export interface MatchBetResponse {
   dateTime: string;
   status: string;
   group: string;
+  officialHomeScore?: number;
+  officialAwayScore?: number;
   userBet?: BetResponse;
 }
 
@@ -131,7 +135,8 @@ export interface AuthResponse {
   id: number;
   role: string;
   email: string;
-  avatar?: string;
+  avatar?: number | string;
+  avatarId?: number | string;
 }
 
 export interface LoginRequest {

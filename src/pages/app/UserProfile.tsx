@@ -67,12 +67,12 @@ export default function UserProfile() {
     };
   }, [id, isMyProfile, t]);
 
-  const handleSaveAvatar = async (newAvatar: string) => {
+  const handleSaveAvatar = async (newAvatarId: number) => {
     try {
-      await userService.updateAvatar(newAvatar);
+      await userService.updateAvatar(newAvatarId);
       // Update local state to reflect immediately
       if (profile) {
-        setProfile({ ...profile, avatar: newAvatar });
+        setProfile({ ...profile, avatarId: newAvatarId, avatar: newAvatarId });
       }
       setIsAvatarModalOpen(false);
     } catch (err) {
@@ -147,6 +147,9 @@ export default function UserProfile() {
         .toUpperCase()
     : "??";
 
+  // Resolve avatar: backend may return avatarId or avatar field
+  const resolvedAvatar = profile.avatarId ?? profile.avatar;
+
   // Calculate some stats from bets array
   const totalBets =
     profile.bets?.reduce((acc, group) => {
@@ -176,10 +179,10 @@ export default function UserProfile() {
         <div className="relative z-10 flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
           <div className="relative group">
             <div
-              className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center border-4 border-card outline outline-1 outline-border shrink-0 shadow-lg overflow-hidden ${profile.avatar ? "bg-background" : "bg-secondary"}`}
+              className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center border-4 border-card outline outline-1 outline-border shrink-0 shadow-lg overflow-hidden ${resolvedAvatar ? "bg-background" : "bg-secondary"}`}
             >
               <span className="text-3xl sm:text-5xl font-black text-foreground">
-                {getAvatarById(profile.avatar) || initials}
+                {getAvatarById(resolvedAvatar) || initials}
               </span>
             </div>
 
@@ -272,7 +275,9 @@ export default function UserProfile() {
 
       <AvatarSelectionModal
         isOpen={isAvatarModalOpen}
-        currentAvatar={profile.avatar}
+        currentAvatar={
+          resolvedAvatar != null ? Number(resolvedAvatar) : undefined
+        }
         onClose={() => setIsAvatarModalOpen(false)}
         onSave={handleSaveAvatar}
       />

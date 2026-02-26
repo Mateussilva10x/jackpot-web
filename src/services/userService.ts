@@ -12,7 +12,7 @@ export const userService = {
     return response.data;
   },
 
-  updateAvatar: async (avatar: string): Promise<void> => {
-    await api.put("/users/me/avatar", { avatarId: avatar });
+  updateAvatar: async (avatarId: number): Promise<void> => {
+    await api.put("/users/me/avatar", { avatarId });
   },
 };

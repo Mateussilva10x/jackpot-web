@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { api } from "../../services/api";
 import { adminService } from "../../services/adminService";
 import { JackpotButton } from "../ui/JackpotButton";
+import { useTranslation } from "react-i18next";
 import type { TeamDto } from "../../types/api";
 
 export const AdminBonusResolution = () => {
+  const { t } = useTranslation();
   const [teams, setTeams] = useState<TeamDto[]>([]);
   const [championTeamId, setChampionTeamId] = useState<number | "">("");
   const [runnerUpTeamId, setRunnerUpTeamId] = useState<number | "">("");
@@ -46,56 +48,55 @@ export const AdminBonusResolution = () => {
 
   return (
     <div className="bg-card border border-border rounded-xl p-6 mb-8 mt-8 shadow-sm">
-      <h2 className="text-xl font-bold mb-4">Resolve Bonus Bets</h2>
+      <h2 className="text-xl font-bold mb-4">{t("admin.bonusTitle")}</h2>
       <p className="text-sm text-muted-foreground mb-6">
-        Enter the final official results for the tournament. This will calculate
-        points for all users who made bonus predictions.
+        {t("admin.bonusSubtitle")}
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-bold">Champion</label>
+          <label className="text-sm font-bold">{t("admin.champion")}</label>
           <select
             value={championTeamId}
             onChange={(e) => setChampionTeamId(Number(e.target.value))}
             className="p-3 rounded-lg bg-background border border-border outline-none focus:border-primary transition-colors"
           >
             <option value="" disabled>
-              Select Champion
+              {t("admin.selectChampion")}
             </option>
-            {teams.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
+            {teams.map((tm) => (
+              <option key={tm.id} value={tm.id}>
+                {tm.name}
               </option>
             ))}
           </select>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-bold">Runner-Up</label>
+          <label className="text-sm font-bold">{t("admin.runnerUp")}</label>
           <select
             value={runnerUpTeamId}
             onChange={(e) => setRunnerUpTeamId(Number(e.target.value))}
             className="p-3 rounded-lg bg-background border border-border outline-none focus:border-primary transition-colors"
           >
             <option value="" disabled>
-              Select Runner-up
+              {t("admin.selectRunnerUp")}
             </option>
-            {teams.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
+            {teams.map((tm) => (
+              <option key={tm.id} value={tm.id}>
+                {tm.name}
               </option>
             ))}
           </select>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-bold">Top Scorer</label>
+          <label className="text-sm font-bold">{t("admin.topScorer")}</label>
           <input
             type="text"
             value={topScorer}
             onChange={(e) => setTopScorer(e.target.value)}
-            placeholder="Player Name"
+            placeholder={t("admin.playerNamePlaceholder")}
             className="p-3 rounded-lg bg-background border border-border outline-none focus:border-primary transition-colors"
           />
         </div>
@@ -104,7 +105,7 @@ export const AdminBonusResolution = () => {
       <div className="flex justify-end items-center gap-4">
         {success && (
           <span className="text-green-500 font-bold text-sm">
-            Successfully resolved!
+            {t("admin.resolvedSuccess")}
           </span>
         )}
         <JackpotButton
@@ -114,7 +115,7 @@ export const AdminBonusResolution = () => {
             !championTeamId || !runnerUpTeamId || !topScorer.trim() || isLoading
           }
         >
-          {isLoading ? "Resolving..." : "Resolve Bonus Bets"}
+          {isLoading ? t("admin.resolving") : t("admin.resolveBonusBets")}
         </JackpotButton>
       </div>
     </div>

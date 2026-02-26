@@ -165,7 +165,7 @@ export default function Dashboard() {
               <p className="text-muted-foreground">
                 {activeTab === "knockout"
                   ? t("dashboard.knockoutNotOpen")
-                  : "No groups found."}
+                  : t("dashboard.noGroupsFound")}
               </p>
             </div>
           </div>

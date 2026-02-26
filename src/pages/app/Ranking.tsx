@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { rankingService } from "../../services/rankingService";
 import { RankingTable } from "../../components/ranking/RankingTable";
 import { useAuth } from "../../contexts/AuthContext";
 import type { UserRankingDto } from "../../types/api";
 
 export default function AppRanking() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [data, setData] = useState<UserRankingDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +27,7 @@ export default function AppRanking() {
       } catch (err) {
         if (isMounted) {
           console.error("Failed to load ranking", err);
-          setError("Failed to load leaderboard");
+          setError(t("ranking.loadingError"));
         }
       } finally {
         if (isMounted) {
@@ -39,7 +41,7 @@ export default function AppRanking() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [t]);
 
   const sortedRanking = useMemo(() => {
     if (!data.length) return [];
