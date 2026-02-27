@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
-import { Trophy, Medal, Target } from "lucide-react";
+import { Trophy, Medal, Target, Lock } from "lucide-react";
 import { betsService } from "../services/betsService";
 import { teamsService } from "../services/teamsService";
-import type { BonusBetRequest, TeamDto } from "../types/api";
+import { matchesService } from "../services/matchesService";
+import type {
+  BonusBetRequest,
+  TeamDto,
+  MatchGroupResponse,
+} from "../types/api";
 import { useTranslation } from "react-i18next";
 
 interface TimeLeft {
@@ -92,6 +97,8 @@ export function BonusPredictions() {
   const [teams, setTeams] = useState<TeamDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
+  const [firstMatchTime, setFirstMatchTime] = useState<Date | null>(null);
 
   useEffect(() => {
     loadData();
@@ -100,7 +107,7 @@ export function BonusPredictions() {
   const loadData = async () => {
     try {
       setIsLoading(true);
-      const [betData, teamsData] = await Promise.all([
+      const [betData, teamsData, matchesData] = await Promise.all([
         betsService.getBonusBet().catch((e) => {
           if (e.response?.status !== 404) {
             console.error("Failed to load bonus bet", e);
@@ -110,6 +117,10 @@ export function BonusPredictions() {
         teamsService.getTeams().catch((e) => {
           console.error("Failed to load teams", e);
           return [];
+        }),
+        matchesService.getMatches().catch((e: unknown) => {
+          console.error("Failed to load matches for lock check", e);
+          return [] as MatchGroupResponse[];
         }),
       ]);
 
@@ -122,7 +133,24 @@ export function BonusPredictions() {
       }
 
       if (teamsData) {
-        setTeams(teamsData.sort((a, b) => a.name.localeCompare(b.name)));
+        setTeams(
+          teamsData.sort((a: TeamDto, b: TeamDto) =>
+            a.name.localeCompare(b.name),
+          ),
+        );
+      }
+
+      if (matchesData && matchesData.length > 0) {
+        const allMatchTimes = matchesData
+          .flatMap((g: MatchGroupResponse) => g.matches)
+          .map((m: { dateTime: string }) => new Date(m.dateTime).getTime())
+          .filter((ts: number) => !isNaN(ts));
+
+        if (allMatchTimes.length > 0) {
+          const earliest = new Date(Math.min(...allMatchTimes));
+          setFirstMatchTime(earliest);
+          setIsLocked(Date.now() >= earliest.getTime());
+        }
       }
     } finally {
       setIsLoading(false);
@@ -130,6 +158,7 @@ export function BonusPredictions() {
   };
 
   const handleSave = async () => {
+    if (isLocked) return;
     try {
       setIsSaving(true);
       await betsService.placeBonusBet(bonusBet);
@@ -154,13 +183,28 @@ export function BonusPredictions() {
             {t("dashboard.bonusPoints")}
           </span>
         </div>
-        <button
-          onClick={handleSave}
-          disabled={isSaving || isLoading}
-          className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
-        >
-          {isSaving ? t("dashboard.saving") : t("dashboard.saveBonus")}
-        </button>
+        {isLocked ? (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary/50 border border-border px-3 py-2 rounded-lg">
+            <Lock className="w-3.5 h-3.5" />
+            <span>
+              {t("dashboard.bonusLocked", "Apostas encerradas")}{" "}
+              {firstMatchTime &&
+                firstMatchTime.toLocaleDateString(undefined, {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })}
+            </span>
+          </div>
+        ) : (
+          <button
+            onClick={handleSave}
+            disabled={isSaving || isLoading}
+            className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
+          >
+            {isSaving ? t("dashboard.saving") : t("dashboard.saveBonus")}
+          </button>
+        )}
       </div>
 
       {isLoading ? (
@@ -169,7 +213,9 @@ export function BonusPredictions() {
           {t("dashboard.loadingBonus")}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div
+          className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${isLocked ? "opacity-60 pointer-events-none select-none" : ""}`}
+        >
           <BonusCard
             icon={<Trophy className="w-6 h-6 text-yellow-500" />}
             title={t("dashboard.champion")}
@@ -183,6 +229,7 @@ export function BonusPredictions() {
               }))
             }
             options={teams}
+            disabled={isLocked}
           />
           <BonusCard
             icon={<Medal className="w-6 h-6 text-gray-400" />}
@@ -197,6 +244,7 @@ export function BonusPredictions() {
               }))
             }
             options={teams}
+            disabled={isLocked}
           />
           <BonusCard
             icon={<Target className="w-6 h-6 text-blue-500" />}
@@ -208,6 +256,7 @@ export function BonusPredictions() {
             onChange={(e) =>
               setBonusBet((prev) => ({ ...prev, topScorer: e.target.value }))
             }
+            disabled={isLocked}
           />
         </div>
       )}
@@ -226,6 +275,7 @@ interface BonusCardProps {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => void;
   options?: { id: number; name: string }[];
+  disabled?: boolean;
 }
 
 function BonusCard({
@@ -237,6 +287,7 @@ function BonusCard({
   value,
   onChange,
   options,
+  disabled,
 }: BonusCardProps) {
   return (
     <div className="bg-card border border-border rounded-xl p-5 hover:border-primary/50 transition-colors group">
@@ -256,13 +307,15 @@ function BonusCard({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className="w-full bg-secondary/50 border border-input rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50"
+          disabled={disabled}
+          className="w-full bg-secondary/50 border border-input rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50 disabled:cursor-not-allowed"
         />
       ) : (
         <select
           value={value}
           onChange={onChange}
-          className="w-full bg-secondary/50 border border-input rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none cursor-pointer"
+          disabled={disabled}
+          className="w-full bg-secondary/50 border border-input rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none cursor-pointer disabled:cursor-not-allowed"
         >
           <option value="0" disabled>
             {placeholder}

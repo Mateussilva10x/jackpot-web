@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { AvatarSelectionModal } from "../../components/profile/AvatarSelectionModal";
 import { getAvatarById } from "../../utils/avatar";
+import { formatMatchDateTime } from "../../utils/formatDate";
 
 export default function UserProfile() {
   const { id } = useParams<{ id: string }>();
@@ -313,13 +314,15 @@ function GroupBetCard({
           >
             {/* Match Date (Mobile stacked, desktop side) */}
             <div className="text-xs text-muted-foreground sm:w-24 text-center sm:text-left shrink-0">
-              {new Date(match.dateTime).toLocaleDateString()}
-              <div className="hidden sm:block mt-0.5">
-                {new Date(match.dateTime).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </div>
+              {(() => {
+                const { date, time } = formatMatchDateTime(match.dateTime);
+                return (
+                  <>
+                    {date}
+                    <div className="hidden sm:block mt-0.5">{time}</div>
+                  </>
+                );
+              })()}
             </div>
 
             {/* Teams and Score Wrapper */}

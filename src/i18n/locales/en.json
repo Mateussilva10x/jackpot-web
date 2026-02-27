@@ -79,6 +79,7 @@
     "enterPlayer": "Enter player name...",
     "bonusSavedSuccess": "Bonus bets saved!",
     "bonusSavedError": "Failed to save bonus bets.",
+    "bonusLocked": "Bets closed on",
     "timeRemaining": "Time Remaining",
     "untilWorldCup": "Until 2026 World Cup",
     "days": "Days",
@@ -96,7 +97,8 @@
     "finalized": "finalized"
   },
   "groupModal": {
-    "predictions": "Predictions",
+    "predictions": "Bets",
+    "groupLabel": "Group",
     "standings": "Standings",
     "team": "Team",
     "played": "P",
@@ -107,7 +109,7 @@
     "points": "Pts",
     "matches": "Matches",
     "cancel": "Cancel",
-    "savePredictions": "Save Predictions"
+    "savePredictions": "Save Bets"
   },
   "ranking": {
     "leaderboard": "Leaderboard",

@@ -79,6 +79,7 @@
     "enterPlayer": "Nome do jogador...",
     "bonusSavedSuccess": "Apostas bônus salvas!",
     "bonusSavedError": "Falha ao salvar apostas bônus.",
+    "bonusLocked": "Apostas encerradas em",
     "timeRemaining": "Tempo Restante",
     "untilWorldCup": "Até a Copa do Mundo 2026",
     "days": "Dias",
@@ -96,7 +97,8 @@
     "finalized": "finalizadas"
   },
   "groupModal": {
-    "predictions": "Previsões",
+    "predictions": "Apostas",
+    "groupLabel": "Grupo",
     "standings": "Classificação",
     "team": "Time",
     "played": "J",
@@ -107,7 +109,7 @@
     "points": "Pts",
     "matches": "Partidas",
     "cancel": "Cancelar",
-    "savePredictions": "Salvar Previsões"
+    "savePredictions": "Salvar Apostas"
   },
   "ranking": {
     "leaderboard": "Classificação",

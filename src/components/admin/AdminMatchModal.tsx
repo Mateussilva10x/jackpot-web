@@ -3,6 +3,7 @@ import { Modal } from "../ui/Modal";
 import { JackpotScoreInput } from "../ui/JackpotScoreInput";
 import { JackpotButton } from "../ui/JackpotButton";
 import { useTranslation } from "react-i18next";
+import { formatMatchDateTime } from "../../utils/formatDate";
 
 import type { MatchGroupResponse, MatchScoreUpdateDto } from "../../types/api";
 
@@ -167,11 +168,12 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                       </span>
                     </div>
                     <div className="text-[10px] font-mono text-muted-foreground">
-                      {new Date(game.dateTime).toLocaleDateString()} •{" "}
-                      {new Date(game.dateTime).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {(() => {
+                        const { date, time } = formatMatchDateTime(
+                          game.dateTime,
+                        );
+                        return `${date} • ${time}`;
+                      })()}
                     </div>
                   </div>
 
