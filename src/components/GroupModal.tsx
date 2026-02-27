@@ -13,6 +13,7 @@ import type {
 interface GroupModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSaveComplete?: () => void;
   group: MatchGroupResponse | null;
   groupStandings?: GroupStandingDto[];
   onSave: (groupId: string, games: MatchBetResponse[]) => Promise<void>;
@@ -21,6 +22,7 @@ interface GroupModalProps {
 export const GroupModal: React.FC<GroupModalProps> = ({
   isOpen,
   onClose,
+  onSaveComplete,
   group,
   groupStandings,
   onSave,
@@ -70,13 +72,14 @@ export const GroupModal: React.FC<GroupModalProps> = ({
       try {
         await onSave(group.group, games);
         onClose();
+        onSaveComplete?.();
       } catch (error) {
         console.error("Failed to save predictions", error);
       } finally {
         setIsSaving(false);
       }
     }
-  }, [group, games, isSaving, onSave, onClose]);
+  }, [group, games, isSaving, onSave, onClose, onSaveComplete]);
 
   if (!group) return null;
 

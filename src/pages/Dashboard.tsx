@@ -73,12 +73,7 @@ export default function Dashboard() {
       }));
 
     if (betsPayload.length > 0) {
-      try {
-        await betsService.placeBets(betsPayload);
-        await loadMatches();
-      } catch (error) {
-        console.error("Failed to save bets", error);
-      }
+      await betsService.placeBets(betsPayload);
     }
   };
 
@@ -227,6 +222,7 @@ export default function Dashboard() {
       <GroupModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        onSaveComplete={loadMatches}
         group={selectedGroup}
         groupStandings={
           selectedGroup ? standings[selectedGroup.group] : undefined
