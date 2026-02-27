@@ -56,19 +56,11 @@ export default function Dashboard() {
     _groupId: string,
     updatedGames: MatchBetResponse[],
   ) => {
-    const isKnockout = !/^[A-L]$/.test(_groupId);
-
     const betsPayload: BetRequest[] = updatedGames
       .filter((game) => {
         if (
           game.userBet?.homeScore === undefined ||
           game.userBet?.awayScore === undefined
-        )
-          return false;
-        if (
-          isKnockout &&
-          game.userBet.homeScore === game.userBet.awayScore &&
-          game.userBet.selectedWinnerId === undefined
         )
           return false;
         return true;

@@ -49,64 +49,14 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             game.userBet ||
             ({ matchId: gameId } as import("../types/api").BetResponse);
 
-          const updatedHomeScore =
-            team === "home" ? numValue : currentBet.homeScore;
-          const updatedAwayScore =
-            team === "away" ? numValue : currentBet.awayScore;
-
-          let selectedWinnerId = currentBet.selectedWinnerId;
-
-          if (
-            isKnockout &&
-            updatedHomeScore !== undefined &&
-            updatedAwayScore !== undefined
-          ) {
-            if (updatedHomeScore > updatedAwayScore) {
-              selectedWinnerId = 1;
-            } else if (updatedAwayScore > updatedHomeScore) {
-              selectedWinnerId = 2;
-            } else {
-              if (currentBet.homeScore !== currentBet.awayScore) {
-                selectedWinnerId = undefined;
-              }
-            }
-          }
-
           return {
             ...game,
             userBet: {
               ...currentBet,
               [team === "home" ? "homeScore" : "awayScore"]: numValue,
-              selectedWinnerId,
+              selectedWinnerId: undefined,
             },
           };
-        }
-        return game;
-      }),
-    );
-  };
-
-  const handleFlagClick = (gameId: number, teamId: 1 | 2) => {
-    if (!isKnockout) return;
-
-    setGames((prev) =>
-      prev.map((game) => {
-        if (game.id === gameId) {
-          const currentBet = game.userBet;
-          if (
-            currentBet &&
-            currentBet.homeScore !== undefined &&
-            currentBet.awayScore !== undefined &&
-            currentBet.homeScore === currentBet.awayScore
-          ) {
-            return {
-              ...game,
-              userBet: {
-                ...currentBet,
-                selectedWinnerId: teamId,
-              },
-            };
-          }
         }
         return game;
       }),
@@ -121,10 +71,6 @@ export const GroupModal: React.FC<GroupModalProps> = ({
   };
 
   if (!group) return null;
-
-  const uniqueTeams = Array.from(
-    new Set(group.matches.flatMap((m) => [m.homeTeam, m.awayTeam])),
-  );
 
   const isKnockout = !/^[A-L]$/.test(group.group);
   const titleText = isKnockout
@@ -182,101 +128,52 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {groupStandings && groupStandings.length > 0
-                    ? groupStandings.map((standing, i) => (
-                        <tr
-                          key={standing.teamName}
-                          className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
-                        >
-                          <td className="px-4 py-3 font-medium flex items-center gap-2">
-                            <span className="text-[10px] sm:text-xs text-muted-foreground w-3 sm:w-4">
-                              {i + 1}
-                            </span>
-                            <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
-                              <img
-                                src={standing.flagUrl}
-                                alt={`${standing.teamName} flag`}
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).src =
-                                    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
-                                }}
-                              />
-                            </div>
-                            <span className="truncate max-w-[80px] sm:max-w-none">
-                              {standing.teamName}
-                            </span>
-                          </td>
-                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
-                            {standing.matchesPlayed}
-                          </td>
-                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
-                            {standing.wins}
-                          </td>
-                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
-                            {standing.draws}
-                          </td>
-                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
-                            {standing.losses}
-                          </td>
-                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
-                            {standing.goalDifference}
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 text-center font-bold text-primary">
-                            {standing.points}
-                          </td>
-                        </tr>
-                      ))
-                    : uniqueTeams.map((team, i) => (
-                        <tr
-                          key={team}
-                          className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
-                        >
-                          <td className="px-4 py-3 font-medium flex items-center gap-2">
-                            <span className="text-[10px] sm:text-xs text-muted-foreground w-3 sm:w-4">
-                              {i + 1}
-                            </span>
-                            <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
-                              <img
-                                src={
-                                  group.matches.find((m) => m.homeTeam === team)
-                                    ?.homeTeamFlag ||
-                                  group.matches.find((m) => m.awayTeam === team)
-                                    ?.awayTeamFlag ||
-                                  ""
-                                }
-                                alt="Team flag"
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).src =
-                                    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
-                                }}
-                              />
-                            </div>
-                            <span className="truncate max-w-[80px] sm:max-w-none">
-                              {team}
-                            </span>
-                          </td>
-                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
-                            0
-                          </td>
-                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
-                            0
-                          </td>
-                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
-                            0
-                          </td>
-                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
-                            0
-                          </td>
-                          <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
-                            0
-                          </td>
-                          <td className="px-2 sm:px-4 py-3 text-center font-bold text-primary">
-                            0
-                          </td>
-                        </tr>
-                      ))}
+                  {groupStandings &&
+                    groupStandings.length > 0 &&
+                    groupStandings.map((standing, i) => (
+                      <tr
+                        key={standing.teamName}
+                        className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
+                      >
+                        <td className="px-4 py-3 font-medium flex items-center gap-2">
+                          <span className="text-[10px] sm:text-xs text-muted-foreground w-3 sm:w-4">
+                            {i + 1}
+                          </span>
+                          <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
+                            <img
+                              src={standing.flagUrl}
+                              alt={`${standing.teamName} flag`}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src =
+                                  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
+                              }}
+                            />
+                          </div>
+                          <span className="truncate max-w-[80px] sm:max-w-none">
+                            {standing.teamName}
+                          </span>
+                        </td>
+                        <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
+                          {standing.matchesPlayed}
+                        </td>
+                        <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
+                          {standing.wins}
+                        </td>
+                        <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
+                          {standing.draws}
+                        </td>
+                        <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
+                          {standing.losses}
+                        </td>
+                        <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
+                          {standing.goalDifference}
+                        </td>
+                        <td className="px-2 sm:px-4 py-3 text-center font-bold text-primary">
+                          {standing.points}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
@@ -328,22 +225,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col items-center gap-1 flex-1">
                         <div
-                          className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
-                            isKnockout &&
-                            game.userBet?.homeScore !== undefined &&
-                            game.userBet?.awayScore !== undefined &&
-                            game.userBet.homeScore === game.userBet.awayScore &&
-                            !isMatchLocked
-                              ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
-                              : ""
-                          } ${
-                            isKnockout && game.userBet?.selectedWinnerId === 1
-                              ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
-                              : "ring-1 ring-border"
-                          } ${isMatchLocked ? "opacity-75 grayscale-[50%]" : ""}`}
-                          onClick={() => {
-                            if (!isMatchLocked) handleFlagClick(game.id, 1);
-                          }}
+                          className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ring-1 ring-border ${isMatchLocked ? "opacity-75 grayscale-[50%]" : ""}`}
                         >
                           <img
                             src={game.homeTeamFlag}
@@ -356,11 +238,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                           />
                         </div>
                         <span
-                          className={`font-bold text-xs text-center truncate w-full px-1 ${
-                            isKnockout && game.userBet?.selectedWinnerId === 1
-                              ? "text-primary"
-                              : ""
-                          }`}
+                          className={`font-bold text-xs text-center truncate w-full px-1`}
                           title={game.homeTeam}
                         >
                           {game.homeTeam}
@@ -373,22 +251,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
 
                       <div className="flex flex-col items-center gap-1 flex-1">
                         <div
-                          className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
-                            isKnockout &&
-                            game.userBet?.homeScore !== undefined &&
-                            game.userBet?.awayScore !== undefined &&
-                            game.userBet.homeScore === game.userBet.awayScore &&
-                            !isMatchLocked
-                              ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
-                              : ""
-                          } ${
-                            isKnockout && game.userBet?.selectedWinnerId === 2
-                              ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
-                              : "ring-1 ring-border"
-                          } ${isMatchLocked ? "opacity-75 grayscale-[50%]" : ""}`}
-                          onClick={() => {
-                            if (!isMatchLocked) handleFlagClick(game.id, 2);
-                          }}
+                          className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ring-1 ring-border ${isMatchLocked ? "opacity-75 grayscale-[50%]" : ""}`}
                         >
                           <img
                             src={game.awayTeamFlag}
@@ -401,11 +264,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                           />
                         </div>
                         <span
-                          className={`font-bold text-xs text-center truncate w-full px-1 ${
-                            isKnockout && game.userBet?.selectedWinnerId === 2
-                              ? "text-primary"
-                              : ""
-                          }`}
+                          className={`font-bold text-xs text-center truncate w-full px-1`}
                           title={game.awayTeam}
                         >
                           {game.awayTeam}
