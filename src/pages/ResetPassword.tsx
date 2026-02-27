@@ -7,7 +7,7 @@ import { useToast } from "../hooks/useToast";
 import { JackpotInput } from "../components/ui/JackpotInput";
 import { JackpotButton } from "../components/ui/JackpotButton";
 import { JackpotCard } from "../components/ui/JackpotCard";
-import { Trophy, CheckCircle } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
 
 export default function ResetPassword() {
@@ -99,7 +99,7 @@ export default function ResetPassword() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 mb-4 glow-primary">
-            <Trophy className="w-8 h-8 text-primary" />
+            <span className="text-4xl leading-none">⚽</span>
           </div>
           <h1 className="text-3xl font-bold text-gradient-primary mb-2">
             {t("common.appName")}
