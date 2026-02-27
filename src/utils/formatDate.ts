@@ -11,6 +11,9 @@ export function formatMatchDateTime(dateTime: string): {
 } {
   const d = new Date(dateTime);
 
+  // Temporary fix: Add +7 hours to adjust API's UTC time to expected BRT/local time
+  d.setTime(d.getTime() + 7 * 60 * 60 * 1000);
+
   const date = d.toLocaleDateString(undefined, {
     day: "2-digit",
     month: "2-digit",

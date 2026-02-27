@@ -13,6 +13,7 @@ import { ChevronDown, Trophy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { standingsService } from "../services/standingsService";
 import type { GroupStandingDto } from "../types/api";
+import { Lock } from "lucide-react";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -100,6 +101,19 @@ export default function Dashboard() {
   const displayedGroups =
     activeTab === "group" ? groupStageGroups : knockoutGroups;
 
+  // Check if all group stage matches are finished
+  const allGroupMatchesFinished = groupStageGroups.every((g) =>
+    g.matches.every((m) => m.status === "FINISHED"),
+  );
+
+  const handleKnockoutClick = (group: MatchGroupResponse) => {
+    if (!allGroupMatchesFinished) {
+      alert(t("dashboard.knockoutLockedUntilGroupFinished"));
+      return;
+    }
+    handleGroupClick(group);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <Countdown />
@@ -155,67 +169,90 @@ export default function Dashboard() {
             </div>
           </div>
         ) : (
-          displayedGroups.map((group) => (
-            <div
-              key={group.group}
-              onClick={() => handleGroupClick(group)}
-              className="group cursor-pointer bg-card border border-border rounded-xl p-4 hover:border-primary/50 transition-all hover:shadow-md hover:shadow-primary/5 active:scale-[0.99]"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`h-10 rounded-lg bg-green-500/10 flex items-center justify-center border border-green-500/20 group-hover:bg-green-500/20 transition-colors ${/^[A-L]$/.test(group.group) ? "w-10" : "px-3 min-w-[2.5rem]"}`}
-                  >
-                    <span
-                      className={`font-bold text-green-500 whitespace-nowrap ${/^[A-L]$/.test(group.group) ? "text-xl" : "text-sm"}`}
+          displayedGroups.map((group) => {
+            const isKnockout = !/^[A-L]$/.test(group.group);
+            const isLockedKnockout = isKnockout && !allGroupMatchesFinished;
+
+            return (
+              <div
+                key={group.group}
+                onClick={() =>
+                  isKnockout
+                    ? handleKnockoutClick(group)
+                    : handleGroupClick(group)
+                }
+                className={`group cursor-pointer bg-card border border-border rounded-xl p-4 transition-all ${
+                  isLockedKnockout
+                    ? "opacity-60 grayscale-[30%] hover:border-border"
+                    : "hover:border-primary/50 hover:shadow-md hover:shadow-primary/5 active:scale-[0.99]"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`h-10 rounded-lg bg-green-500/10 flex items-center justify-center border border-green-500/20 transition-colors ${
+                        isLockedKnockout ? "" : "group-hover:bg-green-500/20"
+                      } ${!isKnockout ? "w-10" : "px-3 min-w-[2.5rem]"}`}
                     >
-                      {/^[A-L]$/.test(group.group)
-                        ? group.group
-                        : (t(`dashboard.${group.group}`) as string) ||
-                          group.group}
-                    </span>
+                      <span
+                        className={`font-bold text-green-500 whitespace-nowrap ${/^[A-L]$/.test(group.group) ? "text-xl" : "text-sm"}`}
+                      >
+                        {/^[A-L]$/.test(group.group)
+                          ? group.group
+                          : (t(`dashboard.${group.group}`) as string) ||
+                            group.group}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center -space-x-2">
+                      {Array.from(
+                        new Set(
+                          group.matches.flatMap((m) => [
+                            m.homeTeamFlag,
+                            m.awayTeamFlag,
+                          ]),
+                        ),
+                      )
+                        .slice(0, 4)
+                        .map((flag, index) => (
+                          <div
+                            key={flag}
+                            className="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center bg-secondary/50 border-2 border-card shadow-sm relative transition-transform hover:z-10 hover:scale-110"
+                            style={{ zIndex: 4 - index }}
+                          >
+                            <img
+                              src={flag}
+                              alt="Team flag"
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src =
+                                  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
+                              }}
+                            />
+                          </div>
+                        ))}
+                    </div>
                   </div>
 
-                  <div className="flex items-center -space-x-2">
-                    {Array.from(
-                      new Set(
-                        group.matches.flatMap((m) => [
-                          m.homeTeamFlag,
-                          m.awayTeamFlag,
-                        ]),
-                      ),
-                    )
-                      .slice(0, 4)
-                      .map((flag, index) => (
-                        <div
-                          key={flag}
-                          className="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center bg-secondary/50 border-2 border-card shadow-sm relative transition-transform hover:z-10 hover:scale-110"
-                          style={{ zIndex: 4 - index }}
-                        >
-                          <img
-                            src={flag}
-                            alt="Team flag"
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src =
-                                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
-                            }}
-                          />
-                        </div>
-                      ))}
+                  <div className="flex items-center gap-3">
+                    {isLockedKnockout ? (
+                      <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground bg-secondary/50 px-2 py-1 rounded">
+                        <Lock className="w-4 h-4" />
+                        {t("dashboard.locked")}
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-sm font-mono text-muted-foreground bg-secondary/50 px-2 py-1 rounded">
+                          {getProgress(group)}
+                        </span>
+                        <ChevronDown className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                      </>
+                    )}
                   </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-mono text-muted-foreground bg-secondary/50 px-2 py-1 rounded">
-                    {getProgress(group)}
-                  </span>
-
-                  <ChevronDown className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 

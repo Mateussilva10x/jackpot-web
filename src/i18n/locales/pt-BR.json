@@ -64,6 +64,7 @@
     "knockoutStage": "Fase Eliminatória",
     "loadingMatches": "Carregando partidas...",
     "knockoutNotOpen": "As previsões estarão abertas após a fase de grupos.",
+    "knockoutLockedUntilGroupFinished": "Os palpites da fase eliminatória serão liberados assim que os administradores finalizarem todas as partidas da fase de grupos.",
     "bonusPredictions": "Apostas Bônus",
     "bonusPoints": "+50 pontos cada",
     "saveBonus": "Salvar Bônus",
@@ -94,7 +95,8 @@
     "FINAL": "Final",
     "THIRD_PLACE": "Terceiro Lugar",
     "noGroupsFound": "Nenhum grupo encontrado.",
-    "finalized": "finalizadas"
+    "finalized": "finalizadas",
+    "locked": "Trancado"
   },
   "groupModal": {
     "predictions": "Apostas",

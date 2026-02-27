@@ -64,6 +64,7 @@
     "knockoutStage": "Knockout Stage",
     "loadingMatches": "Loading matches...",
     "knockoutNotOpen": "Predictions will open after group stage concludes.",
+    "knockoutLockedUntilGroupFinished": "The knockout stage predictions will be unlocked once the administrators finalize all group stage matches.",
     "bonusPredictions": "Bonus Predictions",
     "bonusPoints": "+50 points each",
     "saveBonus": "Save Bonus",
@@ -94,7 +95,8 @@
     "FINAL": "Final",
     "THIRD_PLACE": "Third Place",
     "noGroupsFound": "No groups found.",
-    "finalized": "finalized"
+    "finalized": "finalized",
+    "locked": "Locked"
   },
   "groupModal": {
     "predictions": "Bets",
