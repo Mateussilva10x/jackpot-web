@@ -87,6 +87,7 @@ export interface MatchBetResponse {
   group: string;
   officialHomeScore?: number;
   officialAwayScore?: number;
+  officialPenaltyWinnerId?: number;
   userBet?: BetResponse;
 }
 

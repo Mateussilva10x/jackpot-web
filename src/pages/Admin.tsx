@@ -62,6 +62,9 @@ export default function Admin() {
             return {
               ...m,
               status: "FINISHED",
+              officialHomeScore: data.homeScore,
+              officialAwayScore: data.awayScore,
+              officialPenaltyWinnerId: data.penaltyWinnerId,
             };
           }
           return m;

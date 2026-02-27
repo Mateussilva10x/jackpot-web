@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Modal } from "./ui/Modal";
 import { JackpotScoreInput } from "./ui/JackpotScoreInput";
 import { JackpotButton } from "./ui/JackpotButton";
@@ -15,7 +15,7 @@ interface GroupModalProps {
   onClose: () => void;
   group: MatchGroupResponse | null;
   groupStandings?: GroupStandingDto[];
-  onSave: (groupId: string, games: MatchBetResponse[]) => void;
+  onSave: (groupId: string, games: MatchBetResponse[]) => Promise<void>;
 }
 
 export const GroupModal: React.FC<GroupModalProps> = ({
@@ -28,6 +28,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
   const { t } = useTranslation();
   const [games, setGames] = useState<MatchBetResponse[]>([]);
   const [now, setNow] = useState(() => Date.now());
+  const [isSaving, setIsSaving] = useState(false);
 
   React.useEffect(() => {
     setNow(Date.now());
@@ -63,12 +64,19 @@ export const GroupModal: React.FC<GroupModalProps> = ({
     );
   };
 
-  const handleSave = () => {
-    if (group) {
-      onSave(group.group, games);
-      onClose();
+  const handleSave = useCallback(async () => {
+    if (group && !isSaving) {
+      setIsSaving(true);
+      try {
+        await onSave(group.group, games);
+        onClose();
+      } catch (error) {
+        console.error("Failed to save predictions", error);
+      } finally {
+        setIsSaving(false);
+      }
     }
-  };
+  }, [group, games, isSaving, onSave, onClose]);
 
   if (!group) return null;
 
@@ -307,6 +315,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             variant="ghost"
             onClick={onClose}
             type="button"
+            disabled={isSaving}
             className="w-full sm:w-auto"
           >
             {t("groupModal.cancel")}
@@ -315,9 +324,13 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             variant="primary"
             onClick={handleSave}
             type="button"
+            disabled={isSaving}
+            isLoading={isSaving}
             className="w-full sm:w-auto"
           >
-            {t("groupModal.savePredictions")}
+            {isSaving
+              ? t("groupModal.saving", "Salvando...")
+              : t("groupModal.savePredictions")}
           </JackpotButton>
         </div>
       </div>
