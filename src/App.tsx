@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ToastProvider } from "./hooks/useToast";
 import { ToastContainer } from "./components/ui/Toast";
@@ -11,10 +11,10 @@ import AppRanking from "./pages/app/Ranking";
 import UserProfile from "./pages/app/UserProfile";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import Register from "./pages/Register";
 import { DesignSystemPage } from "./pages/DesignSystemPage";
 import "./styles/App.css";
 import Dashboard from "./pages/Dashboard";
+import Landing from "./pages/Landing";
 
 function App() {
   return (
@@ -28,14 +28,6 @@ function App() {
               element={
                 <PublicLayout>
                   <Login />
-                </PublicLayout>
-              }
-            />
-            <Route
-              path="/register"
-              element={
-                <PublicLayout>
-                  <Register />
                 </PublicLayout>
               }
             />
@@ -114,7 +106,14 @@ function App() {
               }
             />
 
-            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route
+              path="/"
+              element={
+                <PublicLayout>
+                  <Landing />
+                </PublicLayout>
+              }
+            />
           </Routes>
         </AuthProvider>
       </ToastProvider>

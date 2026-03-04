@@ -10,6 +10,7 @@ import type { MatchGroupResponse, MatchScoreUpdateDto } from "../types/api";
 
 import { AdminMatchModal } from "../components/admin/AdminMatchModal";
 import { AdminBonusResolution } from "../components/admin/AdminBonusResolution";
+import { AdminUserRegistration } from "../components/admin/AdminUserRegistration";
 
 export default function Admin() {
   const { t } = useTranslation();
@@ -112,6 +113,8 @@ export default function Admin() {
       </div>
 
       <AdminBonusResolution />
+
+      <AdminUserRegistration />
 
       {/* Stage Toggles */}
       <h2 className="text-xl font-bold mb-4">{t("admin.officialResults")}</h2>

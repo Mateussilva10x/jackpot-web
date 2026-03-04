@@ -124,16 +124,6 @@ export default function Login() {
             >
               {isLoading ? t("auth.loggingIn") : t("auth.signIn")}
             </JackpotButton>
-
-            <div className="text-center text-sm text-muted-foreground">
-              {t("auth.noAccount")}{" "}
-              <Link
-                to="/register"
-                className="text-primary hover:text-primary/80 font-medium transition-colors"
-              >
-                {t("auth.signUp")}
-              </Link>
-            </div>
           </form>
         </JackpotCard>
 

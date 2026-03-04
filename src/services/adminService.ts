@@ -2,6 +2,7 @@ import { api } from "./api";
 import type {
   MatchScoreUpdateDto,
   BonusBetResolutionRequest,
+  RegisterRequest,
 } from "../types/api";
 
 export const adminService = {
@@ -14,5 +15,9 @@ export const adminService = {
 
   resolveBonusBets: async (data: BonusBetResolutionRequest): Promise<void> => {
     await api.post("/admin/bonus-bets/resolve", data);
+  },
+
+  registerUser: async (data: RegisterRequest): Promise<void> => {
+    await api.post("/auth/register", data);
   },
 };

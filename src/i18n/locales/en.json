@@ -155,5 +155,13 @@
     "submitting": "Submitting...",
     "finalized": "finalized",
     "matchFinalized": "Match Finalized"
+  },
+  "landing": {
+    "title": "Hexa Pool",
+    "subtitle": "Join the best World Cup pool and win amazing prizes!",
+    "participateButton": "I Want to Participate",
+    "forgotPassword": "Forgot my password",
+    "loginText": "I already have an account",
+    "whatsappMessage": "Hello! I would like to participate in the Hexa Pool. How can I make the payment and receive my username and password?"
   }
 }

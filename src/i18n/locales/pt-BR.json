@@ -155,5 +155,13 @@
     "submitting": "Enviando...",
     "finalized": "finalizadas",
     "matchFinalized": "Partida Finalizada"
+  },
+  "landing": {
+    "title": "Bolão do Hexa",
+    "subtitle": "Participe do melhor bolão da Copa e concorra a prêmios incríveis!",
+    "participateButton": "Quero Participar",
+    "forgotPassword": "Esqueci minha senha",
+    "loginText": "Já tenho uma conta",
+    "whatsappMessage": "Olá! Gostaria de participar do Bolão do Hexa. Como faço para fazer o pagamento e receber meu usuário e senha?"
   }
 }
