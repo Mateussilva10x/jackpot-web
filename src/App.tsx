@@ -1,35 +1,124 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ToastProvider } from "./hooks/useToast";
+import { ToastContainer } from "./components/ui/Toast";
+import PublicLayout from "./layouts/PublicLayout";
+import PrivateLayout from "./layouts/PrivateLayout";
+import Login from "./pages/Login";
+import Admin from "./pages/Admin";
+import AppBets from "./pages/app/Bets";
+import AppRanking from "./pages/app/Ranking";
+import UserProfile from "./pages/app/UserProfile";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import { DesignSystemPage } from "./pages/DesignSystemPage";
+import "./styles/App.css";
+import Dashboard from "./pages/Dashboard";
+import Landing from "./pages/Landing";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      <ToastProvider>
+        <AuthProvider>
+          <ToastContainer />
+          <Routes>
+            <Route
+              path="/login"
+              element={
+                <PublicLayout>
+                  <Login />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <PublicLayout>
+                  <ForgotPassword />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/reset-password"
+              element={
+                <PublicLayout>
+                  <ResetPassword />
+                </PublicLayout>
+              }
+            />
+
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateLayout>
+                  <Dashboard />
+                </PrivateLayout>
+              }
+            />
+            <Route
+              path="/app/bets"
+              element={
+                <PrivateLayout>
+                  <AppBets />
+                </PrivateLayout>
+              }
+            />
+            <Route
+              path="/app/ranking"
+              element={
+                <PrivateLayout>
+                  <AppRanking />
+                </PrivateLayout>
+              }
+            />
+            <Route
+              path="/app/profile"
+              element={
+                <PrivateLayout>
+                  <UserProfile />
+                </PrivateLayout>
+              }
+            />
+            <Route
+              path="/profile/:id"
+              element={
+                <PrivateLayout>
+                  <UserProfile />
+                </PrivateLayout>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <PrivateLayout>
+                  <Admin />
+                </PrivateLayout>
+              }
+            />
+
+            <Route
+              path="/design-system"
+              element={
+                <PublicLayout>
+                  <DesignSystemPage />
+                </PublicLayout>
+              }
+            />
+
+            <Route
+              path="/"
+              element={
+                <PublicLayout>
+                  <Landing />
+                </PublicLayout>
+              }
+            />
+          </Routes>
+        </AuthProvider>
+      </ToastProvider>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
