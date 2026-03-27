@@ -332,11 +332,11 @@ function GroupBetCard({
                 <span className="font-medium text-sm sm:text-base line-clamp-1">
                   {match.homeTeam}
                 </span>
-                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full overflow-hidden shrink-0 border border-border/50 bg-secondary">
+                <div className="w-8 h-6 overflow-hidden shrink-0 border border-border/50 bg-secondary">
                   <img
                     src={match.homeTeamFlag}
                     alt={match.homeTeam}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 </div>
               </div>
@@ -356,11 +356,11 @@ function GroupBetCard({
 
               {/* Away Team */}
               <div className="flex-1 flex items-center justify-start gap-2 sm:gap-3 text-left">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full overflow-hidden shrink-0 border border-border/50 bg-secondary">
+                <div className="w-8 h-6 overflow-hidden shrink-0 border border-border/50 bg-secondary">
                   <img
                     src={match.awayTeamFlag}
                     alt={match.awayTeam}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <span className="font-medium text-sm sm:text-base line-clamp-1">

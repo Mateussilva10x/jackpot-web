@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
-import { Trophy, Medal, Target, Lock } from "lucide-react";
+import { Trophy, Lock } from "lucide-react";
 import { betsService } from "../services/betsService";
 import { teamsService } from "../services/teamsService";
 import { matchesService } from "../services/matchesService";
+import { JackpotButton } from "./ui/JackpotButton";
 import type {
   BonusBetRequest,
   TeamDto,
   MatchGroupResponse,
 } from "../types/api";
 import { useTranslation } from "react-i18next";
+import { useToast } from "../hooks/useToast";
 
 interface TimeLeft {
   days: number;
@@ -89,6 +91,7 @@ function TimeUnit({ value, label }: { value: number; label: string }) {
 
 export function BonusPredictions() {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [bonusBet, setBonusBet] = useState<BonusBetRequest>({
     championTeamId: 0,
     runnerUpTeamId: 0,
@@ -99,6 +102,7 @@ export function BonusPredictions() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [firstMatchTime, setFirstMatchTime] = useState<Date | null>(null);
+  const [hasDefinedBet, setHasDefinedBet] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -130,6 +134,9 @@ export function BonusPredictions() {
           runnerUpTeamId: betData.runnerUpTeamId || 0,
           topScorer: betData.topScorer || "",
         });
+        setHasDefinedBet(true);
+      } else {
+        setHasDefinedBet(false);
       }
 
       if (teamsData) {
@@ -162,26 +169,29 @@ export function BonusPredictions() {
     try {
       setIsSaving(true);
       await betsService.placeBonusBet(bonusBet);
-      alert(t("dashboard.bonusSavedSuccess"));
+      setHasDefinedBet(true);
+      showToast(t("dashboard.bonusSavedSuccess"), "success");
     } catch (e) {
       console.error("Failed to save bonus bet", e);
-      alert(t("dashboard.bonusSavedError"));
+      showToast(t("dashboard.bonusSavedError"), "error");
     } finally {
       setIsSaving(false);
     }
   };
 
   return (
-    <div className="mb-8">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-card border border-border rounded-xl p-6 mb-8 mt-8 shadow-sm">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <Trophy className="w-5 h-5 text-green-500" />
-          <h2 className="text-lg font-bold text-foreground">
-            {t("dashboard.bonusPredictions")}
-          </h2>
-          <span className="text-sm text-muted-foreground ml-2">
-            {t("dashboard.bonusPoints")}
-          </span>
+          <Trophy className="w-5 h-5 text-yellow-500" />
+          <div>
+            <h2 className="text-xl font-bold text-foreground">
+              {t("dashboard.bonusPredictions")}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {t("dashboard.bonusPoints")}
+            </p>
+          </div>
         </div>
         {isLocked ? (
           <div className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary/50 border border-border px-3 py-2 rounded-lg">
@@ -196,15 +206,7 @@ export function BonusPredictions() {
                 })}
             </span>
           </div>
-        ) : (
-          <button
-            onClick={handleSave}
-            disabled={isSaving || isLoading}
-            className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
-          >
-            {isSaving ? t("dashboard.saving") : t("dashboard.saveBonus")}
-          </button>
-        )}
+        ) : null}
       </div>
 
       {isLoading ? (
@@ -213,120 +215,95 @@ export function BonusPredictions() {
           {t("dashboard.loadingBonus")}
         </div>
       ) : (
-        <div
-          className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${isLocked ? "opacity-60 pointer-events-none select-none" : ""}`}
-        >
-          <BonusCard
-            icon={<Trophy className="w-6 h-6 text-yellow-500" />}
-            title={t("dashboard.champion")}
-            subtitle={t("dashboard.championSubtitle")}
-            placeholder={t("dashboard.selectTeam")}
-            value={bonusBet.championTeamId}
-            onChange={(e) =>
-              setBonusBet((prev) => ({
-                ...prev,
-                championTeamId: parseInt(e.target.value, 10),
-              }))
-            }
-            options={teams}
-            disabled={isLocked}
-          />
-          <BonusCard
-            icon={<Medal className="w-6 h-6 text-gray-400" />}
-            title={t("dashboard.viceChampion")}
-            subtitle={t("dashboard.viceSubtitle")}
-            placeholder={t("dashboard.selectTeam")}
-            value={bonusBet.runnerUpTeamId}
-            onChange={(e) =>
-              setBonusBet((prev) => ({
-                ...prev,
-                runnerUpTeamId: parseInt(e.target.value, 10),
-              }))
-            }
-            options={teams}
-            disabled={isLocked}
-          />
-          <BonusCard
-            icon={<Target className="w-6 h-6 text-blue-500" />}
-            title={t("dashboard.topScorer")}
-            subtitle={t("dashboard.topScorerSubtitle")}
-            isInput
-            placeholder={t("dashboard.enterPlayer")}
-            value={bonusBet.topScorer}
-            onChange={(e) =>
-              setBonusBet((prev) => ({ ...prev, topScorer: e.target.value }))
-            }
-            disabled={isLocked}
-          />
-        </div>
+        <>
+          <div
+            className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 ${isLocked ? "opacity-60 pointer-events-none select-none" : ""}`}
+          >
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold">{t("dashboard.champion")}</label>
+              <select
+                value={bonusBet.championTeamId}
+                onChange={(e) =>
+                  setBonusBet((prev) => ({
+                    ...prev,
+                    championTeamId: parseInt(e.target.value, 10),
+                  }))
+                }
+                disabled={isLocked}
+                className="p-3 rounded-lg bg-background border border-border outline-none focus:border-primary transition-colors disabled:cursor-not-allowed"
+              >
+                <option value="0" disabled>
+                  {t("dashboard.selectTeam")}
+                </option>
+                {teams
+                  .filter((tm) => tm.id !== bonusBet.runnerUpTeamId)
+                  .map((tm) => (
+                    <option key={tm.id} value={tm.id}>
+                      {tm.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold">{t("dashboard.viceChampion")}</label>
+              <select
+                value={bonusBet.runnerUpTeamId}
+                onChange={(e) =>
+                  setBonusBet((prev) => ({
+                    ...prev,
+                    runnerUpTeamId: parseInt(e.target.value, 10),
+                  }))
+                }
+                disabled={isLocked}
+                className="p-3 rounded-lg bg-background border border-border outline-none focus:border-primary transition-colors disabled:cursor-not-allowed"
+              >
+                <option value="0" disabled>
+                  {t("dashboard.selectTeam")}
+                </option>
+                {teams
+                  .filter((tm) => tm.id !== bonusBet.championTeamId)
+                  .map((tm) => (
+                    <option key={tm.id} value={tm.id}>
+                      {tm.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold">{t("dashboard.topScorer")}</label>
+              <input
+                type="text"
+                value={bonusBet.topScorer}
+                onChange={(e) =>
+                  setBonusBet((prev) => ({ ...prev, topScorer: e.target.value }))
+                }
+                placeholder={t("dashboard.enterPlayer")}
+                disabled={isLocked}
+                className="p-3 rounded-lg bg-background border border-border outline-none focus:border-primary transition-colors disabled:cursor-not-allowed"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end items-center gap-4">
+            {!isLocked && (
+              <JackpotButton
+                variant="primary"
+                onClick={handleSave}
+                disabled={isSaving || isLoading || !bonusBet.championTeamId || !bonusBet.runnerUpTeamId || !bonusBet.topScorer.trim()}
+              >
+                {isSaving 
+                  ? t("dashboard.saving") 
+                  : hasDefinedBet 
+                    ? t("dashboard.updateBonus") 
+                    : t("dashboard.saveBonus")}
+              </JackpotButton>
+            )}
+          </div>
+        </>
       )}
     </div>
   );
 }
 
-interface BonusCardProps {
-  icon: React.ReactNode;
-  title: string;
-  subtitle: string;
-  placeholder: string;
-  isInput?: boolean;
-  value: string | number;
-  onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => void;
-  options?: { id: number; name: string }[];
-  disabled?: boolean;
-}
-
-function BonusCard({
-  icon,
-  title,
-  subtitle,
-  placeholder,
-  isInput,
-  value,
-  onChange,
-  options,
-  disabled,
-}: BonusCardProps) {
-  return (
-    <div className="bg-card border border-border rounded-xl p-5 hover:border-primary/50 transition-colors group">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 bg-secondary rounded-lg group-hover:bg-secondary/80 transition-colors">
-          {icon}
-        </div>
-        <div>
-          <h3 className="font-bold text-foreground">{title}</h3>
-          <p className="text-xs text-muted-foreground">{subtitle}</p>
-        </div>
-      </div>
-
-      {isInput ? (
-        <input
-          type="text"
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          disabled={disabled}
-          className="w-full bg-secondary/50 border border-input rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/50 disabled:cursor-not-allowed"
-        />
-      ) : (
-        <select
-          value={value}
-          onChange={onChange}
-          disabled={disabled}
-          className="w-full bg-secondary/50 border border-input rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none cursor-pointer disabled:cursor-not-allowed"
-        >
-          <option value="0" disabled>
-            {placeholder}
-          </option>
-          {options?.map((opt) => (
-            <option key={opt.id} value={opt.id}>
-              {opt.name}
-            </option>
-          ))}
-        </select>
-      )}
-    </div>
-  );
-}

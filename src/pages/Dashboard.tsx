@@ -14,9 +14,11 @@ import { useTranslation } from "react-i18next";
 import { standingsService } from "../services/standingsService";
 import type { GroupStandingDto } from "../types/api";
 import { Lock } from "lucide-react";
+import { useToast } from "../hooks/useToast";
 
 export default function Dashboard() {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<"group" | "knockout">("group");
   const [groups, setGroups] = useState<MatchGroupResponse[]>([]);
   const [standings, setStandings] = useState<
@@ -74,7 +76,13 @@ export default function Dashboard() {
       }));
 
     if (betsPayload.length > 0) {
-      await betsService.placeBets(betsPayload);
+      try {
+        await betsService.placeBets(betsPayload);
+        showToast(t("dashboard.predictionsSavedSuccess", "Apostas salvas com sucesso!"), "success");
+      } catch (error) {
+        console.error("Failed to save predictions", error);
+        showToast(t("dashboard.predictionsSavedError", "Erro ao salvar apostas."), "error");
+      }
     }
   };
 
@@ -183,7 +191,7 @@ export default function Dashboard() {
                 }
                 className={`group cursor-pointer bg-card border border-border rounded-xl p-4 transition-all ${
                   isLockedKnockout
-                    ? "opacity-60 grayscale-[30%] hover:border-border"
+                    ? "opacity-60 grayscale-30 hover:border-border"
                     : "hover:border-primary/50 hover:shadow-md hover:shadow-primary/5 active:scale-[0.99]"
                 }`}
               >
@@ -192,7 +200,7 @@ export default function Dashboard() {
                     <div
                       className={`h-10 rounded-lg bg-green-500/10 flex items-center justify-center border border-green-500/20 transition-colors ${
                         isLockedKnockout ? "" : "group-hover:bg-green-500/20"
-                      } ${!isKnockout ? "w-10" : "px-3 min-w-[2.5rem]"}`}
+                      } ${!isKnockout ? "w-10" : "px-3 min-w-10"}`}
                     >
                       <span
                         className={`font-bold text-green-500 whitespace-nowrap ${/^[A-L]$/.test(group.group) ? "text-xl" : "text-sm"}`}
@@ -204,7 +212,7 @@ export default function Dashboard() {
                       </span>
                     </div>
 
-                    <div className="flex items-center -space-x-2">
+                    <div className="flex items-center gap-4">
                       {Array.from(
                         new Set(
                           group.matches.flatMap((m) => [
@@ -217,13 +225,13 @@ export default function Dashboard() {
                         .map((flag, index) => (
                           <div
                             key={flag}
-                            className="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center bg-secondary/50 border-2 border-card shadow-sm relative transition-transform hover:z-10 hover:scale-110"
+                            className="w-8 h-6 overflow-hidden flex items-center justify-center bg-secondary/50 border-2 border-card shadow-sm relative transition-transform hover:z-10 hover:scale-110"
                             style={{ zIndex: 4 - index }}
                           >
                             <img
                               src={flag}
                               alt="Team flag"
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-contain"
                               onError={(e) => {
                                 (e.target as HTMLImageElement).src =
                                   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
