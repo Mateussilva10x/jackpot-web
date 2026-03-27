@@ -212,7 +212,7 @@ export default function Dashboard() {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
                       {Array.from(
                         new Set(
                           group.matches.flatMap((m) => [
@@ -225,13 +225,12 @@ export default function Dashboard() {
                         .map((flag, index) => (
                           <div
                             key={flag}
-                            className="w-8 h-6 overflow-hidden flex items-center justify-center bg-secondary/50 border-2 border-card shadow-sm relative transition-transform hover:z-10 hover:scale-110"
-                            style={{ zIndex: 4 - index }}
+                            className="w-8 h-6 overflow-hidden flex items-center justify-center bg-secondary/50 border-2 border-card shadow-sm relative transition-transform hover:z-10 hover:scale-110"                            style={{ zIndex: 4 - index }}
                           >
                             <img
                               src={flag}
                               alt="Team flag"
-                              className="w-full h-full object-contain"
+                              className="w-full h-full object-fill"
                               onError={(e) => {
                                 (e.target as HTMLImageElement).src =
                                   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";

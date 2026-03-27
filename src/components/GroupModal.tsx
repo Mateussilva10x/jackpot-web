@@ -94,11 +94,30 @@ export const GroupModal: React.FC<GroupModalProps> = ({
       <div className="space-y-8">
         {!isKnockout && (
           <div className="bg-secondary/20 rounded-xl p-4 border border-border">
-            <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">
+  
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
               {t("groupModal.standings")}
             </h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs sm:text-sm">
+
+            <div className="flex items-center bg-background/50 border border-border p-1 rounded-lg">
+              <button
+                type="button"
+                className="px-3 py-1 text-[10px] font-bold uppercase rounded-md bg-primary text-primary-foreground shadow-sm transition-all"
+              >
+                {t("groupModal.real")}
+              </button>
+              <button 
+                type="button"
+                className="px-3 py-1 text-[10px] font-bold uppercase rounded-md text-muted-foreground hover:text-foreground transition-all"
+              >
+                {t("groupModal.simulation")}
+              </button>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b border-border/50 text-muted-foreground whitespace-nowrap">
                     <th className="px-2 sm:px-4 py-2 text-left font-medium">
@@ -163,7 +182,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                             />
                           </div>
                           <span className="truncate max-w-20 sm:max-w-none">
-                            {standing.teamName}
+                            {t(`teams.${standing.teamName}`)}
                           </span>
                         </td>
                         <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
