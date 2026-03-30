@@ -94,11 +94,30 @@ export const GroupModal: React.FC<GroupModalProps> = ({
       <div className="space-y-8">
         {!isKnockout && (
           <div className="bg-secondary/20 rounded-xl p-4 border border-border">
-            <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">
+  
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
               {t("groupModal.standings")}
             </h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs sm:text-sm">
+
+            <div className="flex items-center bg-background/50 border border-border p-1 rounded-lg">
+              <button
+                type="button"
+                className="px-3 py-1 text-[10px] font-bold uppercase rounded-md bg-primary text-primary-foreground shadow-sm transition-all"
+              >
+                {t("groupModal.real")}
+              </button>
+              <button 
+                type="button"
+                className="px-3 py-1 text-[10px] font-bold uppercase rounded-md text-muted-foreground hover:text-foreground transition-all"
+              >
+                {t("groupModal.simulation")}
+              </button>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b border-border/50 text-muted-foreground whitespace-nowrap">
                     <th className="px-2 sm:px-4 py-2 text-left font-medium">
@@ -151,19 +170,19 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                           <span className="text-[10px] sm:text-xs text-muted-foreground w-3 sm:w-4">
                             {i + 1}
                           </span>
-                          <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-sm overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
+                          <div className="w-8 h-6 overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
                             <img
                               src={standing.flagUrl}
                               alt={`${standing.teamName} flag`}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-contain"
                               onError={(e) => {
                                 (e.target as HTMLImageElement).src =
                                   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
                               }}
                             />
                           </div>
-                          <span className="truncate max-w-[80px] sm:max-w-none">
-                            {standing.teamName}
+                          <span className="truncate max-w-20 sm:max-w-none">
+                            {t(`teams.${standing.teamName}`)}
                           </span>
                         </td>
                         <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
@@ -238,12 +257,12 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col items-center gap-1 flex-1">
                         <div
-                          className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ring-1 ring-border ${isMatchLocked ? "opacity-75 grayscale-[50%]" : ""}`}
+                          className={`w-8 h-6 bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ring-1 ring-border ${isMatchLocked ? "opacity-75 grayscale-50" : ""}`}
                         >
                           <img
                             src={game.homeTeamFlag}
                             alt={`${game.homeTeam} flag`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src =
                                 "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
@@ -264,12 +283,12 @@ export const GroupModal: React.FC<GroupModalProps> = ({
 
                       <div className="flex flex-col items-center gap-1 flex-1">
                         <div
-                          className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ring-1 ring-border ${isMatchLocked ? "opacity-75 grayscale-[50%]" : ""}`}
+                          className={`w-8 h-6 bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ring-1 ring-border ${isMatchLocked ? "opacity-75 grayscale-50" : ""}`}
                         >
                           <img
                             src={game.awayTeamFlag}
                             alt={`${game.awayTeam} flag`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src =
                                 "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";

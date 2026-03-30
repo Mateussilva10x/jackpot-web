@@ -181,7 +181,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col items-center gap-1 flex-1">
                         <div
-                          className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
+                          className={`w-8 h-6 bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
                             isKnockout &&
                             currentScore.homeScore !== undefined &&
                             currentScore.awayScore !== undefined &&
@@ -200,7 +200,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                           <img
                             src={game.homeTeamFlag}
                             alt={`${game.homeTeam} flag`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                           />
                         </div>
                         <span
@@ -221,7 +221,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
 
                       <div className="flex flex-col items-center gap-1 flex-1">
                         <div
-                          className={`w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
+                          className={`w-8 h-6 bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
                             isKnockout &&
                             currentScore.homeScore !== undefined &&
                             currentScore.awayScore !== undefined &&
@@ -240,7 +240,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                           <img
                             src={game.awayTeamFlag}
                             alt={`${game.awayTeam} flag`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                           />
                         </div>
                         <span
