@@ -40,11 +40,11 @@ export const AdminUserRegistration: React.FC = () => {
         email: formData.email,
         password: formData.password,
       });
-      showToast("Usuário criado com sucesso", "success");
+      showToast(t("admin.userCreatedSuccess"), "success");
       setFormData({ name: "", email: "", password: "" });
     } catch (error) {
       console.error("Failed to register user", error);
-      showToast("Erro ao criar usuário", "error");
+      showToast(t("admin.userCreatedError"), "error");
     } finally {
       setIsLoading(false);
     }
@@ -57,9 +57,9 @@ export const AdminUserRegistration: React.FC = () => {
           <UserPlus className="w-6 h-6" />
         </div>
         <div>
-          <h2 className="text-xl font-bold">Criar Novo Usuário</h2>
+          <h2 className="text-xl font-bold">{t("admin.createUser")}</h2>
           <p className="text-sm text-muted-foreground">
-            Cadastre um novo usuário manualmente no sistema.
+            {t("admin.createUserSubtitle")}
           </p>
         </div>
       </div>
@@ -71,7 +71,7 @@ export const AdminUserRegistration: React.FC = () => {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="Nome Completo"
+            placeholder={t("admin.userNamePlaceholder")}
             disabled={isLoading}
           />
           <JackpotInput
@@ -80,7 +80,7 @@ export const AdminUserRegistration: React.FC = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="E-mail do usuário"
+            placeholder={t("admin.userEmailPlaceholder")}
             disabled={isLoading}
           />
           <JackpotInput
@@ -89,7 +89,7 @@ export const AdminUserRegistration: React.FC = () => {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="Senha padrão"
+            placeholder={t("admin.userPasswordPlaceholder")}
             disabled={isLoading}
           />
         </div>
@@ -100,7 +100,7 @@ export const AdminUserRegistration: React.FC = () => {
             isLoading={isLoading}
             disabled={isLoading}
           >
-            Criar Usuário
+            {t("admin.createUserButton")}
           </JackpotButton>
         </div>
       </form>

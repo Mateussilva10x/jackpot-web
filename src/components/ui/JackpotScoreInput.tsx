@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface JackpotScoreInputProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -16,6 +17,8 @@ export const JackpotScoreInput: React.FC<JackpotScoreInputProps> = ({
   className = "",
   ...props
 }) => {
+  const { t } = useTranslation();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVal = e.target.value;
 
@@ -31,7 +34,7 @@ export const JackpotScoreInput: React.FC<JackpotScoreInputProps> = ({
       pattern="[0-9]*"
       value={value}
       onChange={handleChange}
-      aria-label={teamLabel || "Score input"}
+      aria-label={teamLabel || t("common.scoreInput")}
       className={`score-input ${className}`}
       placeholder="-"
       {...props}

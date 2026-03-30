@@ -74,7 +74,7 @@ export default function Header() {
                 }`}
               >
                 <Trophy className="w-4 h-4" />
-                Admin
+                {t("header.admin")}
               </Link>
             )}
           </nav>
@@ -183,7 +183,7 @@ export default function Header() {
                 }`}
               >
                 <Trophy className="w-5 h-5" />
-                Admin
+                {t("header.admin")}
               </Link>
             )}
 

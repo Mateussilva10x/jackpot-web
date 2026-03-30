@@ -1,5 +1,6 @@
 import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from "lucide-react";
 import { useToast } from "../../hooks/useToast";
+import { useTranslation } from "react-i18next";
 
 export function ToastContainer() {
   const { toasts, hideToast } = useToast();
@@ -35,6 +36,8 @@ interface ToastProps {
 }
 
 function Toast({ message, variant, onClose }: ToastProps) {
+  const { t } = useTranslation();
+
   const variantStyles = {
     success: "bg-success text-success-foreground border-success",
     error: "bg-destructive text-destructive-foreground border-destructive",
@@ -65,7 +68,7 @@ function Toast({ message, variant, onClose }: ToastProps) {
       <button
         onClick={onClose}
         className="flex-shrink-0 hover:opacity-70 transition-opacity"
-        aria-label="Close notification"
+        aria-label={t("common.closeNotification")}
       >
         <X className="w-4 h-4" />
       </button>

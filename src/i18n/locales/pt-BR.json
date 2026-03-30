@@ -13,7 +13,30 @@
     "next": "Próximo",
     "close": "Fechar",
     "you": "Você",
-    "error": "Ocorreu um erro"
+    "error": "Ocorreu um erro",
+    "closeNotification": "Fechar notificação",
+    "scoreInput": "Entrada de placar",
+    "or": "Ou"
+  },
+  "badge": {
+    "live": "AO VIVO",
+    "ended": "ENCERRADO",
+    "upcoming": "EM BREVE"
+  },
+  "header": {
+    "myBets": "Minhas Apostas",
+    "ranking": "Classificação",
+    "admin": "Admin",
+    "toggleLanguage": "Trocar Idioma",
+    "profile": "Meu Perfil",
+    "logout": "Sair",
+    "login": "Entrar"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "bets": "Apostas",
+    "ranking": "Classificação",
+    "admin": "Admin"
   },
   "auth": {
     "loginTitle": "Entre para fazer suas apostas",
@@ -178,7 +201,17 @@
     "updateResult": "Atualizar Resultado",
     "submitting": "Enviando...",
     "finalized": "finalizadas",
-    "matchFinalized": "Partida Finalizada"
+    "matchFinalized": "Partida Finalizada",
+    "createUser": "Criar Novo Usuário",
+    "createUserSubtitle": "Cadastre um novo usuário manualmente no sistema.",
+    "userCreatedSuccess": "Usuário criado com sucesso",
+    "userCreatedError": "Erro ao criar usuário",
+    "userNamePlaceholder": "Nome Completo",
+    "userEmailPlaceholder": "E-mail do usuário",
+    "userPasswordPlaceholder": "Senha padrão",
+    "createUserButton": "Criar Usuário",
+    "finalResults": "RESULTADOS FINAIS",
+    "officialResultLabel": "Resultado oficial:"
   },
   "landing": {
     "title": "Bolão do Hexa",
@@ -186,7 +219,8 @@
     "participateButton": "Quero Participar",
     "forgotPassword": "Esqueci minha senha",
     "loginText": "Já tenho uma conta",
-    "whatsappMessage": "Olá! Gostaria de participar do Bolão do Hexa. Como faço para fazer o pagamento e receber meu usuário e senha?"
+    "whatsappMessage": "Olá! Gostaria de participar do Bolão do Hexa. Como faço para fazer o pagamento e receber meu usuário e senha?",
+    "or": "Ou"
   },
   "teams": {
     "Mexico": "México",

@@ -13,7 +13,30 @@
     "next": "Next",
     "close": "Close",
     "you": "You",
-    "error": "An error occurred"
+    "error": "An error occurred",
+    "closeNotification": "Close notification",
+    "scoreInput": "Score input",
+    "or": "Or"
+  },
+  "badge": {
+    "live": "LIVE",
+    "ended": "ENDED",
+    "upcoming": "UPCOMING"
+  },
+  "header": {
+    "myBets": "My Bets",
+    "ranking": "Ranking",
+    "admin": "Admin",
+    "toggleLanguage": "Toggle Language",
+    "profile": "My Profile",
+    "logout": "Logout",
+    "login": "Login"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "bets": "Bets",
+    "ranking": "Ranking",
+    "admin": "Admin"
   },
   "auth": {
     "loginTitle": "Login to place your bets",
@@ -178,7 +201,17 @@
     "updateResult": "Update Result",
     "submitting": "Submitting...",
     "finalized": "finalized",
-    "matchFinalized": "Match Finalized"
+    "matchFinalized": "Match Finalized",
+    "createUser": "Create New User",
+    "createUserSubtitle": "Manually register a new user in the system.",
+    "userCreatedSuccess": "User created successfully",
+    "userCreatedError": "Error creating user",
+    "userNamePlaceholder": "Full Name",
+    "userEmailPlaceholder": "User email",
+    "userPasswordPlaceholder": "Default password",
+    "createUserButton": "Create User",
+    "finalResults": "FINAL RESULTS",
+    "officialResultLabel": "Official result:"
   },
   "landing": {
     "title": "Hexa Pool",
@@ -186,7 +219,8 @@
     "participateButton": "I Want to Participate",
     "forgotPassword": "Forgot my password",
     "loginText": "I already have an account",
-    "whatsappMessage": "Hello! I would like to participate in the Hexa Pool. How can I make the payment and receive my username and password?"
+    "whatsappMessage": "Hello! I would like to participate in the Hexa Pool. How can I make the payment and receive my username and password?",
+    "or": "Or"
   },
   "teams": {
     "Mexico": "Mexico",

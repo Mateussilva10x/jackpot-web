@@ -132,8 +132,8 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
 
   const isKnockout = !/^[A-L]$/.test(group.group);
   const titleText = isKnockout
-    ? `${t(`dashboard.${group.group}`)} - FINAL RESULTS`
-    : `${t("dashboard.groupStage").split(" ")[0] || "Group"} ${group.group} - FINAL RESULTS`;
+    ? `${t(`dashboard.${group.group}`)} - ${t("admin.finalResults")}`
+    : `${t("groupModal.groupLabel")} ${group.group} - ${t("admin.finalResults")}`;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={titleText}>
@@ -262,7 +262,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                       game.officialAwayScore !== undefined && (
                         <div className="flex items-center justify-center gap-1 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-1.5">
                           <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider mr-1">
-                            Resultado oficial:
+                            {t("admin.officialResultLabel")}
                           </span>
                           <span className="text-base font-black text-foreground">
                             {game.officialHomeScore}
@@ -303,10 +303,10 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                       className="mt-2 text-xs w-full"
                     >
                       {isSubmitting === game.id
-                        ? "Submitting..."
+                        ? t("admin.submitting")
                         : isFinished
-                          ? "Atualizar Resultado"
-                          : "Finalizar Partida"}
+                          ? t("admin.updateResult")
+                          : t("admin.finalizeMatch")}
                     </JackpotButton>
                   </div>
                 </div>

@@ -61,7 +61,7 @@ export default function Landing() {
             <div className="relative flex items-center pt-2">
               <div className="flex-grow border-t border-white/10"></div>
               <span className="flex-shrink-0 mx-4 text-xs uppercase tracking-wider text-muted-foreground/60">
-                Ou
+                {t("landing.or")}
               </span>
               <div className="flex-grow border-t border-white/10"></div>
             </div>
