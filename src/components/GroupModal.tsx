@@ -20,6 +20,84 @@ interface GroupModalProps {
   onSave: (groupId: string, games: MatchBetResponse[]) => Promise<void>;
 }
 
+const computeSimulatedStandings = (games: MatchBetResponse[]): GroupStandingDto[] => {
+  const teamMap = new Map<string, GroupStandingDto>();
+
+  for (const game of games) {
+    if (!teamMap.has(game.homeTeam)) {
+      teamMap.set(game.homeTeam, {
+        teamName: game.homeTeam,
+        isoCode: "",
+        flagUrl: game.homeTeamFlag,
+        points: 0,
+        matchesPlayed: 0,
+        wins: 0,
+        draws: 0,
+        losses: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        goalDifference: 0,
+      });
+    }
+    if (!teamMap.has(game.awayTeam)) {
+      teamMap.set(game.awayTeam, {
+        teamName: game.awayTeam,
+        isoCode: "",
+        flagUrl: game.awayTeamFlag,
+        points: 0,
+        matchesPlayed: 0,
+        wins: 0,
+        draws: 0,
+        losses: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        goalDifference: 0,
+      });
+    }
+  }
+
+  for (const game of games) {
+    const bet = game.userBet;
+    if (bet?.homeScore === undefined || bet?.awayScore === undefined) continue;
+    if (bet.homeScore === null || bet.awayScore === null) continue;
+
+    const home = teamMap.get(game.homeTeam)!;
+    const away = teamMap.get(game.awayTeam)!;
+    const hg = bet.homeScore;
+    const ag = bet.awayScore;
+
+    home.matchesPlayed++;
+    away.matchesPlayed++;
+    home.goalsFor += hg;
+    home.goalsAgainst += ag;
+    away.goalsFor += ag;
+    away.goalsAgainst += hg;
+    home.goalDifference = home.goalsFor - home.goalsAgainst;
+    away.goalDifference = away.goalsFor - away.goalsAgainst;
+
+    if (hg > ag) {
+      home.wins++;
+      home.points += 3;
+      away.losses++;
+    } else if (hg < ag) {
+      away.wins++;
+      away.points += 3;
+      home.losses++;
+    } else {
+      home.draws++;
+      away.draws++;
+      home.points++;
+      away.points++;
+    }
+  }
+
+  return Array.from(teamMap.values()).sort((a, b) => {
+    if (b.points !== a.points) return b.points - a.points;
+    if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+    return b.goalsFor - a.goalsFor;
+  });
+};
+
 export const GroupModal: React.FC<GroupModalProps> = ({
   isOpen,
   onClose,
@@ -32,9 +110,11 @@ export const GroupModal: React.FC<GroupModalProps> = ({
   const [games, setGames] = useState<MatchBetResponse[]>([]);
   const [now, setNow] = useState(() => Date.now());
   const [isSaving, setIsSaving] = useState(false);
+  const [viewMode, setViewMode] = useState<"real" | "simulation">("real");
 
   React.useEffect(() => {
     setNow(Date.now());
+    setViewMode("real");
     if (group) {
       setGames(JSON.parse(JSON.stringify(group.matches)));
     }
@@ -103,13 +183,15 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             <div className="flex items-center bg-background/50 border border-border p-1 rounded-lg">
               <button
                 type="button"
-                className="px-3 py-1 text-[10px] font-bold uppercase rounded-md bg-primary text-primary-foreground shadow-sm transition-all"
+                onClick={() => setViewMode("real")}
+                className={`px-3 py-1 text-[10px] font-bold uppercase rounded-md transition-all ${viewMode === "real" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
               >
                 {t("groupModal.real")}
               </button>
-              <button 
+              <button
                 type="button"
-                className="px-3 py-1 text-[10px] font-bold uppercase rounded-md text-muted-foreground hover:text-foreground transition-all"
+                onClick={() => setViewMode("simulation")}
+                className={`px-3 py-1 text-[10px] font-bold uppercase rounded-md transition-all ${viewMode === "simulation" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
               >
                 {t("groupModal.simulation")}
               </button>
@@ -159,9 +241,10 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {groupStandings &&
-                    groupStandings.length > 0 &&
-                    groupStandings.map((standing, i) => (
+                  {(viewMode === "real"
+                    ? groupStandings ?? []
+                    : computeSimulatedStandings(games)
+                  ).map((standing, i) => (
                       <tr
                         key={standing.teamName}
                         className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
