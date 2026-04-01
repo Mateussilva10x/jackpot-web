@@ -239,7 +239,7 @@ export function BonusPredictions() {
                   .filter((tm) => tm.id !== bonusBet.runnerUpTeamId)
                   .map((tm) => (
                     <option key={tm.id} value={tm.id}>
-                      {tm.name}
+                      {t(`teams.${tm.name}`)}
                     </option>
                   ))}
               </select>
@@ -265,7 +265,7 @@ export function BonusPredictions() {
                   .filter((tm) => tm.id !== bonusBet.championTeamId)
                   .map((tm) => (
                     <option key={tm.id} value={tm.id}>
-                      {tm.name}
+                      {t(`teams.${tm.name}`)}
                     </option>
                   ))}
               </select>

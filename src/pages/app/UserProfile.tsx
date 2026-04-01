@@ -330,13 +330,13 @@ function GroupBetCard({
               {/* Home Team */}
               <div className="flex-1 flex items-center justify-end gap-2 sm:gap-3 text-right">
                 <span className="font-medium text-sm sm:text-base line-clamp-1">
-                  {match.homeTeam}
+                  {t(`teams.${match.homeTeam}`) || match.homeTeam}
                 </span>
                 <div className="w-8 h-6 overflow-hidden shrink-0 border border-border/50 bg-secondary">
                   <img
                     src={match.homeTeamFlag}
                     alt={match.homeTeam}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-fill"
                   />
                 </div>
               </div>
@@ -360,11 +360,11 @@ function GroupBetCard({
                   <img
                     src={match.awayTeamFlag}
                     alt={match.awayTeam}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-fill"
                   />
                 </div>
                 <span className="font-medium text-sm sm:text-base line-clamp-1">
-                  {match.awayTeam}
+                  {t(`teams.${match.awayTeam}`) || match.awayTeam}
                 </span>
               </div>
             </div>
@@ -373,12 +373,12 @@ function GroupBetCard({
             <div className="text-xs sm:w-20 text-center sm:text-right shrink-0">
               <span
                 className={`px-2 py-1 rounded text-[10px] uppercase font-bold tracking-wider ${
-                  match.status === "FINISHED"
-                    ? "bg-border/50 text-muted-foreground"
-                    : "bg-primary/20 text-primary"
+                  match.status?.toLowerCase() === "finished"
+                    ? "bg-border/50 text-muted-foreground" 
+                    : "bg-green-500/20 text-green-500" 
                 }`}
               >
-                {match.status}
+                {t(`status.${match.status?.toLowerCase()}`) || match.status}
               </span>
             </div>
           </div>

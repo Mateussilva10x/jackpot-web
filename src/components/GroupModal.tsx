@@ -208,32 +208,27 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                     <th
                       className="px-1 sm:px-2 py-2 text-center font-medium"
                       title={t("groupModal.played")}
-                    >
-                      J
+                    > {t("groupModal.played")}
                     </th>
                     <th
                       className="px-1 sm:px-2 py-2 text-center font-medium"
                       title={t("groupModal.won")}
-                    >
-                      V
+                    > {t("groupModal.won")}  
                     </th>
                     <th
                       className="px-1 sm:px-2 py-2 text-center font-medium hidden sm:table-cell"
-                      title={t("groupModal.drawn")}
-                    >
-                      E
+                      title={t("groupModal.draw")}
+                    > {t("groupModal.draw")}
                     </th>
                     <th
                       className="px-1 sm:px-2 py-2 text-center font-medium hidden sm:table-cell"
-                      title={t("groupModal.lost")}
-                    >
-                      D
+                      title={t("groupModal.loss")}
+                    > {t("groupModal.loss")}
                     </th>
                     <th
                       className="px-1 sm:px-2 py-2 text-center font-medium"
                       title={t("groupModal.goalDifference")}
-                    >
-                      SG
+                    > {t("groupModal.goalDifference")}
                     </th>
                     <th className="px-2 sm:px-4 py-2 text-center font-medium">
                       Pts
@@ -257,7 +252,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                             <img
                               src={standing.flagUrl}
                               alt={`${standing.teamName} flag`}
-                              className="w-full h-full object-contain"
+                              className="w-full h-full object-fill"
                               onError={(e) => {
                                 (e.target as HTMLImageElement).src =
                                   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
@@ -295,7 +290,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
         )}
 
         <div>
-          <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">
+          <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">     
             {t("groupModal.matches")}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -345,7 +340,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                           <img
                             src={game.homeTeamFlag}
                             alt={`${game.homeTeam} flag`}
-                            className="w-full h-full object-contain"
+                            className="w-full h-full object-fill"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src =
                                 "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
@@ -356,7 +351,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                           className={`font-bold text-xs text-center truncate w-full px-1`}
                           title={game.homeTeam}
                         >
-                          {game.homeTeam}
+                          {t(`teams.${game.homeTeam}`)}
                         </span>
                       </div>
 
@@ -371,7 +366,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                           <img
                             src={game.awayTeamFlag}
                             alt={`${game.awayTeam} flag`}
-                            className="w-full h-full object-contain"
+                            className="w-full h-full object-fill"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src =
                                 "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
@@ -381,8 +376,9 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                         <span
                           className={`font-bold text-xs text-center truncate w-full px-1`}
                           title={game.awayTeam}
+                        
                         >
-                          {game.awayTeam}
+                          {t(`teams.${game.awayTeam}`)}
                         </span>
                       </div>
                     </div>

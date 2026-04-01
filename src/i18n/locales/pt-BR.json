@@ -152,8 +152,8 @@
     "team": "Time",
     "played": "J",
     "won": "V",
-    "drawn": "E",
-    "lost": "D",
+    "draw": "E",
+    "loss": "D",
     "goalDifference": "SG",
     "points": "Pts",
     "matches": "Partidas",
@@ -222,6 +222,11 @@
     "whatsappMessage": "Olá! Gostaria de participar do Bolão do Hexa. Como faço para fazer o pagamento e receber meu usuário e senha?",
     "or": "Ou"
   },
+  "status": {
+    "finished": "Encerrado",
+    "scheduled": "Agendado",
+    "live": "Em Andamento"
+  },
   "teams": {
     "Mexico": "México",
     "South Africa": "África do Sul",
@@ -264,6 +269,12 @@
     "England": "Inglaterra",
     "Croatia": "Croácia",
     "Ghana": "Gana",
-    "Panama": "Panamá"
+    "Panama": "Panamá",
+    "DR Congo": "RD Congo",
+    "Iraq": "Iraque",
+    "Türkiye": "Turquia",
+    "Sweden": "Suécia",
+    "Czech Republic": "República Tcheca",
+    "Bosnia and Herzegovina": "Bósnia"
   }
 }
