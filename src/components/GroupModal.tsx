@@ -120,6 +120,13 @@ export const GroupModal: React.FC<GroupModalProps> = ({
     }
   }, [group]);
 
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 30_000);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleScoreChange = (
     gameId: number,
     team: "home" | "away",

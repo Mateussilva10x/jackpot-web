@@ -108,6 +108,14 @@ export function BonusPredictions() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    if (!firstMatchTime) return;
+    const interval = setInterval(() => {
+      setIsLocked(Date.now() >= firstMatchTime.getTime());
+    }, 30_000);
+    return () => clearInterval(interval);
+  }, [firstMatchTime]);
+
   const loadData = async () => {
     try {
       setIsLoading(true);
