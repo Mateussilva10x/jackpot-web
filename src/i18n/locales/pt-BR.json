@@ -108,7 +108,7 @@
     "knockoutNotOpen": "As previsões estarão abertas após a fase de grupos.",
     "knockoutLockedUntilGroupFinished": "Os palpites da fase eliminatória serão liberados assim que os administradores finalizarem todas as partidas da fase de grupos.",
     "bonusPredictions": "Apostas Bônus",
-    "bonusPoints": "+50 pontos cada",
+    "bonusPoints": "Campeão +50 · Vice +25 · Artilheiro +70 (máx. 145 pts)",
     "saveBonus": "Salvar Bônus",
     "updateBonus": "Atualizar aposta bônus",
     "saving": "Salvando...",

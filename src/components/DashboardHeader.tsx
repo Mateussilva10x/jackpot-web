@@ -228,7 +228,7 @@ export function BonusPredictions() {
             className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 ${isLocked ? "opacity-60 pointer-events-none select-none" : ""}`}
           >
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold">{t("dashboard.champion")}</label>
+              <label className="text-sm font-bold flex items-center gap-2">{t("dashboard.champion")} <span className="text-xs font-semibold text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded">+50 pts</span></label>
               <select
                 value={bonusBet.championTeamId}
                 onChange={(e) =>
@@ -254,7 +254,7 @@ export function BonusPredictions() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold">{t("dashboard.viceChampion")}</label>
+              <label className="text-sm font-bold flex items-center gap-2">{t("dashboard.viceChampion")} <span className="text-xs font-semibold text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded">+25 pts</span></label>
               <select
                 value={bonusBet.runnerUpTeamId}
                 onChange={(e) =>
@@ -280,7 +280,7 @@ export function BonusPredictions() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold">{t("dashboard.topScorer")}</label>
+              <label className="text-sm font-bold flex items-center gap-2">{t("dashboard.topScorer")} <span className="text-xs font-semibold text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded">+70 pts</span></label>
               <input
                 type="text"
                 value={bonusBet.topScorer}

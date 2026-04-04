@@ -108,7 +108,7 @@
     "knockoutNotOpen": "Predictions will open after group stage concludes.",
     "knockoutLockedUntilGroupFinished": "The knockout stage predictions will be unlocked once the administrators finalize all group stage matches.",
     "bonusPredictions": "Bonus Predictions",
-    "bonusPoints": "+50 points each",
+    "bonusPoints": "Champion +50 · Runner-up +25 · Top Scorer +70 (max. 145 pts)",
     "saveBonus": "Save Bonus",
     "updateBonus": "Update Bonus Prediction",
     "saving": "Saving...",
