@@ -196,9 +196,6 @@ export function BonusPredictions() {
             <h2 className="text-xl font-bold text-foreground">
               {t("dashboard.bonusPredictions")}
             </h2>
-            <p className="text-sm text-muted-foreground">
-              {t("dashboard.bonusPoints")}
-            </p>
           </div>
         </div>
         {isLocked ? (
@@ -228,7 +225,12 @@ export function BonusPredictions() {
             className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 ${isLocked ? "opacity-60 pointer-events-none select-none" : ""}`}
           >
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold flex items-center gap-2">{t("dashboard.champion")} <span className="text-xs font-semibold text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded">+50 pts</span></label>
+              <label className="text-sm font-bold flex items-center gap-2">
+                {t("dashboard.champion")}{" "}
+                <span className="text-xs font-semibold text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded">
+                  +50 pts
+                </span>
+              </label>
               <select
                 value={bonusBet.championTeamId}
                 onChange={(e) =>
@@ -254,7 +256,12 @@ export function BonusPredictions() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold flex items-center gap-2">{t("dashboard.viceChampion")} <span className="text-xs font-semibold text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded">+25 pts</span></label>
+              <label className="text-sm font-bold flex items-center gap-2">
+                {t("dashboard.viceChampion")}{" "}
+                <span className="text-xs font-semibold text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded">
+                  +25 pts
+                </span>
+              </label>
               <select
                 value={bonusBet.runnerUpTeamId}
                 onChange={(e) =>
@@ -280,12 +287,20 @@ export function BonusPredictions() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold flex items-center gap-2">{t("dashboard.topScorer")} <span className="text-xs font-semibold text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded">+70 pts</span></label>
+              <label className="text-sm font-bold flex items-center gap-2">
+                {t("dashboard.topScorer")}{" "}
+                <span className="text-xs font-semibold text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded">
+                  +70 pts
+                </span>
+              </label>
               <input
                 type="text"
                 value={bonusBet.topScorer}
                 onChange={(e) =>
-                  setBonusBet((prev) => ({ ...prev, topScorer: e.target.value }))
+                  setBonusBet((prev) => ({
+                    ...prev,
+                    topScorer: e.target.value,
+                  }))
                 }
                 placeholder={t("dashboard.enterPlayer")}
                 disabled={isLocked}
@@ -299,12 +314,18 @@ export function BonusPredictions() {
               <JackpotButton
                 variant="primary"
                 onClick={handleSave}
-                disabled={isSaving || isLoading || !bonusBet.championTeamId || !bonusBet.runnerUpTeamId || !bonusBet.topScorer.trim()}
+                disabled={
+                  isSaving ||
+                  isLoading ||
+                  !bonusBet.championTeamId ||
+                  !bonusBet.runnerUpTeamId ||
+                  !bonusBet.topScorer.trim()
+                }
               >
-                {isSaving 
-                  ? t("dashboard.saving") 
-                  : hasDefinedBet 
-                    ? t("dashboard.updateBonus") 
+                {isSaving
+                  ? t("dashboard.saving")
+                  : hasDefinedBet
+                    ? t("dashboard.updateBonus")
                     : t("dashboard.saveBonus")}
               </JackpotButton>
             )}
@@ -314,4 +335,3 @@ export function BonusPredictions() {
     </div>
   );
 }
-
