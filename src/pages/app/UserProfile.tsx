@@ -17,6 +17,63 @@ import { AvatarSelectionModal } from "../../components/profile/AvatarSelectionMo
 import { getAvatarById } from "../../utils/avatar";
 import { formatMatchDateTime } from "../../utils/formatDate";
 
+function hasKnockoutStarted(bets: MatchGroupResponse[]): boolean {
+  const knockoutGroups = bets.filter((g) => !/^[A-L]$/.test(g.group));
+
+  if (knockoutGroups.length === 0) return false;
+
+  const firstKnockoutDate = knockoutGroups
+    .flatMap((g) => g.matches)
+    .map((m) => new Date(m.dateTime))
+    .sort((a, b) => a.getTime() - b.getTime())[0];
+
+  if (!firstKnockoutDate) return false;
+
+  return new Date() >= firstKnockoutDate;
+}
+
+function getFilteredAndSortedBets(
+  bets: MatchGroupResponse[],
+  isMyProfile: boolean,
+  t: TFunction,
+): MatchGroupResponse[] {
+  let filteredBets = bets;
+
+  if (!isMyProfile) {
+    const knockoutHasStarted = hasKnockoutStarted(bets);
+
+    if (knockoutHasStarted) {
+      filteredBets = bets.filter((g) => !/^[A-L]$/.test(g.group));
+    } else {
+      filteredBets = bets.filter((g) => /^[A-L]$/.test(g.group));
+    }
+  }
+
+  const KNOCKOUT_ORDER = [
+    "ROUND_32",
+    "ROUND_16",
+    "QUARTER",
+    "SEMI",
+    "THIRD_PLACE",
+    "FINAL",
+  ];
+
+  return filteredBets.sort((a, b) => {
+    const aIsKnockout = !/^[A-L]$/.test(a.group);
+    const bIsKnockout = !/^[A-L]$/.test(b.group);
+
+    if (!aIsKnockout && !bIsKnockout) {
+      return a.group.localeCompare(b.group);
+    }
+
+    if (aIsKnockout && bIsKnockout) {
+      return KNOCKOUT_ORDER.indexOf(a.group) - KNOCKOUT_ORDER.indexOf(b.group);
+    }
+
+    return aIsKnockout ? 1 : -1;
+  });
+}
+
 export default function UserProfile() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -149,8 +206,10 @@ export default function UserProfile() {
 
   const resolvedAvatar = profile.avatarId ?? profile.avatar;
 
+  const filteredBets = getFilteredAndSortedBets(profile.bets || [], isMyProfile, t);
+
   const totalBets =
-    profile.bets?.reduce((acc, group) => {
+    filteredBets?.reduce((acc, group) => {
       return (
         acc +
         group.matches.filter(
@@ -265,7 +324,7 @@ export default function UserProfile() {
         </div>
       ) : (
         <div className="space-y-6">
-          {profile.bets.map((group) => (
+          {filteredBets.map((group) => (
             <GroupBetCard key={group.group} group={group} t={t} />
           ))}
         </div>
