@@ -34,7 +34,7 @@ export default function Header() {
               to={user?.role === "ADMIN" ? "/admin" : "/dashboard"}
               className="text-lg font-bold text-foreground hover:opacity-80 transition-opacity"
             >
-              {t("common.appName", "Bolão do Hexa")}
+              {t("common.appName")}
             </Link>
           </div>
 
