@@ -35,7 +35,6 @@ function hasKnockoutStarted(bets: MatchGroupResponse[]): boolean {
 function getFilteredAndSortedBets(
   bets: MatchGroupResponse[],
   isMyProfile: boolean,
-  t: TFunction,
 ): MatchGroupResponse[] {
   let filteredBets = bets;
 
@@ -206,7 +205,10 @@ export default function UserProfile() {
 
   const resolvedAvatar = profile.avatarId ?? profile.avatar;
 
-  const filteredBets = getFilteredAndSortedBets(profile.bets || [], isMyProfile, t);
+  const filteredBets = getFilteredAndSortedBets(
+    profile.bets || [],
+    isMyProfile,
+  );
 
   const totalBets =
     filteredBets?.reduce((acc, group) => {
@@ -433,8 +435,8 @@ function GroupBetCard({
               <span
                 className={`px-2 py-1 rounded text-[10px] uppercase font-bold tracking-wider ${
                   match.status?.toLowerCase() === "finished"
-                    ? "bg-border/50 text-muted-foreground" 
-                    : "bg-green-500/20 text-green-500" 
+                    ? "bg-border/50 text-muted-foreground"
+                    : "bg-green-500/20 text-green-500"
                 }`}
               >
                 {t(`status.${match.status?.toLowerCase()}`) || match.status}
