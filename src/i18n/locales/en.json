@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Bolão do Hexa",
+    "appName": "Marca Da Cal Bet",
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
@@ -40,7 +40,7 @@
   },
   "auth": {
     "loginTitle": "Login to place your bets",
-    "registerTitle": "Join the best betting pool",
+    "registerTitle": "Join Marca Da Cal Bet",
     "createAccount": "Create Account",
     "email": "Email",
     "password": "Password",
@@ -214,12 +214,12 @@
     "officialResultLabel": "Official result:"
   },
   "landing": {
-    "title": "Hexa Pool",
+    "title": "Marca Da Cal Bet",
     "subtitle": "Join the best World Cup pool and win amazing prizes!",
     "participateButton": "I Want to Participate",
     "forgotPassword": "Forgot my password",
     "loginText": "I already have an account",
-    "whatsappMessage": "Hello! I would like to participate in the Hexa Pool. How can I make the payment and receive my username and password?",
+    "whatsappMessage": "Hello! I would like to participate in Marca Da Cal Bet. How can I make the payment and receive my username and password?",
     "or": "Or"
   },
   "status": {

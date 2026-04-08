@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Bolão do Hexa",
+    "appName": "Marca Da Cal Bet",
     "login": "Entrar",
     "register": "Cadastrar",
     "logout": "Sair",
@@ -40,7 +40,7 @@
   },
   "auth": {
     "loginTitle": "Entre para fazer suas apostas",
-    "registerTitle": "Junte-se ao melhor bolão de apostas",
+    "registerTitle": "Junte-se ao Marca Da Cal Bet",
     "createAccount": "Criar Conta",
     "email": "Email",
     "password": "Senha",
@@ -214,12 +214,12 @@
     "officialResultLabel": "Resultado oficial:"
   },
   "landing": {
-    "title": "Bolão do Hexa",
+    "title": "Marca Da Cal Bet",
     "subtitle": "Participe do melhor bolão da Copa e concorra a prêmios incríveis!",
     "participateButton": "Quero Participar",
     "forgotPassword": "Esqueci minha senha",
     "loginText": "Já tenho uma conta",
-    "whatsappMessage": "Olá! Gostaria de participar do Bolão do Hexa. Como faço para fazer o pagamento e receber meu usuário e senha?",
+    "whatsappMessage": "Olá! Gostaria de participar do Marca Da Cal Bet. Como faço para fazer o pagamento e receber meu usuário e senha?",
     "or": "Ou"
   },
   "status": {
