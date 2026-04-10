@@ -179,7 +179,11 @@
     "noBetsOtherProfile": "This user hasn't made any predictions yet.",
     "predicted": "predicted",
     "selectAvatar": "Choose Avatar",
-    "changeAvatar": "Change Avatar"
+    "changeAvatar": "Change Avatar",
+    "todayMatches": "Today's Matches",
+    "hideBets": "Hide Bets",
+    "showBets": "Show Bets",
+    "noPrediction": "No Prediction"
   },
   "admin": {
     "title": "Administrator Dashboard",

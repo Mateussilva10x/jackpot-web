@@ -9,12 +9,13 @@ import type {
 } from "../types/api";
 import { matchesService } from "../services/matchesService";
 import { betsService } from "../services/betsService";
-import { ChevronDown, Trophy } from "lucide-react";
+import { ChevronDown, Trophy, Calendar, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { standingsService } from "../services/standingsService";
 import type { GroupStandingDto } from "../types/api";
 import { Lock } from "lucide-react";
 import { useToast } from "../hooks/useToast";
+import { formatMatchDateTime } from "../utils/formatDate";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -29,10 +30,33 @@ export default function Dashboard() {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [todayMatches, setTodayMatches] = useState<MatchBetResponse[]>([]);
+  const [showTodayBets, setShowTodayBets] = useState(true);
 
   useEffect(() => {
     loadMatches();
   }, []);
+
+  // TESTE: Extract today's matches from all groups
+  useEffect(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const allMatches = groups
+      .flatMap((group) => group.matches)
+      .filter((match) => {
+        const matchDate = new Date(match.dateTime);
+        matchDate.setHours(0, 0, 0, 0);
+        return matchDate.getTime() === today.getTime();
+      })
+      .sort(
+        (a, b) =>
+          new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime(),
+      );
+
+    console.log("TODAY'S MATCHES DEBUG:", { today, allMatches, groupsCount: groups.length });
+    setTodayMatches(allMatches);
+  }, [groups]);
 
   const loadMatches = async () => {
     try {
@@ -125,7 +149,6 @@ export default function Dashboard() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <Countdown />
-
       <BonusPredictions />
 
       {/* Stage Toggles */}

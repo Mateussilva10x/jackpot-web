@@ -179,7 +179,11 @@
     "noBetsOtherProfile": "Este usuário ainda não fez nenhuma previsão.",
     "predicted": "previstos",
     "selectAvatar": "Escolher Avatar",
-    "changeAvatar": "Mudar Avatar"
+    "changeAvatar": "Mudar Avatar",
+    "todayMatches": "Jogos de Hoje",
+    "hideBets": "Esconder Palpites",
+    "showBets": "Mostrar Palpites",
+    "noPrediction": "Sem Palpite"
   },
   "admin": {
     "title": "Painel do Administrador",
