@@ -78,7 +78,10 @@
     "newPassword": "New Password",
     "confirmNewPassword": "Confirm New Password",
     "saving": "Saving...",
-    "resetPassword": "Reset Password"
+    "resetPassword": "Reset Password",
+    "welcome": "Welcome!",
+    "passwordSetDesc": "Your password has been set successfully.",
+    "continue": "Continue"
   },
   "validation": {
     "emailRequired": "Email is required",

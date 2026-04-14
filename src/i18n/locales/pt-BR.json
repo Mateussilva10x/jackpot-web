@@ -78,7 +78,10 @@
     "newPassword": "Nova Senha",
     "confirmNewPassword": "Confirmar Nova Senha",
     "saving": "Salvando...",
-    "resetPassword": "Redefinir Senha"
+    "resetPassword": "Redefinir Senha",
+    "welcome": "Bem-vindo!",
+    "passwordSetDesc": "Sua senha foi definida com sucesso.",
+    "continue": "Continuar"
   },
   "validation": {
     "emailRequired": "Email é obrigatório",

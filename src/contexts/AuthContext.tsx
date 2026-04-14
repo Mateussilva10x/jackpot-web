@@ -89,7 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await api.post("/auth/login", credentials);
 
-      const { token, id, role, email, avatar, avatarId } = response.data;
+      const { token, id, role, email, avatar, avatarId, isFirstLogin } = response.data;
 
       setAuthToken(token);
       setUser({
@@ -104,7 +104,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               ? Number(avatar)
               : undefined,
       });
-      if (role === "ADMIN") {
+      if (isFirstLogin) {
+        navigate(`/reset-password?token=${token}&firstLogin=true`);
+      } else if (role === "ADMIN") {
         navigate("/admin");
       } else {
         navigate("/dashboard");
@@ -127,7 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await api.post("/auth/register", data);
 
       if (response.data.token) {
-        const { token, id, role, email, avatar, avatarId } = response.data;
+        const { token, id, role, email, avatar, avatarId, isFirstLogin } = response.data;
         setAuthToken(token);
         setUser({
           id: String(id),
@@ -141,7 +143,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 ? Number(avatar)
                 : undefined,
         });
-        if (role === "ADMIN") {
+        if (isFirstLogin) {
+          navigate(`/reset-password?token=${token}&firstLogin=true`);
+        } else if (role === "ADMIN") {
           navigate("/admin");
         } else {
           navigate("/dashboard");

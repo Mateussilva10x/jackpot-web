@@ -138,6 +138,7 @@ export interface AuthResponse {
   email: string;
   avatar?: number | string;
   avatarId?: number | string;
+  isFirstLogin?: boolean;
 }
 
 export interface LoginRequest {

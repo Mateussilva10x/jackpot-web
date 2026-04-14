@@ -18,6 +18,7 @@ export default function ResetPassword() {
   const navigate = useNavigate();
 
   const token = searchParams.get("token");
+  const firstLogin = searchParams.get("firstLogin") === "true";
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -119,22 +120,28 @@ export default function ResetPassword() {
               </div>
               <div className="space-y-2">
                 <h3 className="text-xl font-bold text-foreground">
-                  {t("auth.passwordChanged", "Password Changed!")}
+                  {firstLogin
+                    ? t("auth.welcome", "Welcome!")
+                    : t("auth.passwordChanged", "Password Changed!")}
                 </h3>
                 <p className="text-muted-foreground text-sm">
-                  {t(
-                    "auth.passwordChangedDesc",
-                    "Your password has been changed successfully.",
-                  )}
+                  {firstLogin
+                    ? t("auth.passwordSetDesc", "Your password has been set successfully.")
+                    : t(
+                        "auth.passwordChangedDesc",
+                        "Your password has been changed successfully.",
+                      )}
                 </p>
               </div>
               <div className="pt-4">
                 <JackpotButton
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate(firstLogin ? "/dashboard" : "/login")}
                   variant="primary"
                   className="w-full"
                 >
-                  {t("auth.signIn", "Sign In")}
+                  {firstLogin
+                    ? t("auth.continue", "Continue")
+                    : t("auth.signIn", "Sign In")}
                 </JackpotButton>
               </div>
             </div>
