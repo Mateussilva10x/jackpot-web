@@ -9,13 +9,12 @@ import type {
 } from "../types/api";
 import { matchesService } from "../services/matchesService";
 import { betsService } from "../services/betsService";
-import { ChevronDown, Trophy, Calendar, Eye, EyeOff } from "lucide-react";
+import { ChevronDown, Trophy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { standingsService } from "../services/standingsService";
 import type { GroupStandingDto } from "../types/api";
 import { Lock } from "lucide-react";
 import { useToast } from "../hooks/useToast";
-import { formatMatchDateTime } from "../utils/formatDate";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -30,8 +29,7 @@ export default function Dashboard() {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [todayMatches, setTodayMatches] = useState<MatchBetResponse[]>([]);
-  const [showTodayBets, setShowTodayBets] = useState(true);
+  const [, setTodayMatches] = useState<MatchBetResponse[]>([]);
 
   useEffect(() => {
     loadMatches();
@@ -54,7 +52,11 @@ export default function Dashboard() {
           new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime(),
       );
 
-    console.log("TODAY'S MATCHES DEBUG:", { today, allMatches, groupsCount: groups.length });
+    console.log("TODAY'S MATCHES DEBUG:", {
+      today,
+      allMatches,
+      groupsCount: groups.length,
+    });
     setTodayMatches(allMatches);
   }, [groups]);
 
@@ -102,10 +104,16 @@ export default function Dashboard() {
     if (betsPayload.length > 0) {
       try {
         await betsService.placeBets(betsPayload);
-        showToast(t("dashboard.predictionsSavedSuccess", "Apostas salvas com sucesso!"), "success");
+        showToast(
+          t("dashboard.predictionsSavedSuccess", "Apostas salvas com sucesso!"),
+          "success",
+        );
       } catch (error) {
         console.error("Failed to save predictions", error);
-        showToast(t("dashboard.predictionsSavedError", "Erro ao salvar apostas."), "error");
+        showToast(
+          t("dashboard.predictionsSavedError", "Erro ao salvar apostas."),
+          "error",
+        );
       }
     }
   };
@@ -248,7 +256,8 @@ export default function Dashboard() {
                         .map((flag, index) => (
                           <div
                             key={flag}
-                            className="w-8 h-6 overflow-hidden flex items-center justify-center bg-secondary/50 border-2 border-card shadow-sm relative transition-transform hover:z-10 hover:scale-110"                            style={{ zIndex: 4 - index }}
+                            className="w-8 h-6 overflow-hidden flex items-center justify-center bg-secondary/50 border-2 border-card shadow-sm relative transition-transform hover:z-10 hover:scale-110"
+                            style={{ zIndex: 4 - index }}
                           >
                             <img
                               src={flag}
