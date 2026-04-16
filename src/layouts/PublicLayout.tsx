@@ -1,11 +1,12 @@
 import type { ReactNode } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const location = useLocation();
 
-  if (user) {
+  if (user && location.pathname !== "/reset-password") {
     if (user.role === "ADMIN") {
       return <Navigate to="/admin" replace />;
     }
