@@ -22,6 +22,7 @@ interface User {
   email: string;
   role?: string;
   avatar?: number;
+  isFirstLogin?: boolean;
 }
 
 interface AuthContextType {
@@ -63,6 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 : userData.avatar != null
                   ? Number(userData.avatar)
                   : undefined,
+            isFirstLogin: userData.isFirstLogin,
           });
         } catch {
           removeAuthToken();
@@ -103,6 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             : avatar != null
               ? Number(avatar)
               : undefined,
+        isFirstLogin,
       });
       if (isFirstLogin) {
         navigate(`/reset-password?token=${token}&firstLogin=true`);
@@ -142,6 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               : avatar != null
                 ? Number(avatar)
                 : undefined,
+          isFirstLogin,
         });
         if (isFirstLogin) {
           navigate(`/reset-password?token=${token}&firstLogin=true`);
