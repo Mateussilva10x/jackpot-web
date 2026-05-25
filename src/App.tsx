@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import AppBets from "./pages/app/Bets";
 import AppRanking from "./pages/app/Ranking";
+import AppRules from "./pages/app/Rules";
 import UserProfile from "./pages/app/UserProfile";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -69,6 +70,14 @@ function App() {
               element={
                 <PrivateLayout>
                   <AppRanking />
+                </PrivateLayout>
+              }
+            />
+            <Route
+              path="/app/rules"
+              element={
+                <PrivateLayout>
+                  <AppRules />
                 </PrivateLayout>
               }
             />

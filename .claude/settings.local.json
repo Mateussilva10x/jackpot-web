@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -l useTranslation /c/Projetos/jackpot-web/src/components/**/*.tsx)",
+      "Bash(grep -r \"Ou\\\\|FINAL RESULTS\\\\|Admin\\\\|My Bets\\\\|Ranking\\\\|Criar Novo Usuário\\\\|Cadastre um novo usuário\\\\|Nome Completo\\\\|E-mail do usuário\\\\|Senha padrão\\\\|Usuário criado\\\\|Erro ao criar\\\\|AO VIVO\\\\|ENCERRADO\\\\|EM BREVE\\\\|Localização\\\\|Placeholder\\\\|Dashboard\\\\|Bets\\\\|Ranking\\\\|Admin\\\\|Score input\\\\|Close notification\" /c/Projetos/jackpot-web/src --include=*.tsx --include=*.ts -n)"
+    ]
+  }
+}

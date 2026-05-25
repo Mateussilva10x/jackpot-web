@@ -20,7 +20,9 @@ interface GroupModalProps {
   onSave: (groupId: string, games: MatchBetResponse[]) => Promise<void>;
 }
 
-const computeSimulatedStandings = (games: MatchBetResponse[]): GroupStandingDto[] => {
+const computeSimulatedStandings = (
+  games: MatchBetResponse[],
+): GroupStandingDto[] => {
   const teamMap = new Map<string, GroupStandingDto>();
 
   for (const game of games) {
@@ -93,7 +95,8 @@ const computeSimulatedStandings = (games: MatchBetResponse[]): GroupStandingDto[
 
   return Array.from(teamMap.values()).sort((a, b) => {
     if (b.points !== a.points) return b.points - a.points;
-    if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+    if (b.goalDifference !== a.goalDifference)
+      return b.goalDifference - a.goalDifference;
     return b.goalsFor - a.goalsFor;
   });
 };
@@ -181,32 +184,31 @@ export const GroupModal: React.FC<GroupModalProps> = ({
       <div className="space-y-8">
         {!isKnockout && (
           <div className="bg-secondary/20 rounded-xl p-4 border border-border">
-  
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
-              {t("groupModal.standings")}
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+                {t("groupModal.standings")}
+              </h3>
 
-            <div className="flex items-center bg-background/50 border border-border p-1 rounded-lg">
-              <button
-                type="button"
-                onClick={() => setViewMode("real")}
-                className={`px-3 py-1 text-[10px] font-bold uppercase rounded-md transition-all ${viewMode === "real" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-              >
-                {t("groupModal.real")}
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode("simulation")}
-                className={`px-3 py-1 text-[10px] font-bold uppercase rounded-md transition-all ${viewMode === "simulation" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-              >
-                {t("groupModal.simulation")}
-              </button>
+              <div className="flex items-center bg-background/50 border border-border p-1 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => setViewMode("real")}
+                  className={`px-3 py-1 text-[10px] font-bold uppercase rounded-md transition-all ${viewMode === "real" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  {t("groupModal.real")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode("simulation")}
+                  className={`px-3 py-1 text-[10px] font-bold uppercase rounded-md transition-all ${viewMode === "simulation" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  {t("groupModal.simulation")}
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs sm:text-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b border-border/50 text-muted-foreground whitespace-nowrap">
                     <th className="px-2 sm:px-4 py-2 text-left font-medium">
@@ -215,27 +217,37 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                     <th
                       className="px-1 sm:px-2 py-2 text-center font-medium"
                       title={t("groupModal.played")}
-                    > {t("groupModal.played")}
+                    >
+                      {" "}
+                      {t("groupModal.played")}
                     </th>
                     <th
                       className="px-1 sm:px-2 py-2 text-center font-medium"
                       title={t("groupModal.won")}
-                    > {t("groupModal.won")}  
+                    >
+                      {" "}
+                      {t("groupModal.won")}
                     </th>
                     <th
                       className="px-1 sm:px-2 py-2 text-center font-medium hidden sm:table-cell"
                       title={t("groupModal.draw")}
-                    > {t("groupModal.draw")}
+                    >
+                      {" "}
+                      {t("groupModal.draw")}
                     </th>
                     <th
                       className="px-1 sm:px-2 py-2 text-center font-medium hidden sm:table-cell"
                       title={t("groupModal.loss")}
-                    > {t("groupModal.loss")}
+                    >
+                      {" "}
+                      {t("groupModal.loss")}
                     </th>
                     <th
                       className="px-1 sm:px-2 py-2 text-center font-medium"
                       title={t("groupModal.goalDifference")}
-                    > {t("groupModal.goalDifference")}
+                    >
+                      {" "}
+                      {t("groupModal.goalDifference")}
                     </th>
                     <th className="px-2 sm:px-4 py-2 text-center font-medium">
                       Pts
@@ -244,52 +256,52 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                 </thead>
                 <tbody>
                   {(viewMode === "real"
-                    ? groupStandings ?? []
+                    ? (groupStandings ?? [])
                     : computeSimulatedStandings(games)
                   ).map((standing, i) => (
-                      <tr
-                        key={standing.teamName}
-                        className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
-                      >
-                        <td className="px-4 py-3 font-medium flex items-center gap-2">
-                          <span className="text-[10px] sm:text-xs text-muted-foreground w-3 sm:w-4">
-                            {i + 1}
-                          </span>
-                          <div className="w-8 h-6 overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
-                            <img
-                              src={standing.flagUrl}
-                              alt={`${standing.teamName} flag`}
-                              className="w-full h-full object-fill"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src =
-                                  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
-                              }}
-                            />
-                          </div>
-                          <span className="truncate max-w-20 sm:max-w-none">
-                            {t(`teams.${standing.teamName}`)}
-                          </span>
-                        </td>
-                        <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
-                          {standing.matchesPlayed}
-                        </td>
-                        <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
-                          {standing.wins}
-                        </td>
-                        <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
-                          {standing.draws}
-                        </td>
-                        <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
-                          {standing.losses}
-                        </td>
-                        <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
-                          {standing.goalDifference}
-                        </td>
-                        <td className="px-2 sm:px-4 py-3 text-center font-bold text-primary">
-                          {standing.points}
-                        </td>
-                      </tr>
-                    ))}
+                    <tr
+                      key={standing.teamName}
+                      className="border-b border-border/50 last:border-0 hover:bg-secondary/30 transition-colors"
+                    >
+                      <td className="px-4 py-3 font-medium flex items-center gap-2">
+                        <span className="text-[10px] sm:text-xs text-muted-foreground w-3 sm:w-4">
+                          {i + 1}
+                        </span>
+                        <div className="w-8 h-6 overflow-hidden flex items-center justify-center bg-secondary/50 border border-border shadow-sm">
+                          <img
+                            src={standing.flagUrl}
+                            alt={`${standing.teamName} flag`}
+                            className="w-full h-full object-fill"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src =
+                                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48MD48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1NTUiPj88L3RleHQ+PC9zdmc+";
+                            }}
+                          />
+                        </div>
+                        <span className="truncate max-w-20 sm:max-w-none">
+                          {t(`teams.${standing.teamName}`)}
+                        </span>
+                      </td>
+                      <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
+                        {standing.matchesPlayed}
+                      </td>
+                      <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
+                        {standing.wins}
+                      </td>
+                      <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
+                        {standing.draws}
+                      </td>
+                      <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground hidden sm:table-cell">
+                        {standing.losses}
+                      </td>
+                      <td className="px-1 sm:px-2 py-3 text-center text-muted-foreground">
+                        {standing.goalDifference}
+                      </td>
+                      <td className="px-2 sm:px-4 py-3 text-center font-bold text-primary">
+                        {standing.points}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -297,7 +309,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
         )}
 
         <div>
-          <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">     
+          <h3 className="text-sm font-bold text-muted-foreground uppercase mb-4 tracking-wider">
             {t("groupModal.matches")}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -383,7 +395,6 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                         <span
                           className={`font-bold text-xs text-center truncate w-full px-1`}
                           title={game.awayTeam}
-                        
                         >
                           {t(`teams.${game.awayTeam}`)}
                         </span>

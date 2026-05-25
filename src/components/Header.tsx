@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useTranslation } from "react-i18next";
-import { Home, Trophy, LogOut, User, Globe, Menu, X } from "lucide-react";
+import { Home, Trophy, LogOut, User, Globe, Menu, X, BookOpen } from "lucide-react";
 import { getAvatarById } from "../utils/avatar";
 
 export default function Header() {
@@ -18,6 +18,7 @@ export default function Header() {
 
   const isMyBetsActive = location.pathname === "/dashboard";
   const isRankingActive = location.pathname === "/app/ranking";
+  const isRulesActive = location.pathname === "/app/rules";
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -63,6 +64,17 @@ export default function Header() {
             >
               <Trophy className="w-4 h-4" />
               {t("header.ranking", "Ranking")}
+            </Link>
+            <Link
+              to="/app/rules"
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                isRulesActive
+                  ? "bg-secondary text-primary shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+              }`}
+            >
+              <BookOpen className="w-4 h-4" />
+              {t("header.rules", "Regras")}
             </Link>
             {user?.role === "ADMIN" && (
               <Link
@@ -171,6 +183,18 @@ export default function Header() {
             >
               <Trophy className="w-5 h-5" />
               {t("header.ranking", "Ranking")}
+            </Link>
+            <Link
+              to="/app/rules"
+              onClick={toggleMenu}
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold ${
+                isRulesActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-secondary"
+              }`}
+            >
+              <BookOpen className="w-5 h-5" />
+              {t("header.rules", "Regras")}
             </Link>
             {user?.role === "ADMIN" && (
               <Link
