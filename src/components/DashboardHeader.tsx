@@ -19,15 +19,38 @@ interface TimeLeft {
   seconds: number;
 }
 
+// Real opening match (Mexico vs South Africa) kickoff, used as fallback
+// until the match list loads. UTC instant; browser handles local display.
+const WORLD_CUP_OPENER_UTC = "2026-06-11T19:00:00Z";
+
 export function Countdown() {
   const { t } = useTranslation();
-  const targetDate = new Date("2026-06-11T00:00:00Z").getTime();
+  const [targetDate, setTargetDate] = useState<number>(() =>
+    new Date(WORLD_CUP_OPENER_UTC).getTime(),
+  );
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0,
   });
+
+  // Target the earliest scheduled match so the countdown always matches the
+  // real first kickoff, regardless of timezone, without a hardcoded date.
+  useEffect(() => {
+    matchesService
+      .getMatches()
+      .then((groups: MatchGroupResponse[]) => {
+        const times = groups
+          .flatMap((g) => g.matches)
+          .map((m) => new Date(m.dateTime).getTime())
+          .filter((ts) => !isNaN(ts));
+        if (times.length > 0) {
+          setTargetDate(Math.min(...times));
+        }
+      })
+      .catch((e) => console.error("Failed to load matches for countdown", e));
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
