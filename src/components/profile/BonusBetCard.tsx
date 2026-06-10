@@ -1,4 +1,4 @@
-import { Trophy, Users } from "lucide-react";
+import { Trophy } from "lucide-react";
 import type { BonusBetDto } from "../../types/api";
 import type { TFunction } from "i18next";
 
