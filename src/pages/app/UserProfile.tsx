@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { useAuth } from "../../contexts/AuthContext";
 import { userService } from "../../services/userService";
+import { betsService } from "../../services/betsService";
 import type { UserProfileDto, MatchGroupResponse, MatchBetResponse } from "../../types/api";
 import {
   Trophy,
@@ -18,6 +19,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import { AvatarSelectionModal } from "../../components/profile/AvatarSelectionModal";
+import { BonusBetCard } from "../../components/profile/BonusBetCard";
 import { getAvatarById } from "../../utils/avatar";
 import { formatMatchDateTime } from "../../utils/formatDate";
 
@@ -113,9 +115,21 @@ export default function UserProfile() {
         let data: UserProfileDto;
         if (isMyProfile) {
           data = await userService.getMyProfile();
+          // Fetch bonus bet for own profile
+          try {
+            const bonusBetData = await betsService.getBonusBet();
+            if (bonusBetData) {
+              data.bonusBet = bonusBetData;
+            }
+          } catch (err) {
+            // Bonus bet might not exist, that's okay
+            console.debug("No bonus bet found", err);
+          }
         } else {
           data = await userService.getUserProfile(id as string);
         }
+
+        console.log("Profile loaded:", data);
 
         if (isMounted) {
           setProfile(data);
@@ -361,6 +375,15 @@ export default function UserProfile() {
           />
         </div>
       )}
+
+      {/* Bonus Bets Section */}
+      <div className="mb-12">
+        <BonusBetCard
+          bonusBet={profile.bonusBet}
+          isMyProfile={isMyProfile}
+          t={t}
+        />
+      </div>
 
       {/* Bets Section Overview */}
       <h2 className="text-xl font-bold flex items-center gap-2 mb-4">

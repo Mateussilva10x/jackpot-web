@@ -26,6 +26,7 @@
   "header": {
     "myBets": "My Bets",
     "ranking": "Ranking",
+    "rules": "Rules",
     "admin": "Admin",
     "toggleLanguage": "Toggle Language",
     "profile": "My Profile",
@@ -186,7 +187,12 @@
     "todayMatches": "Today's Matches",
     "hideBets": "Hide Bets",
     "showBets": "Show Bets",
-    "noPrediction": "No Prediction"
+    "noPrediction": "No Prediction",
+    "bonusPredictions": "Bonus Predictions",
+    "noBonusBetsTitle": "No bonus predictions found",
+    "noBonusMyProfile": "You haven't made any bonus predictions yet. Head to the dashboard to make your picks!",
+    "noBonusOtherProfile": "This user hasn't made any bonus predictions yet.",
+    "bonusInfo": "Maximum of 145 points (Champion + Runner-up + Top Scorer)"
   },
   "admin": {
     "title": "Administrator Dashboard",

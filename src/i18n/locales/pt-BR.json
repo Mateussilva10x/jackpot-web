@@ -26,6 +26,7 @@
   "header": {
     "myBets": "Minhas Apostas",
     "ranking": "Classificação",
+    "rules": "Regras",
     "admin": "Admin",
     "toggleLanguage": "Trocar Idioma",
     "profile": "Meu Perfil",
@@ -186,7 +187,12 @@
     "todayMatches": "Jogos de Hoje",
     "hideBets": "Esconder Palpites",
     "showBets": "Mostrar Palpites",
-    "noPrediction": "Sem Palpite"
+    "noPrediction": "Sem Palpite",
+    "bonusPredictions": "Apostas Bônus",
+    "noBonusBetsTitle": "Nenhuma aposta bônus encontrada",
+    "noBonusMyProfile": "Você ainda não fez nenhuma aposta bônus. Vá para o dashboard para fazer seus palpites!",
+    "noBonusOtherProfile": "Este usuário ainda não fez nenhuma aposta bônus.",
+    "bonusInfo": "Máximo de 145 pontos (Campeão + Vice + Artilheiro)"
   },
   "admin": {
     "title": "Painel do Administrador",

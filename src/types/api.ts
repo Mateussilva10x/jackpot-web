@@ -36,6 +36,15 @@ export interface UserRankingDto {
   avatar?: number | string;
 }
 
+export interface BonusBetDto {
+  id: number;
+  championTeamId: number;
+  championTeamName: string;
+  runnerUpTeamId: number;
+  runnerUpTeamName: string;
+  topScorer: string;
+}
+
 export interface UserProfileDto {
   id: number;
   name: string;
@@ -45,6 +54,7 @@ export interface UserProfileDto {
   avatarId?: number | string;
   avatar?: number | string;
   bets: MatchGroupResponse[];
+  bonusBet?: BonusBetDto;
 }
 
 export interface TeamDto {
