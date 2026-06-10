@@ -101,15 +101,6 @@ export function BonusBetCard({
           </p>
         </div>
       </div>
-
-      {/* Info Footer */}
-      <div className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary/30 border border-border/50 rounded-lg px-3 py-2 mt-4">
-        <Users className="w-3.5 h-3.5 shrink-0" />
-        <span>
-          {t("profile.bonusInfo") ||
-            "Maximum of 145 points (Champion + Runner-up + Top Scorer)"}
-        </span>
-      </div>
     </div>
   );
 }

@@ -191,8 +191,7 @@
     "bonusPredictions": "Apostas Bônus",
     "noBonusBetsTitle": "Nenhuma aposta bônus encontrada",
     "noBonusMyProfile": "Você ainda não fez nenhuma aposta bônus. Vá para o dashboard para fazer seus palpites!",
-    "noBonusOtherProfile": "Este usuário ainda não fez nenhuma aposta bônus.",
-    "bonusInfo": "Máximo de 145 pontos (Campeão + Vice + Artilheiro)"
+    "noBonusOtherProfile": "Este usuário ainda não fez nenhuma aposta bônus."
   },
   "admin": {
     "title": "Painel do Administrador",

@@ -191,8 +191,7 @@
     "bonusPredictions": "Bonus Predictions",
     "noBonusBetsTitle": "No bonus predictions found",
     "noBonusMyProfile": "You haven't made any bonus predictions yet. Head to the dashboard to make your picks!",
-    "noBonusOtherProfile": "This user hasn't made any bonus predictions yet.",
-    "bonusInfo": "Maximum of 145 points (Champion + Runner-up + Top Scorer)"
+    "noBonusOtherProfile": "This user hasn't made any bonus predictions yet."
   },
   "admin": {
     "title": "Administrator Dashboard",
