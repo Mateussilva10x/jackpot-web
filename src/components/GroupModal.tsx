@@ -126,7 +126,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({
   React.useEffect(() => {
     const interval = setInterval(() => {
       setNow(Date.now());
-    }, 30_000);
+    }, 1_000);
     return () => clearInterval(interval);
   }, []);
 
@@ -314,9 +314,10 @@ export const GroupModal: React.FC<GroupModalProps> = ({
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {games.map((game) => {
+              const LOCK_BEFORE_MS = 5 * 60 * 1000; // trava 5min antes do início
               const isMatchLocked =
                 game.status !== "SCHEDULED" ||
-                new Date(game.dateTime).getTime() <= now;
+                new Date(game.dateTime).getTime() - LOCK_BEFORE_MS <= now;
 
               return (
                 <div

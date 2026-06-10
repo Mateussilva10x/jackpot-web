@@ -135,7 +135,7 @@ export function BonusPredictions() {
     if (!firstMatchTime) return;
     const interval = setInterval(() => {
       setIsLocked(Date.now() >= firstMatchTime.getTime());
-    }, 30_000);
+    }, 1_000);
     return () => clearInterval(interval);
   }, [firstMatchTime]);
 
