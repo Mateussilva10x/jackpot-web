@@ -57,7 +57,7 @@ export function BonusBetCard({
             </div>
           </div>
           <p className="text-lg font-bold text-foreground">
-            {bonusBet.championTeamName}
+            {t(`teams.${bonusBet.championTeamName}`, bonusBet.championTeamName)}
           </p>
         </div>
 
@@ -77,7 +77,7 @@ export function BonusBetCard({
             </div>
           </div>
           <p className="text-lg font-bold text-foreground">
-            {bonusBet.runnerUpTeamName}
+            {t(`teams.${bonusBet.runnerUpTeamName}`, bonusBet.runnerUpTeamName)}
           </p>
         </div>
 
