@@ -1,5 +1,10 @@
 import { useState } from "react";
 import { Countdown, BonusPredictions } from "../components/DashboardHeader";
+import {
+  TodayMatchesSection,
+  getTodayMatches,
+  hasTournamentStarted,
+} from "../components/TodayMatchesCarousel";
 import { useEffect } from "react";
 import { GroupModal } from "../components/GroupModal";
 import type {
@@ -29,36 +34,23 @@ export default function Dashboard() {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [, setTodayMatches] = useState<MatchBetResponse[]>([]);
 
   useEffect(() => {
     loadMatches();
   }, []);
 
-  // TESTE: Extract today's matches from all groups
+  // Re-render every second so the countdown→carousel swap happens right when
+  // the tournament starts, without waiting for another state change.
+  const [, setNow] = useState(() => Date.now());
   useEffect(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const interval = setInterval(() => setNow(Date.now()), 1_000);
+    return () => clearInterval(interval);
+  }, []);
 
-    const allMatches = groups
-      .flatMap((group) => group.matches)
-      .filter((match) => {
-        const matchDate = new Date(match.dateTime);
-        matchDate.setHours(0, 0, 0, 0);
-        return matchDate.getTime() === today.getTime();
-      })
-      .sort(
-        (a, b) =>
-          new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime(),
-      );
-
-    console.log("TODAY'S MATCHES DEBUG:", {
-      today,
-      allMatches,
-      groupsCount: groups.length,
-    });
-    setTodayMatches(allMatches);
-  }, [groups]);
+  // Show the carousel in place of the countdown once the tournament has
+  // started (countdown reached zero) and there are matches scheduled for today.
+  const showTodayCarousel =
+    getTodayMatches(groups).length > 0 && hasTournamentStarted(groups);
 
   const loadMatches = async () => {
     try {
@@ -156,7 +148,11 @@ export default function Dashboard() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <Countdown />
+      {showTodayCarousel ? (
+        <TodayMatchesSection bets={groups} />
+      ) : (
+        <Countdown />
+      )}
       <BonusPredictions />
 
       {/* Stage Toggles */}
