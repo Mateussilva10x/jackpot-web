@@ -77,6 +77,8 @@ export default function Dashboard() {
     _groupId: string,
     updatedGames: MatchBetResponse[],
   ) => {
+    const LOCK_BEFORE_MS = 5 * 60 * 1000; // trava 5min antes do início
+    const now = Date.now();
     const betsPayload: BetRequest[] = updatedGames
       .filter((game) => {
         if (
@@ -84,6 +86,11 @@ export default function Dashboard() {
           game.userBet?.awayScore === undefined
         )
           return false;
+        // Skip matches already locked (started/finished) — backend rejects them.
+        const isMatchLocked =
+          game.status !== "SCHEDULED" ||
+          new Date(game.dateTime).getTime() - LOCK_BEFORE_MS <= now;
+        if (isMatchLocked) return false;
         return true;
       })
       .map((game) => ({
