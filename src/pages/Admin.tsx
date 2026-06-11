@@ -11,6 +11,7 @@ import type { MatchGroupResponse, MatchScoreUpdateDto } from "../types/api";
 import { AdminMatchModal } from "../components/admin/AdminMatchModal";
 import { AdminBonusResolution } from "../components/admin/AdminBonusResolution";
 import { AdminUserRegistration } from "../components/admin/AdminUserRegistration";
+import { AdminCopyPredictions } from "../components/admin/AdminCopyPredictions";
 
 export default function Admin() {
   const { t } = useTranslation();
@@ -111,6 +112,8 @@ export default function Admin() {
         </h1>
         <p className="text-muted-foreground mt-2">{t("admin.subtitle")}</p>
       </div>
+
+      <AdminCopyPredictions />
 
       <AdminBonusResolution />
 

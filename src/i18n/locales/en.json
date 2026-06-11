@@ -223,7 +223,17 @@
     "userPasswordPlaceholder": "Default password",
     "createUserButton": "Create User",
     "finalResults": "FINAL RESULTS",
-    "officialResultLabel": "Official result:"
+    "officialResultLabel": "Official result:",
+    "copyPredictions": "Predictions for Live Games",
+    "copyPredictionsSubtitle": "Copy every user's predictions for the games happening right now to share on WhatsApp.",
+    "copyPredictionsButton": "Copy Predictions",
+    "copyPredictionsLoading": "Fetching predictions...",
+    "copyPredictionsTitle": "Predictions — Live Games",
+    "copyPredictionsGroup": "Group {{letter}}",
+    "copyPredictionsNoBet": "—",
+    "copyPredictionsCopied": "Predictions copied to clipboard",
+    "copyPredictionsNoLive": "No games happening right now",
+    "copyPredictionsError": "Failed to fetch predictions"
   },
   "landing": {
     "title": "Marca Da Cal Bet",

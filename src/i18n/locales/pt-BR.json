@@ -223,7 +223,17 @@
     "userPasswordPlaceholder": "Senha padrão",
     "createUserButton": "Criar Usuário",
     "finalResults": "RESULTADOS FINAIS",
-    "officialResultLabel": "Resultado oficial:"
+    "officialResultLabel": "Resultado oficial:",
+    "copyPredictions": "Palpites dos Jogos de Agora",
+    "copyPredictionsSubtitle": "Copie os palpites de todos os usuários dos jogos acontecendo no momento para enviar no WhatsApp.",
+    "copyPredictionsButton": "Copiar Palpites",
+    "copyPredictionsLoading": "Buscando palpites...",
+    "copyPredictionsTitle": "Palpites — Jogos de Agora",
+    "copyPredictionsGroup": "Grupo {{letter}}",
+    "copyPredictionsNoBet": "—",
+    "copyPredictionsCopied": "Palpites copiados para a área de transferência",
+    "copyPredictionsNoLive": "Nenhum jogo acontecendo no momento",
+    "copyPredictionsError": "Erro ao buscar os palpites"
   },
   "landing": {
     "title": "Marca Da Cal Bet",
