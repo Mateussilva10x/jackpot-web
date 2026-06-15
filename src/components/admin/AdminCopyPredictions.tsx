@@ -36,6 +36,17 @@ function isLive(match: MatchBetResponse): boolean {
   return kickoff - now <= UPCOMING_WINDOW_MS && now - kickoff <= LIVE_WINDOW_MS;
 }
 
+// The API returns either a URL whose filename is the 2-letter ISO code
+// (e.g. https://flag-url.com/br.png) or the bare 2-letter code. Convert it to a
+// regional-indicator emoji so the title shows the country flag inline.
+function flagEmoji(flag: string): string {
+  const code = flag?.match(/(?:^|\/)([a-z]{2})(?:\.[a-z]+)?$/i)?.[1];
+  if (!code) return "";
+  return String.fromCodePoint(
+    ...[...code.toUpperCase()].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65),
+  );
+}
+
 function groupLabel(group: string, t: TFunction): string {
   if (/^[A-L]$/.test(group)) {
     return t("admin.copyPredictionsGroup", { letter: group });
@@ -84,16 +95,18 @@ function buildMessage(
       return `• ${entry.name}: ${score}`;
     });
 
-    const header = `⚽ *${match.homeTeam} x ${match.awayTeam}*  _(${groupLabel(
+    const header = `🎯 ${t("admin.copyPredictionsHeading")} ${match.homeTeam} ${flagEmoji(
+      match.homeTeamFlag,
+    )} x ${match.awayTeam} ${flagEmoji(match.awayTeamFlag)} (${groupLabel(
       group,
       t,
-    )})_`;
+    )}) ⚽`;
 
     return [header, formatKickoffLine(match.dateTime), ...lines].join("\n");
   });
 
   // Two blank lines between matches so WhatsApp keeps them visually separated.
-  return [`🎯 *${t("admin.copyPredictionsTitle")}*`, ...blocks].join("\n\n");
+  return blocks.join("\n\n");
 }
 
 export const AdminCopyPredictions: React.FC = () => {

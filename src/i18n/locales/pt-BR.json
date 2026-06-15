@@ -228,7 +228,7 @@
     "copyPredictionsSubtitle": "Copie os palpites de todos os usuários dos jogos acontecendo no momento para enviar no WhatsApp.",
     "copyPredictionsButton": "Copiar Palpites",
     "copyPredictionsLoading": "Buscando palpites...",
-    "copyPredictionsTitle": "Palpites — Jogos de Agora",
+    "copyPredictionsHeading": "Palpites",
     "copyPredictionsGroup": "Grupo {{letter}}",
     "copyPredictionsNoBet": "—",
     "copyPredictionsCopied": "Palpites copiados para a área de transferência",

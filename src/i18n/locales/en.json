@@ -228,7 +228,7 @@
     "copyPredictionsSubtitle": "Copy every user's predictions for the games happening right now to share on WhatsApp.",
     "copyPredictionsButton": "Copy Predictions",
     "copyPredictionsLoading": "Fetching predictions...",
-    "copyPredictionsTitle": "Predictions — Live Games",
+    "copyPredictionsHeading": "Predictions",
     "copyPredictionsGroup": "Group {{letter}}",
     "copyPredictionsNoBet": "—",
     "copyPredictionsCopied": "Predictions copied to clipboard",
