@@ -44,6 +44,33 @@ function groupLabel(group: string, t: TFunction): string {
   return translated === `dashboard.${group}` ? group : translated;
 }
 
+// Kickoff shown in both timezones the league cares about: Brazil
+// (America/Sao_Paulo) and Florida (America/New_York, 1h behind Brazil). Using
+// Intl timeZone keeps DST correct instead of hardcoding the offset.
+function formatKickoffLine(dateTime: string): string {
+  const date = new Date(dateTime);
+
+  const br = new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+
+  const usParts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).formatToParts(date);
+  const hour = usParts.find((p) => p.type === "hour")?.value ?? "";
+  const minute = usParts.find((p) => p.type === "minute")?.value ?? "00";
+  const ampm = (usParts.find((p) => p.type === "dayPeriod")?.value ?? "").toLowerCase();
+  const us = minute === "00" ? `${hour}${ampm}` : `${hour}:${minute}${ampm}`;
+
+  return `⏱️ ${br} 🇧🇷 / ${us} 🇺🇸`;
+}
+
 function buildMessage(
   liveMatches: LiveMatch[],
   betsByMatch: Map<number, UserBetLine[]>,
@@ -62,7 +89,7 @@ function buildMessage(
       t,
     )})_`;
 
-    return [header, ...lines].join("\n");
+    return [header, formatKickoffLine(match.dateTime), ...lines].join("\n");
   });
 
   // Two blank lines between matches so WhatsApp keeps them visually separated.
