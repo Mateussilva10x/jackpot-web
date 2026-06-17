@@ -160,7 +160,7 @@ export default function Dashboard() {
       ) : (
         <Countdown />
       )}
-      <BonusPredictions />
+      {!hasTournamentStarted(groups) && <BonusPredictions />}
 
       {/* Stage Toggles */}
       <div className="flex bg-secondary/30 p-1 rounded-xl mb-8 border border-border">
