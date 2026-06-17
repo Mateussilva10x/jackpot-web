@@ -188,6 +188,8 @@
     "hideBets": "Hide Bets",
     "showBets": "Show Bets",
     "noPrediction": "No Prediction",
+    "addPrediction": "Add Prediction",
+    "savePrediction": "Save Prediction",
     "bonusPredictions": "Bonus Predictions",
     "noBonusBetsTitle": "No bonus predictions found",
     "noBonusMyProfile": "You haven't made any bonus predictions yet. Head to the dashboard to make your picks!",

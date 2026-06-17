@@ -7,9 +7,24 @@ import {
   ChevronRight,
   Eye,
   EyeOff,
+  Pencil,
+  Plus,
+  Save,
 } from "lucide-react";
 import type { MatchBetResponse, MatchGroupResponse } from "../types/api";
 import { formatMatchDateTime } from "../utils/formatDate";
+import { JackpotScoreInput } from "./ui/JackpotScoreInput";
+import { betsService } from "../services/betsService";
+import { useToast } from "../hooks/useToast";
+
+const LOCK_BEFORE_MS = 5 * 60 * 1000; // bet locks 5 min before kickoff
+
+function isMatchLocked(match: MatchBetResponse): boolean {
+  return (
+    match.status !== "SCHEDULED" ||
+    new Date(match.dateTime).getTime() - LOCK_BEFORE_MS <= Date.now()
+  );
+}
 
 // Tournament has started once the earliest match of any stage has kicked off
 // (i.e. the countdown reached zero).
@@ -47,13 +62,27 @@ export function getTodayMatches(
 function TodayMatchCard({
   match,
   showUserBet,
+  isEditing,
+  editHome,
+  editAway,
+  onEditHomeChange,
+  onEditAwayChange,
+  onStartEdit,
   t,
 }: {
   match: MatchBetResponse;
   showUserBet: boolean;
+  isEditing: boolean;
+  editHome: string;
+  editAway: string;
+  onEditHomeChange: (value: string) => void;
+  onEditAwayChange: (value: string) => void;
+  onStartEdit: () => void;
   t: TFunction;
 }) {
   const { date, time } = formatMatchDateTime(match.dateTime);
+  const locked = isMatchLocked(match);
+  const canEdit = showUserBet && !locked;
 
   return (
     <div className="flex flex-col h-full justify-between">
@@ -84,8 +113,33 @@ function TodayMatchCard({
 
           {/* Score or Bet Display */}
           <div className="flex flex-col items-center">
-            {showUserBet && match.userBet ? (
+            {isEditing ? (
               <div className="flex items-center gap-2 bg-primary/10 border border-primary/30 rounded-lg px-3 py-2 mb-2">
+                <JackpotScoreInput
+                  value={editHome}
+                  onChange={onEditHomeChange}
+                  teamLabel={match.homeTeam}
+                  className="w-10 h-10 text-lg shadow-inner bg-background"
+                />
+                <span className="text-muted-foreground font-bold">X</span>
+                <JackpotScoreInput
+                  value={editAway}
+                  onChange={onEditAwayChange}
+                  teamLabel={match.awayTeam}
+                  className="w-10 h-10 text-lg shadow-inner bg-background"
+                />
+              </div>
+            ) : showUserBet && match.userBet ? (
+              <button
+                type="button"
+                onClick={canEdit ? onStartEdit : undefined}
+                disabled={!canEdit}
+                className={`flex items-center gap-2 bg-primary/10 border border-primary/30 rounded-lg px-3 py-2 mb-2 transition-colors ${
+                  canEdit
+                    ? "hover:bg-primary/20 cursor-pointer"
+                    : "cursor-default"
+                }`}
+              >
                 <span className="text-2xl font-black text-primary">
                   {match.userBet.homeScore ?? "-"}
                 </span>
@@ -93,7 +147,17 @@ function TodayMatchCard({
                 <span className="text-2xl font-black text-primary">
                   {match.userBet.awayScore ?? "-"}
                 </span>
-              </div>
+                {canEdit && <Pencil className="w-3.5 h-3.5 text-primary/70" />}
+              </button>
+            ) : canEdit ? (
+              <button
+                type="button"
+                onClick={onStartEdit}
+                className="flex items-center gap-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-xs font-bold uppercase tracking-wider rounded-lg px-3 py-2 mb-2 transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                {t("profile.addPrediction") || "Add Prediction"}
+              </button>
             ) : (
               <div className="mb-2">
                 <span className="text-xs text-muted-foreground font-medium uppercase">
@@ -144,27 +208,78 @@ function TodayMatchesCarousel({
   matches,
   showUserBets,
   setShowUserBets,
+  onSave,
   t,
 }: {
   matches: MatchBetResponse[];
   showUserBets: boolean;
   setShowUserBets: (value: boolean) => void;
+  onSave: (
+    match: MatchBetResponse,
+    homeScore: number,
+    awayScore: number,
+  ) => Promise<void>;
   t: TFunction;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editHome, setEditHome] = useState("");
+  const [editAway, setEditAway] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  const cancelEdit = () => setEditingId(null);
 
   const goToPrevious = () => {
+    cancelEdit();
     setCurrentIndex((prev) => (prev === 0 ? matches.length - 1 : prev - 1));
   };
 
   const goToNext = () => {
+    cancelEdit();
     setCurrentIndex((prev) => (prev === matches.length - 1 ? 0 : prev + 1));
+  };
+
+  const startEdit = (match: MatchBetResponse) => {
+    setEditingId(match.id);
+    setEditHome(match.userBet?.homeScore?.toString() ?? "");
+    setEditAway(match.userBet?.awayScore?.toString() ?? "");
+  };
+
+  const isEditValid =
+    editHome.trim() !== "" &&
+    editAway.trim() !== "" &&
+    !Number.isNaN(parseInt(editHome, 10)) &&
+    !Number.isNaN(parseInt(editAway, 10));
+
+  const handleSave = async () => {
+    if (editingId === null || !isEditValid || isSaving) return;
+    const match = matches.find((m) => m.id === editingId);
+    if (!match) return;
+    setIsSaving(true);
+    try {
+      await onSave(match, parseInt(editHome, 10), parseInt(editAway, 10));
+      setEditingId(null);
+    } catch {
+      // toast surfaced by parent; keep edit open so the user can retry
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <div className="bg-card border border-border rounded-xl p-4 md:p-6 overflow-hidden">
-      {/* Toggle Button */}
-      <div className="flex justify-end mb-4">
+      {/* Toggle + Save Buttons */}
+      <div className="flex justify-end gap-2 mb-4">
+        {editingId !== null && (
+          <button
+            onClick={handleSave}
+            disabled={!isEditValid || isSaving}
+            className="flex items-center gap-2 px-3 py-2 text-sm font-medium bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Save className="w-4 h-4" />
+            {t("profile.savePrediction") || "Save Prediction"}
+          </button>
+        )}
         <button
           onClick={() => setShowUserBets(!showUserBets)}
           className="flex items-center gap-2 px-3 py-2 text-sm font-medium bg-secondary/50 hover:bg-secondary text-foreground rounded-lg transition-colors"
@@ -197,6 +312,12 @@ function TodayMatchesCarousel({
                   <TodayMatchCard
                     match={match}
                     showUserBet={showUserBets}
+                    isEditing={editingId === match.id}
+                    editHome={editHome}
+                    editAway={editAway}
+                    onEditHomeChange={setEditHome}
+                    onEditAwayChange={setEditAway}
+                    onStartEdit={() => startEdit(match)}
                     t={t}
                   />
                 </div>
@@ -229,7 +350,10 @@ function TodayMatchesCarousel({
         {matches.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentIndex(index)}
+            onClick={() => {
+              cancelEdit();
+              setCurrentIndex(index);
+            }}
             className={`w-2 h-2 rounded-full transition-colors ${
               index === currentIndex
                 ? "bg-primary"
@@ -247,13 +371,45 @@ function TodayMatchesCarousel({
 // matches today AND the knockout stage has started (same rules as the profile).
 export function TodayMatchesSection({
   bets,
+  onBetSaved,
 }: {
   bets: MatchGroupResponse[];
+  onBetSaved?: () => void | Promise<void>;
 }) {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [showUserBets, setShowUserBets] = useState(true);
 
   const todayMatches = getTodayMatches(bets);
+
+  const handleSave = async (
+    match: MatchBetResponse,
+    homeScore: number,
+    awayScore: number,
+  ) => {
+    try {
+      await betsService.placeBets([
+        {
+          matchId: match.id,
+          homeScore,
+          awayScore,
+          selectedWinnerId: match.userBet?.selectedWinnerId,
+        },
+      ]);
+      showToast(
+        t("dashboard.predictionsSavedSuccess", "Apostas salvas com sucesso!"),
+        "success",
+      );
+      await onBetSaved?.();
+    } catch (error) {
+      console.error("Failed to save prediction", error);
+      showToast(
+        t("dashboard.predictionsSavedError", "Erro ao salvar apostas."),
+        "error",
+      );
+      throw error;
+    }
+  };
 
   if (todayMatches.length === 0 || !hasTournamentStarted(bets)) {
     return null;
@@ -273,6 +429,7 @@ export function TodayMatchesSection({
         matches={todayMatches}
         showUserBets={showUserBets}
         setShowUserBets={setShowUserBets}
+        onSave={handleSave}
         t={t}
       />
     </div>
