@@ -169,6 +169,11 @@
     "emptyTitle": "No rankings yet",
     "emptyDescription": "The leaderboard will populate once scores are calculated.",
     "pts": "pts",
+    "exactScores_one": "{{count}} exact score",
+    "exactScores_other": "{{count}} exact scores",
+    "exactScoresTooltip": "Exact score (10 pts): got both teams' goals right",
+    "partialScoresTooltip": "Partial (5/7 pts): got the winner/draw right, but not the exact score",
+    "justGoalsTooltip": "Goals (3 pts): missed the winner/draw, but got one team's goals right",
     "loadingError": "Failed to load leaderboard"
   },
   "profile": {

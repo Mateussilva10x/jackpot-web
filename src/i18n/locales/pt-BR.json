@@ -169,6 +169,11 @@
     "emptyTitle": "Nenhum ranking ainda",
     "emptyDescription": "A classificação será preenchida assim que as previsões forem avaliadas.",
     "pts": "pts",
+    "exactScores_one": "{{count}} placar exato",
+    "exactScores_other": "{{count}} placares exatos",
+    "exactScoresTooltip": "Placar exato (10 pts): acertou os gols dos dois times",
+    "partialScoresTooltip": "Parcial (5/7 pts): acertou o vencedor/empate, mas não o placar exato",
+    "justGoalsTooltip": "Gols (3 pts): errou o vencedor/empate, mas acertou os gols de um time",
     "loadingError": "Falha ao carregar a classificação"
   },
   "profile": {

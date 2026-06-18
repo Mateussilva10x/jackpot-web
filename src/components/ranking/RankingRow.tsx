@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Trophy, Medal } from "lucide-react";
+import { Trophy, Medal, Crosshair, PieChart, Volleyball } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { UserRankingDto } from "../../types/api";
 import { getAvatarById } from "../../utils/avatar";
@@ -91,8 +91,35 @@ export function RankingRow({ user, isCurrentUser }: RankingRowProps) {
                 </span>
               )}
             </div>
-            {/* Using a placeholder for exact/correct bets as they aren't in UserRankingDto yet. 
-                They could be added in the future. For now, we just leave it out to stick to the requirements. */}
+            <div className="flex items-center gap-2 mt-0.5">
+              {typeof user.exactScores === "number" && (
+                <span
+                  className="flex items-center gap-1 text-xs font-bold text-green-500"
+                  title={t("ranking.exactScoresTooltip")}
+                >
+                  <Crosshair className="w-3.5 h-3.5 shrink-0" />
+                  {user.exactScores}
+                </span>
+              )}
+              {typeof user.partialScores === "number" && (
+                <span
+                  className="flex items-center gap-1 text-xs font-bold text-amber-500"
+                  title={t("ranking.partialScoresTooltip")}
+                >
+                  <PieChart className="w-3.5 h-3.5 shrink-0" />
+                  {user.partialScores}
+                </span>
+              )}
+              {typeof user.justGoals === "number" && (
+                <span
+                  className="flex items-center gap-1 text-xs font-bold text-muted-foreground"
+                  title={t("ranking.justGoalsTooltip")}
+                >
+                  <Volleyball className="w-3.5 h-3.5 shrink-0" />
+                  {user.justGoals}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>

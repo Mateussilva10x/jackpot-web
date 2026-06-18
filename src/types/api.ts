@@ -34,6 +34,9 @@ export interface UserRankingDto {
   rankingPosition: number;
   avatarId?: number | string;
   avatar?: number | string;
+  exactScores?: number;
+  partialScores?: number;
+  justGoals?: number;
 }
 
 export interface BonusBetDto {
