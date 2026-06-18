@@ -254,7 +254,7 @@
   "status": {
   "finished": "Finished",
   "scheduled": "Scheduled",
-  "live": "Live"
+  "in_progress": "Live"
   },
   "teams": {
       "Mexico": "Mexico",
