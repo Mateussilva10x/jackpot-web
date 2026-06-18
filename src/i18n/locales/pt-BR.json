@@ -254,7 +254,7 @@
   "status": {
     "finished": "Encerrado",
     "scheduled": "Agendado",
-    "live": "Em Andamento"
+    "in_progress": "Ao Vivo"
   },
   "teams": {
     "Mexico": "México",
