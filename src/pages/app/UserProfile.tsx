@@ -48,6 +48,16 @@ function getFilteredAndSortedBets(
     } else {
       filteredBets = bets.filter((g) => /^[A-L]$/.test(g.group));
     }
+
+    // Other users' profiles: only reveal predictions for finished matches
+    filteredBets = filteredBets
+      .map((g) => ({
+        ...g,
+        matches: g.matches.filter(
+          (m) => m.status?.toLowerCase() === "finished",
+        ),
+      }))
+      .filter((g) => g.matches.length > 0);
   } else {
     // For my profile, apply same logic as others
     const knockoutHasStarted = hasKnockoutStarted(bets);
@@ -343,7 +353,7 @@ export default function UserProfile() {
       </h2>
 
       {/* Group Bets Grid */}
-      {!profile.bets || profile.bets.length === 0 ? (
+      {filteredBets.length === 0 ? (
         <div className="bg-card border border-border border-dashed rounded-xl p-12 flex flex-col items-center text-center">
           <Calendar className="w-12 h-12 text-muted-foreground/50 mb-4" />
           <h3 className="text-lg font-bold text-foreground mb-2">
