@@ -39,20 +39,29 @@ export function hasTournamentStarted(bets: MatchGroupResponse[]): boolean {
   return Date.now() >= Math.min(...kickoffs);
 }
 
-// Matches scheduled for the current calendar day, sorted by kickoff.
+// Early-morning matches (00:00–04:00) count as part of the previous day, so a
+// game at 01:00 on the 21st shows up alongside the 20th's matches.
+const EARLY_MORNING_CUTOFF_HOURS = 4;
+
+// The calendar day a match/instant belongs to, shifting the first 4 hours back
+// into the previous day. Returns midnight (local) of that effective day.
+function effectiveDayStart(dateTime: string | number | Date): number {
+  const d = new Date(dateTime);
+  d.setHours(d.getHours() - EARLY_MORNING_CUTOFF_HOURS, 0, 0, 0);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
+// Matches scheduled for the current calendar day, sorted by kickoff. Madrugada
+// matches (00:00–04:00 of the next day) are included with the current day.
 export function getTodayMatches(
   bets: MatchGroupResponse[],
 ): MatchBetResponse[] {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = effectiveDayStart(new Date());
 
   return bets
     .flatMap((group) => group.matches)
-    .filter((match) => {
-      const matchDate = new Date(match.dateTime);
-      matchDate.setHours(0, 0, 0, 0);
-      return matchDate.getTime() === today.getTime();
-    })
+    .filter((match) => effectiveDayStart(match.dateTime) === today)
     .sort(
       (a, b) =>
         new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime(),
