@@ -198,7 +198,11 @@
     "bonusPredictions": "Bonus Predictions",
     "noBonusBetsTitle": "No bonus predictions found",
     "noBonusMyProfile": "You haven't made any bonus predictions yet. Head to the dashboard to make your picks!",
-    "noBonusOtherProfile": "This user hasn't made any bonus predictions yet."
+    "noBonusOtherProfile": "This user hasn't made any bonus predictions yet.",
+    "viewEvolution": "View Ranking Evolution",
+    "evolutionTitle": "Ranking Evolution",
+    "evolutionEmpty": "No ranking history yet.",
+    "evolutionError": "Failed to load evolution"
   },
   "admin": {
     "title": "Administrator Dashboard",

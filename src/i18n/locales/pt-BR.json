@@ -198,7 +198,11 @@
     "bonusPredictions": "Apostas Bônus",
     "noBonusBetsTitle": "Nenhuma aposta bônus encontrada",
     "noBonusMyProfile": "Você ainda não fez nenhuma aposta bônus. Vá para o dashboard para fazer seus palpites!",
-    "noBonusOtherProfile": "Este usuário ainda não fez nenhuma aposta bônus."
+    "noBonusOtherProfile": "Este usuário ainda não fez nenhuma aposta bônus.",
+    "viewEvolution": "Ver Evolução no Ranking",
+    "evolutionTitle": "Evolução no Ranking",
+    "evolutionEmpty": "Ainda não há histórico de classificação.",
+    "evolutionError": "Falha ao carregar a evolução"
   },
   "admin": {
     "title": "Painel do Administrador",

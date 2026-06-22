@@ -13,9 +13,12 @@ import {
   Calendar,
   Target,
   Camera,
+  TrendingUp,
 } from "lucide-react";
 import { AvatarSelectionModal } from "../../components/profile/AvatarSelectionModal";
 import { BonusBetCard } from "../../components/profile/BonusBetCard";
+import { EvolutionChart } from "../../components/profile/EvolutionChart";
+import { Modal } from "../../components/ui/Modal";
 import { getAvatarById } from "../../utils/avatar";
 import { formatMatchDateTime } from "../../utils/formatDate";
 
@@ -104,6 +107,7 @@ export default function UserProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [isEvolutionOpen, setIsEvolutionOpen] = useState(false);
 
   const isMyProfile =
     id === undefined || id === currentUser?.id?.toString() || id === "me";
@@ -334,6 +338,15 @@ export default function UserProfile() {
       </div>
 
 
+      {/* Evolution Chart Trigger */}
+      <button
+        onClick={() => setIsEvolutionOpen(true)}
+        className="w-full mb-8 flex items-center justify-center gap-2 bg-card border border-border rounded-xl px-4 py-3 font-bold text-foreground hover:border-primary/50 hover:text-primary transition-colors"
+      >
+        <TrendingUp className="w-5 h-5" />
+        {t("profile.viewEvolution") || "View Ranking Evolution"}
+      </button>
+
       {/* Bonus Bets Section */}
       <div className="mb-12">
         <BonusBetCard
@@ -374,6 +387,14 @@ export default function UserProfile() {
           ))}
         </div>
       )}
+
+      <Modal
+        isOpen={isEvolutionOpen}
+        onClose={() => setIsEvolutionOpen(false)}
+        title={`${t("profile.evolutionTitle") || "Ranking Evolution"} · ${profile.name}`}
+      >
+        <EvolutionChart userId={profile.id} />
+      </Modal>
 
       <AvatarSelectionModal
         isOpen={isAvatarModalOpen}

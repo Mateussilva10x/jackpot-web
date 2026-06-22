@@ -39,6 +39,12 @@ export interface UserRankingDto {
   justGoals?: number;
 }
 
+export interface RankingEvolutionPoint {
+  date: string;
+  position: number;
+  totalPoints: number;
+}
+
 export interface BonusBetDto {
   id: number;
   championTeamId: number;
