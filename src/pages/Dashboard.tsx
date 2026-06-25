@@ -229,10 +229,10 @@ export default function Dashboard() {
                     : "hover:border-primary/50 hover:shadow-md hover:shadow-primary/5 active:scale-[0.99]"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-4 min-w-0">
                     <div
-                      className={`h-10 rounded-lg bg-green-500/10 flex items-center justify-center border border-green-500/20 transition-colors ${
+                      className={`h-10 rounded-lg bg-green-500/10 flex items-center justify-center border border-green-500/20 transition-colors shrink-0 ${
                         isLockedKnockout ? "" : "group-hover:bg-green-500/20"
                       } ${!isKnockout ? "w-10" : "px-3 min-w-10"}`}
                     >
@@ -246,7 +246,9 @@ export default function Dashboard() {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div
+                      className={`${isKnockout ? "hidden" : "flex"} items-center gap-2 min-w-0`}
+                    >
                       {Array.from(
                         new Set(
                           group.matches.flatMap((m) => [
@@ -276,7 +278,7 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 shrink-0">
                     {isLockedKnockout ? (
                       <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground bg-secondary/50 px-2 py-1 rounded">
                         <Lock className="w-4 h-4" />
