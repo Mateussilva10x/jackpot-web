@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import {
   Calendar,
+  Check,
   ChevronLeft,
   ChevronRight,
   Eye,
@@ -74,8 +75,10 @@ function TodayMatchCard({
   isEditing,
   editHome,
   editAway,
+  editWinner,
   onEditHomeChange,
   onEditAwayChange,
+  onSelectWinner,
   onStartEdit,
   t,
 }: {
@@ -84,14 +87,28 @@ function TodayMatchCard({
   isEditing: boolean;
   editHome: string;
   editAway: string;
+  editWinner: number | null;
   onEditHomeChange: (value: string) => void;
   onEditAwayChange: (value: string) => void;
+  onSelectWinner: (winnerId: number) => void;
   onStartEdit: () => void;
   t: TFunction;
 }) {
   const { date, time } = formatMatchDateTime(match.dateTime);
   const locked = isMatchLocked(match);
   const canEdit = showUserBet && !locked;
+
+  // Mata-mata + empate previsto → escolher quem avança (+5 bônus)
+  const isKnockout = !/^[A-L]$/.test(match.group);
+  const homeNum = parseInt(editHome, 10);
+  const awayNum = parseInt(editAway, 10);
+  const editIsDraw =
+    editHome.trim() !== "" &&
+    editAway.trim() !== "" &&
+    !Number.isNaN(homeNum) &&
+    !Number.isNaN(awayNum) &&
+    homeNum === awayNum;
+  const showWinnerPicker = isEditing && isKnockout && editIsDraw;
 
   return (
     <div className="flex flex-col h-full justify-between">
@@ -199,6 +216,39 @@ function TodayMatchCard({
             </p>
           </div>
         </div>
+
+        {/* Mata-mata: previu empate → escolher quem avança (+5 bônus) */}
+        {showWinnerPicker && (
+          <div className="mt-4 bg-accent/5 border border-accent/30 rounded-lg p-2.5 flex flex-col gap-2">
+            <p className="text-[10px] font-bold text-accent uppercase tracking-wider text-center">
+              {t("groupModal.whoAdvances", "Quem avança? (+5 bônus)")}
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { id: match.homeTeamId, name: match.homeTeam },
+                { id: match.awayTeamId, name: match.awayTeam },
+              ].map((team) => {
+                const selected = team.id != null && editWinner === team.id;
+                return (
+                  <button
+                    key={team.id}
+                    type="button"
+                    onClick={() => onSelectWinner(team.id)}
+                    className={`flex items-center justify-center gap-1 text-[11px] font-bold px-2 py-1.5 rounded-md border-2 transition-all truncate ${
+                      selected
+                        ? "bg-accent border-accent text-accent-foreground ring-2 ring-accent/40 shadow-sm"
+                        : "bg-background border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
+                    }`}
+                    title={team.name}
+                  >
+                    {selected && <Check className="w-3 h-3 shrink-0" />}
+                    <span className="truncate">{t(`teams.${team.name}`)}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Group Info */}
@@ -227,6 +277,7 @@ function TodayMatchesCarousel({
     match: MatchBetResponse,
     homeScore: number,
     awayScore: number,
+    selectedWinnerId: number | null,
   ) => Promise<void>;
   t: TFunction;
 }) {
@@ -234,9 +285,33 @@ function TodayMatchesCarousel({
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editHome, setEditHome] = useState("");
   const [editAway, setEditAway] = useState("");
+  const [editWinner, setEditWinner] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
   const cancelEdit = () => setEditingId(null);
+
+  // Quem avança só vale enquanto o placar for empate; placar decidido limpa.
+  const clearWinnerIfNotDraw = (home: string, away: string) => {
+    const h = parseInt(home, 10);
+    const a = parseInt(away, 10);
+    const isDraw =
+      home.trim() !== "" &&
+      away.trim() !== "" &&
+      !Number.isNaN(h) &&
+      !Number.isNaN(a) &&
+      h === a;
+    if (!isDraw) setEditWinner(null);
+  };
+
+  const handleEditHome = (value: string) => {
+    setEditHome(value);
+    clearWinnerIfNotDraw(value, editAway);
+  };
+
+  const handleEditAway = (value: string) => {
+    setEditAway(value);
+    clearWinnerIfNotDraw(editHome, value);
+  };
 
   const goToPrevious = () => {
     cancelEdit();
@@ -252,13 +327,24 @@ function TodayMatchesCarousel({
     setEditingId(match.id);
     setEditHome(match.userBet?.homeScore?.toString() ?? "");
     setEditAway(match.userBet?.awayScore?.toString() ?? "");
+    setEditWinner(match.userBet?.selectedWinnerId ?? null);
   };
 
-  const isEditValid =
+  const editingMatch = matches.find((m) => m.id === editingId);
+  const editHomeNum = parseInt(editHome, 10);
+  const editAwayNum = parseInt(editAway, 10);
+  const scoresFilled =
     editHome.trim() !== "" &&
     editAway.trim() !== "" &&
-    !Number.isNaN(parseInt(editHome, 10)) &&
-    !Number.isNaN(parseInt(editAway, 10));
+    !Number.isNaN(editHomeNum) &&
+    !Number.isNaN(editAwayNum);
+  // Mata-mata com empate exige escolher quem avança antes de salvar.
+  const needsWinner =
+    !!editingMatch &&
+    !/^[A-L]$/.test(editingMatch.group) &&
+    scoresFilled &&
+    editHomeNum === editAwayNum;
+  const isEditValid = scoresFilled && (!needsWinner || editWinner !== null);
 
   const handleSave = async () => {
     if (editingId === null || !isEditValid || isSaving) return;
@@ -266,7 +352,12 @@ function TodayMatchesCarousel({
     if (!match) return;
     setIsSaving(true);
     try {
-      await onSave(match, parseInt(editHome, 10), parseInt(editAway, 10));
+      await onSave(
+        match,
+        parseInt(editHome, 10),
+        parseInt(editAway, 10),
+        editWinner,
+      );
       setEditingId(null);
     } catch {
       // toast surfaced by parent; keep edit open so the user can retry
@@ -324,8 +415,10 @@ function TodayMatchesCarousel({
                     isEditing={editingId === match.id}
                     editHome={editHome}
                     editAway={editAway}
-                    onEditHomeChange={setEditHome}
-                    onEditAwayChange={setEditAway}
+                    editWinner={editWinner}
+                    onEditHomeChange={handleEditHome}
+                    onEditAwayChange={handleEditAway}
+                    onSelectWinner={setEditWinner}
                     onStartEdit={() => startEdit(match)}
                     t={t}
                   />
@@ -395,6 +488,7 @@ export function TodayMatchesSection({
     match: MatchBetResponse,
     homeScore: number,
     awayScore: number,
+    selectedWinnerId: number | null,
   ) => {
     try {
       await betsService.placeBets([
@@ -402,7 +496,7 @@ export function TodayMatchesSection({
           matchId: match.id,
           homeScore,
           awayScore,
-          selectedWinnerId: match.userBet?.selectedWinnerId,
+          selectedWinnerId: selectedWinnerId ?? undefined,
         },
       ]);
       showToast(

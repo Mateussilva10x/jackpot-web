@@ -162,7 +162,8 @@
     "points": "Pts",
     "matches": "Partidas",
     "cancel": "Cancelar",
-    "savePredictions": "Salvar Apostas"
+    "savePredictions": "Salvar Apostas",
+    "whoAdvances": "Quem avança? (+5 bônus)"
   },
   "ranking": {
     "leaderboard": "Classificação",

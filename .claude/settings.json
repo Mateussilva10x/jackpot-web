@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(npx tsc -b --noEmit)"
+      "PowerShell(npx tsc -b --noEmit)",
+      "PowerShell(npx tsc --noEmit -p c:\\\\Projetos\\\\jackpot-web 2>&1)"
     ]
   }
 }

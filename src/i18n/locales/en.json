@@ -162,7 +162,8 @@
     "points": "Pts",
     "matches": "Matches",
     "cancel": "Cancel",
-    "savePredictions": "Save Bets"
+    "savePredictions": "Save Bets",
+    "whoAdvances": "Who advances? (+5 bonus)"
   },
   "ranking": {
     "leaderboard": "Leaderboard",

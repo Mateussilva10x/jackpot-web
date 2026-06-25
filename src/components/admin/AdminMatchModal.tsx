@@ -61,6 +61,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
     value: string,
   ) => {
     const numValue = value === "" ? undefined : parseInt(value, 10);
+    const match = group?.matches.find((m) => m.id === matchId);
     setScores((prev) => {
       const current = prev[matchId] || {};
       const updatedHomeScore = team === "home" ? numValue : current.homeScore;
@@ -69,9 +70,9 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
       let penaltyWinnerId = current.penaltyWinnerId;
       if (updatedHomeScore !== undefined && updatedAwayScore !== undefined) {
         if (updatedHomeScore > updatedAwayScore) {
-          penaltyWinnerId = 1;
+          penaltyWinnerId = match?.homeTeamId;
         } else if (updatedAwayScore > updatedHomeScore) {
-          penaltyWinnerId = 2;
+          penaltyWinnerId = match?.awayTeamId;
         } else {
           if (current.homeScore !== current.awayScore) {
             penaltyWinnerId = undefined;
@@ -90,7 +91,8 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
     });
   };
 
-  const handleFlagClick = (matchId: number, teamId: 1 | 2) => {
+  // teamId = ID real do time (match.homeTeamId / match.awayTeamId)
+  const handleFlagClick = (matchId: number, teamId: number) => {
     setScores((prev) => {
       const currentScore = prev[matchId];
       if (
@@ -189,12 +191,13 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                               ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
                               : ""
                           } ${
-                            isKnockout && currentScore.penaltyWinnerId === 1
+                            isKnockout && currentScore.penaltyWinnerId === game.homeTeamId
                               ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
                               : "ring-1 ring-border"
                           }`}
                           onClick={() => {
-                            if (isKnockout) handleFlagClick(game.id, 1);
+                            if (isKnockout)
+                              handleFlagClick(game.id, game.homeTeamId);
                           }}
                         >
                           <img
@@ -205,7 +208,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                         </div>
                         <span
                           className={`font-bold text-xs text-center truncate w-full px-1 ${
-                            isKnockout && currentScore.penaltyWinnerId === 1
+                            isKnockout && currentScore.penaltyWinnerId === game.homeTeamId
                               ? "text-primary"
                               : ""
                           }`}
@@ -229,12 +232,13 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                               ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
                               : ""
                           } ${
-                            isKnockout && currentScore.penaltyWinnerId === 2
+                            isKnockout && currentScore.penaltyWinnerId === game.awayTeamId
                               ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
                               : "ring-1 ring-border"
                           }`}
                           onClick={() => {
-                            if (isKnockout) handleFlagClick(game.id, 2);
+                            if (isKnockout)
+                              handleFlagClick(game.id, game.awayTeamId);
                           }}
                         >
                           <img
@@ -245,7 +249,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                         </div>
                         <span
                           className={`font-bold text-xs text-center truncate w-full px-1 ${
-                            isKnockout && currentScore.penaltyWinnerId === 2
+                            isKnockout && currentScore.penaltyWinnerId === game.awayTeamId
                               ? "text-primary"
                               : ""
                           }`}

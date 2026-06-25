@@ -97,6 +97,8 @@ export interface BetResponse {
 
 export interface MatchBetResponse {
   id: number;
+  homeTeamId: number;
+  awayTeamId: number;
   homeTeam: string;
   awayTeam: string;
   homeTeamFlag: string;

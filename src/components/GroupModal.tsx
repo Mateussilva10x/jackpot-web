@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { Check } from "lucide-react";
 import { Modal } from "./ui/Modal";
 import { JackpotScoreInput } from "./ui/JackpotScoreInput";
 import { JackpotButton } from "./ui/JackpotButton";
@@ -143,13 +144,44 @@ export const GroupModal: React.FC<GroupModalProps> = ({
             game.userBet ||
             ({ matchId: gameId } as import("../types/api").BetResponse);
 
+          const homeScore =
+            team === "home" ? numValue : currentBet.homeScore;
+          const awayScore =
+            team === "away" ? numValue : currentBet.awayScore;
+
+          // Mantém a escolha de quem avança apenas enquanto o placar for empate.
+          // Qualquer placar decidido limpa o vencedor selecionado.
+          const isDraw =
+            homeScore !== undefined &&
+            awayScore !== undefined &&
+            homeScore === awayScore;
+          const selectedWinnerId = isDraw
+            ? currentBet.selectedWinnerId
+            : undefined;
+
           return {
             ...game,
             userBet: {
               ...currentBet,
               [team === "home" ? "homeScore" : "awayScore"]: numValue,
-              selectedWinnerId: undefined,
+              selectedWinnerId,
             },
+          };
+        }
+        return game;
+      }),
+    );
+  };
+
+  // Mata-mata: ao prever empate, o usuário escolhe quem avança (ID real do time)
+  // para concorrer ao bônus de +5 pontos.
+  const handleSelectWinner = (gameId: number, winnerId: number) => {
+    setGames((prev) =>
+      prev.map((game) => {
+        if (game.id === gameId && game.userBet) {
+          return {
+            ...game,
+            userBet: { ...game.userBet, selectedWinnerId: winnerId },
           };
         }
         return game;
@@ -425,6 +457,50 @@ export const GroupModal: React.FC<GroupModalProps> = ({
                         className={`w-10 h-10 text-lg shadow-inner bg-background ${isMatchLocked ? "opacity-60 cursor-not-allowed" : ""}`}
                       />
                     </div>
+
+                    {/* Mata-mata: previu empate → escolher quem avança (+5 bônus) */}
+                    {isKnockout &&
+                      game.userBet?.homeScore !== undefined &&
+                      game.userBet?.awayScore !== undefined &&
+                      game.userBet?.homeScore === game.userBet?.awayScore && (
+                        <div className="bg-accent/5 border border-accent/30 rounded-lg p-2.5 flex flex-col gap-2">
+                          <p className="text-[10px] font-bold text-accent uppercase tracking-wider text-center">
+                            {t("groupModal.whoAdvances", "Quem avança? (+5 bônus)")}
+                          </p>
+                          <div className="grid grid-cols-2 gap-2">
+                            {[
+                              { id: game.homeTeamId, name: game.homeTeam },
+                              { id: game.awayTeamId, name: game.awayTeam },
+                            ].map((team) => {
+                              const selected =
+                                team.id != null &&
+                                game.userBet?.selectedWinnerId === team.id;
+                              return (
+                                <button
+                                  key={team.id}
+                                  type="button"
+                                  disabled={isMatchLocked}
+                                  onClick={() => {
+                                    if (!isMatchLocked)
+                                      handleSelectWinner(game.id, team.id);
+                                  }}
+                                  className={`flex items-center justify-center gap-1 text-[11px] font-bold px-2 py-1.5 rounded-md border-2 transition-all truncate ${
+                                    selected
+                                      ? "bg-accent border-accent text-accent-foreground ring-2 ring-accent/40 shadow-sm"
+                                      : "bg-background border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
+                                  } ${isMatchLocked ? "opacity-60 cursor-not-allowed" : ""}`}
+                                  title={team.name}
+                                >
+                                  {selected && <Check className="w-3 h-3 shrink-0" />}
+                                  <span className="truncate">
+                                    {t(`teams.${team.name}`)}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                   </div>
                 </div>
               );
