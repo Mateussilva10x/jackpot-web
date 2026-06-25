@@ -374,7 +374,7 @@
     "knockout": {
       "title": "Fase de Mata-Mata",
       "rule1Title": "Placar no Tempo Regulamentar",
-      "rule1Desc": "Na fase eliminatória, as apostas de placar consideram apenas o resultado ao final dos 90 minutos (ou prorrogação, caso haja). Pênaltis não contam para o placar.",
+      "rule1Desc": "Na fase eliminatória, as apostas de placar consideram apenas o resultado ao final dos 90 minutos (tempo regulamentar). Prorrogação e pênaltis não contam para o placar.",
       "rule2Title": "Escolha do Vencedor",
       "rule2Desc": "Se você prevê um empate no placar de um jogo eliminatório, deve obrigatoriamente escolher o time que avança (vencedor nos pênaltis). Este campo fica disponível apenas em jogos de mata-mata.",
       "rule3Title": "Bônus de Classificação Pós 90 Min",

@@ -374,7 +374,7 @@
     "knockout": {
       "title": "Knockout Stage",
       "rule1Title": "Score at Full Time",
-      "rule1Desc": "In the knockout stage, score bets consider only the result at the end of 90 minutes (or extra time, if applicable). Penalties do not count toward the score.",
+      "rule1Desc": "In the knockout stage, score bets consider only the result at the end of 90 minutes (regulation time). Extra time and penalties do not count toward the score.",
       "rule2Title": "Pick the Winner",
       "rule2Desc": "If you predict a draw in a knockout game, you must also pick the team that advances (penalty shootout winner). This field is only available for knockout matches.",
       "rule3Title": "Post-Regulation Advancement Bonus",
