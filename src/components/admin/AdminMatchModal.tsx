@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Check } from "lucide-react";
 import { Modal } from "../ui/Modal";
 import { JackpotScoreInput } from "../ui/JackpotScoreInput";
 import { JackpotButton } from "../ui/JackpotButton";
@@ -182,24 +183,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                   <div className="p-3 sm:p-4 flex flex-col gap-3 sm:gap-4">
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col items-center gap-1 flex-1">
-                        <div
-                          className={`w-8 h-6 bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
-                            isKnockout &&
-                            currentScore.homeScore !== undefined &&
-                            currentScore.awayScore !== undefined &&
-                            currentScore.homeScore === currentScore.awayScore
-                              ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
-                              : ""
-                          } ${
-                            isKnockout && currentScore.penaltyWinnerId === game.homeTeamId
-                              ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
-                              : "ring-1 ring-border"
-                          }`}
-                          onClick={() => {
-                            if (isKnockout)
-                              handleFlagClick(game.id, game.homeTeamId);
-                          }}
-                        >
+                        <div className="w-8 h-6 bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden ring-1 ring-border">
                           <img
                             src={game.homeTeamFlag}
                             alt={`${game.homeTeam} flag`}
@@ -207,11 +191,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                           />
                         </div>
                         <span
-                          className={`font-bold text-xs text-center truncate w-full px-1 ${
-                            isKnockout && currentScore.penaltyWinnerId === game.homeTeamId
-                              ? "text-primary"
-                              : ""
-                          }`}
+                          className="font-bold text-xs text-center truncate w-full px-1"
                           title={game.homeTeam}
                         >
                           {game.homeTeam}
@@ -223,24 +203,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                       </span>
 
                       <div className="flex flex-col items-center gap-1 flex-1">
-                        <div
-                          className={`w-8 h-6 bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden transition-all ${
-                            isKnockout &&
-                            currentScore.homeScore !== undefined &&
-                            currentScore.awayScore !== undefined &&
-                            currentScore.homeScore === currentScore.awayScore
-                              ? "cursor-pointer hover:ring-2 hover:ring-primary/50"
-                              : ""
-                          } ${
-                            isKnockout && currentScore.penaltyWinnerId === game.awayTeamId
-                              ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
-                              : "ring-1 ring-border"
-                          }`}
-                          onClick={() => {
-                            if (isKnockout)
-                              handleFlagClick(game.id, game.awayTeamId);
-                          }}
-                        >
+                        <div className="w-8 h-6 bg-secondary flex items-center justify-center text-xl shadow-sm overflow-hidden ring-1 ring-border">
                           <img
                             src={game.awayTeamFlag}
                             alt={`${game.awayTeam} flag`}
@@ -248,11 +211,7 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                           />
                         </div>
                         <span
-                          className={`font-bold text-xs text-center truncate w-full px-1 ${
-                            isKnockout && currentScore.penaltyWinnerId === game.awayTeamId
-                              ? "text-primary"
-                              : ""
-                          }`}
+                          className="font-bold text-xs text-center truncate w-full px-1"
                           title={game.awayTeam}
                         >
                           {game.awayTeam}
@@ -299,6 +258,48 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
                         className="w-10 h-10 text-lg shadow-inner bg-background"
                       />
                     </div>
+
+                    {/* Mata-mata empatado → admin define quem avançou (pênaltis) */}
+                    {isKnockout &&
+                      currentScore.homeScore !== undefined &&
+                      currentScore.awayScore !== undefined &&
+                      currentScore.homeScore === currentScore.awayScore && (
+                        <div className="bg-accent/5 border border-accent/30 rounded-lg p-2.5 flex flex-col gap-2">
+                          <p className="text-[10px] font-bold text-accent uppercase tracking-wider text-center">
+                            {t("admin.whoAdvanced", "Quem avançou? (pênaltis)")}
+                          </p>
+                          <div className="grid grid-cols-2 gap-2">
+                            {[
+                              { id: game.homeTeamId, name: game.homeTeam },
+                              { id: game.awayTeamId, name: game.awayTeam },
+                            ].map((team) => {
+                              const selected =
+                                team.id != null &&
+                                currentScore.penaltyWinnerId === team.id;
+                              return (
+                                <button
+                                  key={team.id}
+                                  type="button"
+                                  onClick={() =>
+                                    handleFlagClick(game.id, team.id)
+                                  }
+                                  className={`flex items-center justify-center gap-1 text-[11px] font-bold px-2 py-1.5 rounded-md border-2 transition-all truncate ${
+                                    selected
+                                      ? "bg-accent border-accent text-accent-foreground ring-2 ring-accent/40 shadow-sm"
+                                      : "bg-background border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
+                                  }`}
+                                  title={team.name}
+                                >
+                                  {selected && (
+                                    <Check className="w-3 h-3 shrink-0" />
+                                  )}
+                                  <span className="truncate">{team.name}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
 
                     <JackpotButton
                       variant={isFinished ? "ghost" : "primary"}
