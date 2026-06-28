@@ -244,6 +244,7 @@
     "copyPredictionsHeading": "Predictions",
     "copyPredictionsGroup": "Group {{letter}}",
     "copyPredictionsNoBet": "—",
+    "copyPredictionsAdvances": "advances",
     "copyPredictionsCopied": "Predictions copied to clipboard",
     "copyPredictionsNoLive": "No games happening right now",
     "copyPredictionsError": "Failed to fetch predictions"

@@ -27,6 +27,8 @@ interface LiveMatch {
 interface UserBetLine {
   name: string;
   bet?: { homeScore: number; awayScore: number };
+  // Mata-mata: time que o usuário escolheu pra avançar quando palpitou empate.
+  advancingTeam?: string;
 }
 
 function isLive(match: MatchBetResponse): boolean {
@@ -92,7 +94,10 @@ function buildMessage(
       const score = entry.bet
         ? `${entry.bet.homeScore}x${entry.bet.awayScore}`
         : t("admin.copyPredictionsNoBet");
-      return `• ${entry.name}: ${score}`;
+      const advance = entry.advancingTeam
+        ? ` (${t("admin.copyPredictionsAdvances")}: ${entry.advancingTeam})`
+        : "";
+      return `• ${entry.name}: ${score}${advance}`;
     });
 
     const header = `🎯 ${t("admin.copyPredictionsHeading")} ${match.homeTeam} ${flagEmoji(
@@ -161,6 +166,11 @@ export const AdminCopyPredictions: React.FC = () => {
 
       // For each live match, collect every user's bet (preserving ranking order).
       const liveMatchIds = new Set(liveMatches.map((lm) => lm.match.id));
+      const knockoutMatchIds = new Set(
+        liveMatches
+          .filter((lm) => !/^[A-L]$/.test(lm.group))
+          .map((lm) => lm.match.id),
+      );
       const betsByMatch = new Map<number, UserBetLine[]>();
       for (const id of liveMatchIds) betsByMatch.set(id, []);
 
@@ -174,14 +184,30 @@ export const AdminCopyPredictions: React.FC = () => {
         }
         for (const id of liveMatchIds) {
           const match = matchById.get(id);
+          const bet = match?.userBet;
+          // Empate no mata-mata + vencedor escolhido → mostra quem o usuário
+          // apontou pra avançar.
+          let advancingTeam: string | undefined;
+          if (
+            bet &&
+            knockoutMatchIds.has(id) &&
+            bet.homeScore === bet.awayScore &&
+            bet.selectedWinnerId != null &&
+            match
+          ) {
+            advancingTeam =
+              bet.selectedWinnerId === match.homeTeamId
+                ? match.homeTeam
+                : bet.selectedWinnerId === match.awayTeamId
+                  ? match.awayTeam
+                  : undefined;
+          }
           betsByMatch.get(id)!.push({
             name,
-            bet: match?.userBet
-              ? {
-                  homeScore: match.userBet.homeScore,
-                  awayScore: match.userBet.awayScore,
-                }
+            bet: bet
+              ? { homeScore: bet.homeScore, awayScore: bet.awayScore }
               : undefined,
+            advancingTeam,
           });
         }
       });

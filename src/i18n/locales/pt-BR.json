@@ -244,6 +244,7 @@
     "copyPredictionsHeading": "Palpites",
     "copyPredictionsGroup": "Grupo {{letter}}",
     "copyPredictionsNoBet": "—",
+    "copyPredictionsAdvances": "avança",
     "copyPredictionsCopied": "Palpites copiados para a área de transferência",
     "copyPredictionsNoLive": "Nenhum jogo acontecendo no momento",
     "copyPredictionsError": "Erro ao buscar os palpites"
