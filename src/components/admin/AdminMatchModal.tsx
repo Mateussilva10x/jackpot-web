@@ -62,24 +62,18 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
     value: string,
   ) => {
     const numValue = value === "" ? undefined : parseInt(value, 10);
-    const match = group?.matches.find((m) => m.id === matchId);
     setScores((prev) => {
       const current = prev[matchId] || {};
       const updatedHomeScore = team === "home" ? numValue : current.homeScore;
       const updatedAwayScore = team === "away" ? numValue : current.awayScore;
 
-      let penaltyWinnerId = current.penaltyWinnerId;
-      if (updatedHomeScore !== undefined && updatedAwayScore !== undefined) {
-        if (updatedHomeScore > updatedAwayScore) {
-          penaltyWinnerId = match?.homeTeamId;
-        } else if (updatedAwayScore > updatedHomeScore) {
-          penaltyWinnerId = match?.awayTeamId;
-        } else {
-          if (current.homeScore !== current.awayScore) {
-            penaltyWinnerId = undefined;
-          }
-        }
-      }
+      // penaltyWinnerId só vale enquanto o placar oficial for empate; qualquer
+      // placar decidido (ou incompleto) limpa o vencedor.
+      const isDraw =
+        updatedHomeScore !== undefined &&
+        updatedAwayScore !== undefined &&
+        updatedHomeScore === updatedAwayScore;
+      const penaltyWinnerId = isDraw ? current.penaltyWinnerId : undefined;
 
       return {
         ...prev,
@@ -119,12 +113,15 @@ export const AdminMatchModal: React.FC<AdminMatchModalProps> = ({
     if (!data || data.homeScore === undefined || data.awayScore === undefined)
       return;
 
+    // penaltyWinnerId só é enviado quando o placar oficial é empate.
+    const isDraw = data.homeScore === data.awayScore;
+
     setIsSubmitting(matchId);
     try {
       await onFinalizeMatch(matchId, {
         homeScore: data.homeScore,
         awayScore: data.awayScore,
-        penaltyWinnerId: data.penaltyWinnerId,
+        penaltyWinnerId: isDraw ? data.penaltyWinnerId : undefined,
       });
     } finally {
       setIsSubmitting(null);
